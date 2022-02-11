@@ -2,6 +2,7 @@ const rootRoutes = {
   root: "/",
   login: "/auth/login",
   register: "/auth/register",
+  pricing: "/subscription/pricing",
 };
 
 const organizationRoutes = {

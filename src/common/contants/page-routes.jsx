@@ -6,6 +6,7 @@ import { BlankLayout } from "../../pages/layouts/blank-layout";
 import Register from "../../pages/auth/register";
 import OrganizationDashboard from "../../pages/organization/dashboard";
 import OrganizationList from "../../pages/organization/list/list";
+import OrganizationPricing from "../../pages/organization/pricing";
 
 export const rootRoutes = [
   {
@@ -20,6 +21,11 @@ export const rootRoutes = [
   {
     path: componentRoutes.register,
     component: Register,
+    layout: BlankLayout,
+  },
+  {
+    path: componentRoutes.pricing,
+    component: OrganizationPricing,
     layout: BlankLayout,
   },
 ];

@@ -29,7 +29,6 @@ const getHeaders = () => {
   const headers = {};
   headers["Content-Type"] = "application/json";
   const token = getToken();
-  console.log(token);
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }

@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState } from "react";
-import decode from "jwt-decode";
+// import decode from "jwt-decode";
 import { LoaderContext } from "./";
 import {
   ORGANIZATION_PROFILE_API,
   ORGANIZATON_LOGIN_API,
+  ORGANIZATON_REGISTER_API,
   ORGANIZATON_VERIFY_API,
 } from "../apis/api-urls";
 import {
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }) => {
   const onHandleRegister = async (values) => {
     try {
       setLoading(true);
-      let result = await executePostApi(ORGANIZATON_LOGIN_API, values);
+      let result = await executePostApi(ORGANIZATON_REGISTER_API, values);
       if (result?.data?.success) {
         setLoading(false);
       }
