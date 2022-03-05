@@ -7,15 +7,7 @@ import {
   faPhone,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  Col,
-  Row,
-  Form,
-  Card,
-  Button,
-  FormCheck,
-  Container,
-} from "react-bootstrap";
+import { Col, Row, Form, Card, Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import BgImage from "../../assets/images/img/illustrations/signin.svg";
 import { componentRoutes } from "../../common/contants";
@@ -37,7 +29,6 @@ const Register = () => {
       await onHandleRegister(values);
     } catch (error) {}
   };
-
   return (
     <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
       <Container>
@@ -63,7 +54,7 @@ const Register = () => {
                 <WCFormInput
                   label="Your Name"
                   icon={faUser}
-                  placeholder="Full name"
+                  placeholder="Company name"
                   error={errors?.name}
                   {...register("name")}
                 />
@@ -78,23 +69,23 @@ const Register = () => {
                   label="Your Mobile Number"
                   icon={faPhone}
                   placeholder="+91 0000 000 000"
-                  error={errors?.phone_no}
-                  {...register("phone_no")}
+                  error={errors?.contact_phone}
+                  {...register("contact_phone")}
                 />
 
                 <WCFormInput
                   label="Your Website"
                   icon={faGlobe}
                   placeholder="www.wisecaller.com"
-                  error={errors?.phone_no}
-                  {...register("phone_no")}
+                  error={errors?.website}
+                  {...register("website")}
                 />
-                <FormCheck type="checkbox" className="d-flex mb-4">
-                  <FormCheck.Input required id="terms" className="me-2" />
+                {/* <FormCheck type="checkbox" className="d-flex mb-4">
+                  <FormCheck.Input id="terms" className="me-2" />
                   <FormCheck.Label htmlFor="terms">
                     I agree to the <Card.Link>terms and conditions</Card.Link>
                   </FormCheck.Label>
-                </FormCheck>
+                </FormCheck> */}
 
                 <Button variant="primary" type="submit" className="w-100">
                   Sign up

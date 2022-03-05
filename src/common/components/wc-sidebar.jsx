@@ -7,12 +7,14 @@ import { Nav, Badge, Image, Button, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import ReactHero from "../../assets/images/img/technologies/react-hero-logo.svg";
 import ProfilePicture from "../../assets/images/img/team/profile-picture-3.jpg";
-import { organizationMenu } from "../contants/sidebar-menu";
+import { organizationMenu, adminMenu } from "../contants/sidebar-menu";
+import { useCookies } from "react-cookie";
 
 export const WCSidebar = () => {
   const [collapse, setCollapse] = useState(false);
   const location = useLocation();
   const { pathname } = location;
+  const [cookies] = useCookies();
 
   // const CollapsableNavItem = (props) => {
   //   const { eventKey, title, icon, children = null } = props;
@@ -91,6 +93,7 @@ export const WCSidebar = () => {
       </Nav.Item>
     );
   };
+
   return (
     <React.Fragment>
       <Navbar
@@ -152,14 +155,23 @@ export const WCSidebar = () => {
             </div>
             <Nav className="flex-column pt-3 pt-md-0">
               <NavItem title="Wise Caller" link={"/home"} image={ReactHero} />
-              {organizationMenu.map((item, index) => (
-                <NavItem
-                  key={index}
-                  title={item.title}
-                  link={item.link}
-                  icon={item.icon}
-                />
-              ))}
+              {cookies.role === "ADMIN"
+                ? adminMenu.map((item, index) => (
+                    <NavItem
+                      key={index}
+                      title={item.title}
+                      link={item.link}
+                      icon={item.icon}
+                    />
+                  ))
+                : organizationMenu.map((item, index) => (
+                    <NavItem
+                      key={index}
+                      title={item.title}
+                      link={item.link}
+                      icon={item.icon}
+                    />
+                  ))}
             </Nav>
           </div>
         </SimpleBar>

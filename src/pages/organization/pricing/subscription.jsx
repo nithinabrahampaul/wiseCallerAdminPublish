@@ -19,7 +19,11 @@ export const Subscription = ({
   }, [getOrganizationSubscriptions]);
 
   const onSubscriptionSelect = (subscription) => {
-    onFormChange({ ...pricingForm, subscription: subscription });
+    onFormChange({
+      ...pricingForm,
+      subscription: subscription._id,
+      duration: subscription.duration,
+    });
     onPageChange(activeStep + 1);
   };
 
@@ -43,14 +47,14 @@ export const Subscription = ({
             {subscription.features.map((item, index) => (
               <div className="d-flex align-items-center mb-3" key={index}>
                 <FontAwesomeIcon icon={faCheck} className="me-2" />
-                <span>{item.feature}</span>
+                <span>{item.text}</span>
               </div>
             ))}
           </Card.Body>
           <Card.Footer className="border-gray-100 d-grid px-4 pb-4">
             <Button
               className="w-100 btn btn-gray-800"
-              onClick={onSubscriptionSelect.bind(this, subscription._id)}
+              onClick={onSubscriptionSelect.bind(this, subscription)}
             >
               Subscribe
             </Button>

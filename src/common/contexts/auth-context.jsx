@@ -1,24 +1,22 @@
 import React, { createContext, useContext, useState } from "react";
-// import decode from "jwt-decode";
+import decode from "jwt-decode";
 import { LoaderContext } from "./";
 import {
-  ORGANIZATION_PROFILE_API,
   ORGANIZATON_LOGIN_API,
   ORGANIZATON_REGISTER_API,
   ORGANIZATON_VERIFY_API,
 } from "../apis/api-urls";
-import {
-  executeGetApi,
-  executePostApi,
-  setUserCookies,
-} from "../apis/base-api";
+import { executePostApi, setUserCookies } from "../apis/base-api";
+import { toast } from "react-toastify";
+// import { OrganizationContext } from "./organazation-context";
 
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [isLoginForm, setLoginForm] = useState(true);
-  const [user, setUser] = useState(null);
+  const [subscriptionLogin, setSubscriptionLogin] = useState(false);
   const { setLoading } = useContext(LoaderContext);
+  // const { getOrganizationDetails } = useContext(OrganizationContext);
 
   const onHandleLogin = async (values) => {
     try {
@@ -38,8 +36,10 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       let result = await executePostApi(ORGANIZATON_REGISTER_API, values);
       if (result?.data?.success) {
-        setLoading(false);
+      } else {
+        toast.error(result.data.message);
       }
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
@@ -50,23 +50,39 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       let result = await executePostApi(ORGANIZATON_VERIFY_API, values);
       if (result?.data?.success) {
-        await setUserCookies(result.data.data);
-        await getOrganizationProfile();
-        setLoading(false);
-        setLoginForm(true);
+        let decoded = decode(result.data.data.token);
+        await setUserCookies({
+          ...result.data.data,
+          email: decoded.email,
+          role: decoded.role,
+        });
+      } else {
+        toast.error(result?.data?.message);
       }
+      setLoginForm(true);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
   };
 
-  const getOrganizationProfile = async () => {
+  const onHandleOrganizationSubscription = async (values) => {
     try {
       setLoading(true);
-      let { data } = await executeGetApi(ORGANIZATION_PROFILE_API);
-      if (data?.success) {
-        setUser(data.data);
+      let result = await executePostApi(ORGANIZATON_REGISTER_API, values);
+      if (result?.data?.success) {
+        let loginResult = await executePostApi(ORGANIZATON_LOGIN_API, {
+          email: values.email,
+        });
+        if (loginResult?.data?.success) {
+          setSubscriptionLogin(true);
+        } else {
+          toast.error(loginResult?.data?.message);
+        }
+      } else {
+        toast.error(result?.data?.message);
       }
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
@@ -74,11 +90,11 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     isLoginForm,
-    user,
+    subscriptionLogin,
     onHandleLogin,
     onHandleRegister,
     onHandleVerifyOTP,
-    getOrganizationProfile,
+    onHandleOrganizationSubscription,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

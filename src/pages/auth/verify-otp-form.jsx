@@ -40,11 +40,11 @@ export const OTPForm = ({ initialValues }) => {
   return (
     <Form className="mt-4" onSubmit={handleSubmit(handleVerifyOTP)}>
       <WCFormInput
-        label="Mobile Number"
-        placeholder="+91 0000 000 000"
+        label="Your Email"
+        placeholder="example@company.com"
         icon={faUser}
-        error={errors?.phone_no}
-        {...register("phone_no")}
+        error={errors?.email}
+        {...register("email")}
       />
       <Form.Group className="mb-4">
         <Form.Label>{"OTP"}</Form.Label>

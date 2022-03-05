@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCashRegister,
@@ -24,14 +24,8 @@ import {
 } from "../../../common/contants";
 // import { PageVisitsTable } from "../../components/Tables";
 import { trafficShares, totalOrders } from "../../../common/contants";
-import { useAuth } from "../../../common/hooks";
 
 const OrganizationDashboard = () => {
-  const { getOrganizationProfile } = useAuth();
-
-  useEffect(() => {
-    getOrganizationProfile();
-  }, []);
   return (
     <>
       <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">

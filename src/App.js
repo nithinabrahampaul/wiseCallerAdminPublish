@@ -6,7 +6,7 @@ import { AppWrapper } from "./pages/layouts/app-wrapper";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import "@fortawesome/fontawesome-free/css/all.css";
-// import "react-datetime/css/react-datetime.css";
+import "react-datetime/css/react-datetime.css";
 
 const App = () => {
   return (

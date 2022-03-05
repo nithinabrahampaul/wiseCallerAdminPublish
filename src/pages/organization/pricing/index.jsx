@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Col, Container } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import StepWizard from "react-stepper-horizontal";
 import { Plan } from "./plan";
 import { Subscription } from "./subscription";
 import { Company } from "./company";
+import BgImage from "../../../assets/images/img/illustrations/signin.svg";
 
 let steps = [
   { title: "Subscription" },
@@ -20,32 +21,37 @@ const OrganizationPricing = () => {
       <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <Container>
           <StepWizard steps={steps} activeStep={activeStep} />
-          <Col className="pt-4">
-            {activeStep === 0 && (
-              <Subscription
-                onPageChange={setActiveStep}
-                activeStep={activeStep}
-                onFormChange={setPricingForm}
-                pricingForm={pricingForm}
-              />
-            )}
-            {activeStep === 1 && (
-              <Plan
-                onPageChange={setActiveStep}
-                activeStep={activeStep}
-                onFormChange={setPricingForm}
-                pricingForm={pricingForm}
-              />
-            )}
-            {activeStep === 2 && (
-              <Company
-                onPageChange={setActiveStep}
-                activeStep={activeStep}
-                onFormChange={setPricingForm}
-                pricingForm={pricingForm}
-              />
-            )}
-          </Col>
+          <Row
+            className="justify-content-center form-bg-image"
+            style={{ backgroundImage: `url(${BgImage})` }}
+          >
+            <Col className="pt-4">
+              {activeStep === 0 && (
+                <Subscription
+                  onPageChange={setActiveStep}
+                  activeStep={activeStep}
+                  onFormChange={setPricingForm}
+                  pricingForm={pricingForm}
+                />
+              )}
+              {activeStep === 1 && (
+                <Plan
+                  onPageChange={setActiveStep}
+                  activeStep={activeStep}
+                  onFormChange={setPricingForm}
+                  pricingForm={pricingForm}
+                />
+              )}
+              {activeStep === 2 && (
+                <Company
+                  onPageChange={setActiveStep}
+                  activeStep={activeStep}
+                  onFormChange={setPricingForm}
+                  pricingForm={pricingForm}
+                />
+              )}
+            </Col>
+          </Row>
         </Container>
       </section>
     </React.Fragment>

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   faBriefcase,
   faCity,
@@ -11,14 +12,20 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { WCFormInput } from "../../../common/components/wc-forminput";
 import { WCPreLoader } from "../../../common/components/wc-preloader";
-import { useLoader, useSubscription } from "../../../common/hooks";
+import { componentRoutes } from "../../../common/contants";
+import { useAuth, useLoader, useSubscription } from "../../../common/hooks";
 import { companyFormValidation } from "../../../common/validations/auth";
+import { VerifyOTPForm } from "./verify-otp-form";
+
 export const Company = ({ onPageChange, activeStep, pricingForm }) => {
+  const [isOpen, setOpen] = useState(false);
+  const [companyForm, setCompanyForm] = useState(null);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -26,25 +33,31 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
   } = useForm({
     resolver: yupResolver(companyFormValidation),
   });
-  const { onPlanSubscribe } = useSubscription();
+  const { isSubscriptionDone } = useSubscription();
+  const { onHandleOrganizationSubscription, subscriptionLogin } = useAuth();
   const { loading } = useLoader();
 
   const onCompanyDetails = async (values) => {
     try {
-      await onPlanSubscribe({ ...values, ...pricingForm });
-      // let options = {
-      //   key: process.env.REACT_APP_RAZORPAY_KEY,
-      //   amount: 100,
-      //   currency: "INR",
-      //   name: "Wisecaller PVT LTD",
-      //   handler: (res) => {},
-      // };
-      // const pay = new razorPay(options);
-      // pay.open();
+      setCompanyForm({ ...pricingForm, ...values });
+      await onHandleOrganizationSubscription(values);
     } catch (error) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (subscriptionLogin) {
+      setOpen(true);
+    }
+  }, [subscriptionLogin]);
+
+  useEffect(() => {
+    if (isSubscriptionDone) {
+      setOpen(false);
+      navigate(componentRoutes.root);
+    }
+  }, [isSubscriptionDone, navigate]);
 
   return loading ? (
     <WCPreLoader />
@@ -60,8 +73,8 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
                   label="Name"
                   placeholder="Wisecaller Pvt. Ltd"
                   icon={faBriefcase}
-                  error={errors?.company_name}
-                  {...register("company_name")}
+                  error={errors?.name}
+                  {...register("name")}
                 />
               </Col>
               <Col md={6} className="mb-3">
@@ -69,8 +82,8 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
                   label="Email"
                   placeholder="example@company.com"
                   icon={faEnvelope}
-                  error={errors?.company_email}
-                  {...register("company_email")}
+                  error={errors?.email}
+                  {...register("email")}
                 />
               </Col>
             </Row>
@@ -139,7 +152,7 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
         </Card>
         <Card border="light" className="bg-white shadow-sm mb-4">
           <Card.Body>
-            <h5 className="mb-4">Personal Information</h5>
+            <h5 className="mb-4">Contact Information</h5>
             <Row>
               <Col md={6} className="mb-3">
                 <WCFormInput
@@ -170,6 +183,15 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
                   {...register("contact_phone")}
                 />
               </Col>
+              <Col md={6} className="mb-3">
+                <WCFormInput
+                  label="Your Website"
+                  icon={faGlobe}
+                  placeholder="www.wisecaller.com"
+                  error={errors?.website}
+                  {...register("website")}
+                />
+              </Col>
             </Row>
           </Card.Body>
           <Card.Footer className="border-gray-100 d-grid px-4 pb-4">
@@ -179,6 +201,13 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
           </Card.Footer>
         </Card>
       </Form>
+      {isOpen && (
+        <VerifyOTPForm
+          isOpen={isOpen}
+          onClose={setOpen.bind(this, false)}
+          initialValues={{ ...companyForm, ...pricingForm }}
+        />
+      )}
     </React.Fragment>
   );
 };

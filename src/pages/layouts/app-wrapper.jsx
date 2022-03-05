@@ -5,19 +5,28 @@ import {
   LoaderProvider,
   SubscrptionProvider,
   PlanProvider,
+  OrganizationProvider,
+  EmployeeProvider,
+  CouponProvider,
 } from "../../common/contexts";
 
 export const AppWrapper = ({ children }) => {
   return (
     <React.Fragment>
       <LoaderProvider>
-        <SubscrptionProvider>
-          <PlanProvider>
-            <AuthProvider>
-              <CookiesProvider>{children}</CookiesProvider>
-            </AuthProvider>
-          </PlanProvider>
-        </SubscrptionProvider>
+        <CookiesProvider>
+          <OrganizationProvider>
+            <EmployeeProvider>
+              <CouponProvider>
+                <SubscrptionProvider>
+                  <PlanProvider>
+                    <AuthProvider>{children}</AuthProvider>
+                  </PlanProvider>
+                </SubscrptionProvider>
+              </CouponProvider>
+            </EmployeeProvider>
+          </OrganizationProvider>
+        </CookiesProvider>
       </LoaderProvider>
     </React.Fragment>
   );
