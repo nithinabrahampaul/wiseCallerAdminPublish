@@ -1,5 +1,5 @@
-const organizationUrl = "http://localhost:8001/organization-service/api/v1/";
-const subscriptionUrl = "http://localhost:8000/subscription-service/api/v1/";
+const organizationUrl = `${process.env.REACT_APP_API}/organization-service/api/v1/`;
+const subscriptionUrl = `${process.env.REACT_APP_API}/subscription-service/api/v1/`;
 export const ORGANIZATON_LOGIN_API = `${organizationUrl}auth/login`;
 export const ORGANIZATON_REGISTER_API = `${organizationUrl}auth/register`;
 export const ORGANIZATON_VERIFY_API = `${organizationUrl}auth/verify`;
