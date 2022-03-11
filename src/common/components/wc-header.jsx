@@ -9,8 +9,10 @@ import { componentRoutes } from "../contants";
 import { useLoader, useOrganization } from "../hooks";
 import { useEffect } from "react";
 import { WCPreLoader } from "./wc-preloader";
+import { Cookies } from "react-cookie";
 
 export const WCHeader = () => {
+  const cookies = new Cookies();
   const navigate = useNavigate();
   const { organization, getOrganizationDetails } = useOrganization();
   const { loading } = useLoader();
@@ -57,17 +59,18 @@ export const WCHeader = () => {
                   Profile
                 </Dropdown.Item>
 
-                <Dropdown.Item
-                  className="fw-bold"
-                  onClick={navigate.bind(
-                    this,
-                    componentRoutes.organizationAccountSubscription
-                  )}
-                >
-                  <FontAwesomeIcon icon={faRocket} className="me-2" /> My
-                  Subscription
-                </Dropdown.Item>
-
+                {cookies.get("role") !== "ADMIN" && (
+                  <Dropdown.Item
+                    className="fw-bold"
+                    onClick={navigate.bind(
+                      this,
+                      componentRoutes.organizationAccountSubscription
+                    )}
+                  >
+                    <FontAwesomeIcon icon={faRocket} className="me-2" /> My
+                    Subscription
+                  </Dropdown.Item>
+                )}
                 <Dropdown.Divider />
 
                 <Dropdown.Item className="fw-bold" onClick={onLogout}>

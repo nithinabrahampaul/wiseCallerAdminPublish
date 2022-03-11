@@ -14,7 +14,12 @@ import {
 } from "react-bootstrap";
 import { useTable } from "react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCog, faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faCog,
+  faPlusCircle,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import { useDebounce } from "use-lodash-debounce";
 import { useEffect } from "react";
 
@@ -34,6 +39,7 @@ export const WCDataTable = ({
   onHandleFilter,
   filters,
   onHandleSearch,
+  onHandleCreate,
 }) => {
   const [searchValue, setSearchValue] = useState(null);
   const search = useDebounce(searchValue, 1000);
@@ -83,30 +89,41 @@ export const WCDataTable = ({
             </InputGroup>
           </Col>
           <Col xs={4} md={2} xl={1} className="ps-md-0 text-end">
-            <Dropdown as={ButtonGroup}>
-              <Dropdown.Toggle
-                split
-                as={Button}
-                variant="link"
-                className="text-dark m-0 p-0"
-              >
-                <span className="icon icon-sm icon-gray">
-                  <FontAwesomeIcon icon={faCog} />
-                </span>
-              </Dropdown.Toggle>
-              <Dropdown.Menu className="dropdown-menu-xs dropdown-menu-right">
-                {pageLimits.map((item, index) => (
-                  <Dropdown.Item className="d-flex fw-bold" key={index}>
-                    {item}
-                    {item === limit && (
-                      <span className="icon icon-small ms-auto">
-                        <FontAwesomeIcon icon={faCheck} />
-                      </span>
-                    )}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
+            <React.Fragment>
+              {onHandleCreate && (
+                <ButtonGroup>
+                  <Button variant="link" onClick={onHandleCreate}>
+                    <span className="icon icon-sm icon-gray">
+                      <FontAwesomeIcon icon={faPlusCircle} />
+                    </span>
+                  </Button>
+                </ButtonGroup>
+              )}
+              <Dropdown as={ButtonGroup}>
+                <Dropdown.Toggle
+                  split
+                  as={Button}
+                  variant="link"
+                  className="text-dark m-0 p-0"
+                >
+                  <span className="icon icon-sm icon-gray">
+                    <FontAwesomeIcon icon={faCog} />
+                  </span>
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="dropdown-menu-xs dropdown-menu-right">
+                  {pageLimits.map((item, index) => (
+                    <Dropdown.Item className="d-flex fw-bold" key={index}>
+                      {item}
+                      {item === limit && (
+                        <span className="icon icon-small ms-auto">
+                          <FontAwesomeIcon icon={faCheck} />
+                        </span>
+                      )}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </React.Fragment>
           </Col>
         </Row>
         <Card border="light" className="shadow-sm">

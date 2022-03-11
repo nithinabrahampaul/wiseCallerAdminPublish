@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { useState, createContext, useCallback } from "react";
 import useRazorPay from "react-razorpay";
 import { toast } from "react-toastify";
@@ -44,15 +45,15 @@ export const SubscrptionProvider = ({ children }) => {
       try {
         let payment_payload = {
           transactionId: payment.data.data.id,
-          subscription: companyForm.subscription,
+          subscription: companyForm.subscription._id,
           amount: companyForm.price + (companyForm.price * 18) / 100,
           paymentFor: "Organization Coupon",
           status: "SUCCESS",
           mode: "ONLINE",
           quantity: companyForm.quantity,
-          coupon_expiry_date: new Date(
-            new Date().setMonth(new Date().getMonth() + 2)
-          ),
+          coupon_expiry_date: moment()
+            .add(companyForm.subscription.duration, "months")
+            .toISOString(),
           coupon_code: generateVoucher,
         };
 
@@ -174,12 +175,21 @@ export const SubscrptionProvider = ({ children }) => {
               let renew_result = await executePostApi(
                 RENEW_ORGANIZATION_SUBSCRIPTION,
                 {
-                  ...values,
-                  total_amount:
+                  transactionId: order.data.data.id,
+                  subscription: values.subscription._id,
+                  paymentFor: "Organization Renew Coupon",
+                  status: "SUCCESS",
+                  mode: "ONLINE",
+                  quantity: values.quantity,
+                  coupon_expiry_date: moment()
+                    .add(values.subscription.duration, "months")
+                    .toISOString(),
+                  coupon_code: generateVoucher,
+                  amount:
                     amount_payload.amount +
                     amount_payload.gst_amount +
                     amount_payload.cess_amount,
-                  payment: order.data.data,
+                  plan: values.plan,
                 }
               );
               if (renew_result?.data?.success) {
@@ -200,7 +210,7 @@ export const SubscrptionProvider = ({ children }) => {
         setLoading(false);
       }
     },
-    [setLoading, razorPay]
+    [setLoading, razorPay, generateVoucher]
   );
 
   let value = {

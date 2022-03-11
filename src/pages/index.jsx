@@ -1,33 +1,29 @@
-import React, { useEffect } from "react";
-import { useCallback } from "react";
-import { useCookies } from "react-cookie";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { WCPreLoader } from "../common/components/wc-preloader";
 import { componentRoutes } from "../common/contants";
 import { useLoader } from "../common/hooks";
 
 const Pages = () => {
-  const [cookies] = useCookies();
+  const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
   const { loading } = useLoader();
 
-  const getOrganizationData = useCallback(async () => {
-    if (cookies?.token) {
-      if (cookies.role === "ORGANIZATION") {
-        navigate(componentRoutes.organizationDashboard);
-      } else if (cookies.role === "ADMIN") {
-        navigate(componentRoutes.adminDashboard);
-      } else {
-        navigate(componentRoutes.login);
-      }
+  const handleNavigation = useCallback(() => {
+    let role = cookies.get("role");
+    if (role === "ORGANIZATION") {
+      navigate(componentRoutes.organizationDashboard);
+    } else if (role === "ADMIN") {
+      navigate(componentRoutes.adminDashboard);
     } else {
       navigate(componentRoutes.login);
     }
   }, [cookies, navigate]);
 
   useEffect(() => {
-    getOrganizationData();
-  }, [getOrganizationData]);
+    handleNavigation();
+  }, [handleNavigation]);
 
   return loading ? (
     <WCPreLoader />

@@ -59,12 +59,6 @@ export const Subscription = ({
           </Card.Body>
           <Card.Footer className="border-gray-100 d-grid px-4 pb-4">
             <Button
-              className="w-100 btn btn-gray-800"
-              //   onClick={onSubscriptionSelect.bind(this, subscription)}
-            >
-              Subscribed
-            </Button>
-            <Button
               className="w-100 btn btn-gray-800 mt-2"
               onClick={onRenewSubscriptions.bind(this, subscription)}
             >

@@ -4,10 +4,14 @@ import {
   AuthProvider,
   LoaderProvider,
   SubscrptionProvider,
+  NoteProvider,
+  UserStatusProvider,
   PlanProvider,
   OrganizationProvider,
   EmployeeProvider,
   CouponProvider,
+  PageProvider,
+  GlablTypesProvider,
 } from "../../common/contexts";
 
 export const AppWrapper = ({ children }) => {
@@ -20,7 +24,15 @@ export const AppWrapper = ({ children }) => {
               <CouponProvider>
                 <SubscrptionProvider>
                   <PlanProvider>
-                    <AuthProvider>{children}</AuthProvider>
+                    <NoteProvider>
+                      <PageProvider>
+                        <GlablTypesProvider>
+                          <UserStatusProvider>
+                            <AuthProvider>{children}</AuthProvider>
+                          </UserStatusProvider>
+                        </GlablTypesProvider>
+                      </PageProvider>
+                    </NoteProvider>
                   </PlanProvider>
                 </SubscrptionProvider>
               </CouponProvider>

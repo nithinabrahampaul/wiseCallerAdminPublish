@@ -1,8 +1,9 @@
 import { useContext } from "react";
 import { useCallback, useState, createContext } from "react";
+import { toast } from "react-toastify";
 import { LoaderContext } from ".";
-import { executeGetApi } from "../apis";
-import { GET_PLANS_API } from "../apis/api-urls";
+import { executeGetApi, executePostApi } from "../apis";
+import { GET_PLANS_API, REVOKE_ORGANIZATION_EMPLOYEE } from "../apis/api-urls";
 
 export const PlanContext = createContext();
 
@@ -28,6 +29,27 @@ export const PlanProvider = ({ children }) => {
     [setLoading]
   );
 
+  const onRevokePlan = useCallback(
+    async (values) => {
+      try {
+        setLoading(true);
+        let result = await executePostApi(
+          `${REVOKE_ORGANIZATION_EMPLOYEE}`,
+          values
+        );
+        if (result?.data?.success) {
+          toast.success("Plan revoked successfully!");
+          setLoading(false);
+        } else {
+          toast.error(result?.data?.message);
+        }
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
   let value = {
     plans,
     getSubscriptionPlans: useCallback(
@@ -35,6 +57,12 @@ export const PlanProvider = ({ children }) => {
         getSubscriptionPlans(subscription);
       },
       [getSubscriptionPlans]
+    ),
+    onRevokePlan: useCallback(
+      (values) => {
+        onRevokePlan(values);
+      },
+      [onRevokePlan]
     ),
   };
   return <PlanContext.Provider value={value}>{children}</PlanContext.Provider>;

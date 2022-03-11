@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { Button, Card, Form, FormCheck } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import { WCFormInput } from "../../common/components/wc-forminput";
 import OtpInput from "react-otp-input";
@@ -60,17 +60,6 @@ export const OTPForm = ({ initialValues }) => {
         )}
       </Form.Group>
 
-      <Form.Group>
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <Form.Check type="checkbox">
-            <FormCheck.Input id="defaultCheck5" className="me-2" />
-            <FormCheck.Label htmlFor="defaultCheck5" className="mb-0">
-              Remember me
-            </FormCheck.Label>
-          </Form.Check>
-          <Card.Link className="small text-end">Forgot password?</Card.Link>
-        </div>
-      </Form.Group>
       <Button variant="primary" type="submit" className="w-100">
         {"Sign in"}
       </Button>

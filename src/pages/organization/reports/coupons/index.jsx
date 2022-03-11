@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
@@ -14,15 +14,26 @@ const OrganizationCoupons = () => {
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [filters, setFilters] = useState({});
 
-  const { coupons, getAllCoupons } = useCoupon();
+  const { coupons, getAllCoupons, onDeactivateCoupon } = useCoupon();
   const { loading } = useLoader();
   const [cookies] = useCookies();
-
-  const columns = useMemo(() => organizationCouponColumns(), []);
 
   useEffect(() => {
     getAllCoupons({ page, limit, role: cookies.role, ...filters });
   }, [page, limit, cookies, getAllCoupons, filters]);
+
+  const onCouponDeactivate = useCallback(
+    async (id) => {
+      await onDeactivateCoupon(id);
+      await getAllCoupons({ page, limit, role: cookies.role, ...filters });
+    },
+    [page, limit, cookies, filters, getAllCoupons, onDeactivateCoupon]
+  );
+
+  const columns = useMemo(
+    () => organizationCouponColumns(onCouponDeactivate),
+    [onCouponDeactivate]
+  );
 
   return loading ? (
     <WCPreLoader />

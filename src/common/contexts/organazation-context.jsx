@@ -8,6 +8,7 @@ import {
 import {
   GET_ALL_ORGANIZATIONS,
   GET_ORGANIZATION_USERS,
+  ORGANIZATION_OVERVIEW,
   ORGANIZATION_PROFILE_API,
   UPDATE_ORGANIZATION_PROFILE,
 } from "../apis/api-urls";
@@ -16,8 +17,10 @@ import { toast } from "react-toastify";
 
 export const OrganizationContext = createContext({});
 export const OrganizationProvider = ({ children }) => {
+  const [allOrganizations, setAllOrganizations] = useState([]);
   const [organization, setOrganization] = useState(null);
   const [employees, setEmployees] = useState([]);
+  const [overview, setOverview] = useState(null);
   const { setLoading } = useContext(LoaderContext);
 
   const getOrganizationDetails = useCallback(async () => {
@@ -59,7 +62,7 @@ export const OrganizationProvider = ({ children }) => {
       setLoading(true);
       let result = await executePostApi(GET_ALL_ORGANIZATIONS, params);
       if (result?.data?.success) {
-        setOrganization(result.data.data);
+        setAllOrganizations(result.data.data);
       } else {
         toast.error(result.data.message);
       }
@@ -83,9 +86,29 @@ export const OrganizationProvider = ({ children }) => {
     [setLoading]
   );
 
+  const getOrganizationOverview = useCallback(
+    async (params) => {
+      try {
+        setLoading(true);
+        let result = await executePostApi(ORGANIZATION_OVERVIEW, params);
+        if (result?.data?.success) {
+          setOverview(result.data.data);
+        } else {
+          toast.error(result?.data?.message);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
   let value = {
     organization,
     employees,
+    overview,
+    allOrganizations,
     getOrganizationDetails: useCallback(() => {
       getOrganizationDetails();
     }, [getOrganizationDetails]),
@@ -106,6 +129,12 @@ export const OrganizationProvider = ({ children }) => {
         onUpdateOrganization(values);
       },
       [onUpdateOrganization]
+    ),
+    getOrganizationOverview: useCallback(
+      (params) => {
+        getOrganizationOverview(params);
+      },
+      [getOrganizationOverview]
     ),
   };
   return (

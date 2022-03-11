@@ -1,8 +1,8 @@
 import React, { createContext, useState, useCallback, useContext } from "react";
 import { toast } from "react-toastify";
 import { LoaderContext } from ".";
-import { executePostApi } from "../apis";
-import { GET_ALL_COUPONS } from "../apis/api-urls";
+import { executeGetApi, executePostApi } from "../apis";
+import { DEACTIVATE_COUPON, GET_ALL_COUPONS } from "../apis/api-urls";
 
 export const CouponContext = createContext({});
 
@@ -28,6 +28,20 @@ export const CouponProvider = ({ children }) => {
     [setLoading]
   );
 
+  const onDeactivateCoupon = useCallback(
+    async (id) => {
+      setLoading(true);
+      let result = await executeGetApi(`${DEACTIVATE_COUPON}/${id}`);
+      if (result?.data?.success) {
+        toast.success("Coupon deactivated!");
+      } else {
+        toast.error(result?.data.message);
+      }
+      setLoading(false);
+    },
+    [setLoading]
+  );
+
   const value = {
     coupons,
     getAllCoupons: useCallback(
@@ -35,6 +49,12 @@ export const CouponProvider = ({ children }) => {
         getAllCoupons(params);
       },
       [getAllCoupons]
+    ),
+    onDeactivateCoupon: useCallback(
+      (id) => {
+        onDeactivateCoupon(id);
+      },
+      [onDeactivateCoupon]
     ),
   };
   return (

@@ -21,7 +21,7 @@ export const Subscription = ({
   const onSubscriptionSelect = (subscription) => {
     onFormChange({
       ...pricingForm,
-      subscription: subscription._id,
+      subscription: subscription,
       duration: subscription.duration,
     });
     onPageChange(activeStep + 1);

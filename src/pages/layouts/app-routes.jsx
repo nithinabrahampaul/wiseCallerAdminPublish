@@ -1,32 +1,20 @@
 import React from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { componentRoutes, pageRoutes } from "../../common/contants";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { pageRoutes } from "../../common/contants";
 import NotFound from "../not-found";
+import { PrivateRoutes } from "./private-routes";
 
 export const AppRoutes = () => {
-  const RenderRoute = ({ route }) =>
-    route.layout ? (
-      <route.layout>
-        <route.component />
-      </route.layout>
-    ) : (
-      <route.component />
-    );
-
   return (
     <React.Fragment>
       <BrowserRouter>
         <Routes>
           {pageRoutes.map((route, index) => (
             <React.Fragment key={index}>
-              {!route.auth ? (
-                <Route
-                  path={route.path}
-                  element={<RenderRoute route={route} />}
-                />
-              ) : (
-                <Navigate to={componentRoutes.login} />
-              )}
+              <Route
+                path={route.path}
+                element={<PrivateRoutes route={route} />}
+              />
             </React.Fragment>
           ))}
           <Route path="*" element={<NotFound />} />
