@@ -25,3 +25,5 @@ export const GET_ALL_STATUS = `${organizationUrl}status`;
 export const UPDATE_ADMIN_STATIC_PAGES = `${organizationUrl}pages/update`;
 export const GET_ALL_ADMIN_STATIC_PAGES = `${organizationUrl}pages`;
 export const GET_ALL_GLOBAL_TYPES = `${organizationUrl}global-types`;
+export const GET_ALL_USER_STATUS = `${organizationUrl}user-status`;
+export const UPDATE_USER_STATUS = `${organizationUrl}user-status/update`;
