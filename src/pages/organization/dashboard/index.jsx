@@ -54,6 +54,7 @@ const overviews = [
     title: "Custom Status",
     count: 0,
     icon: faPhoenixSquadron,
+    key: "totalCustomStatus",
   },
 ];
 

@@ -12,12 +12,17 @@ export const WCGraph = ({ title, totalCount = [], graphData = [] }) => {
 
   for (let i = 0; i < diff + 1; i++) {
     let month = moment().month(i).format("MMMM");
-    months.push(month);
+    months.push({ name: month, index: i + 1, count: 0 });
   }
 
   const data = {
-    labels: months,
-    series: [graphData.map((item) => item.count)],
+    labels: months.map((item) => item.name),
+    series: [
+      months.map((item) => {
+        let value = graphData.find((graph) => graph._id.month === item.index);
+        return (item.count = value ? value.count : item.count);
+      }),
+    ],
   };
 
   const options = {

@@ -21,7 +21,6 @@ export const DEACTIVATE_COUPON = `${organizationUrl}coupon/deactivate-coupon`;
 export const ORGANIZATION_OVERVIEW = `${organizationUrl}organization/overview`;
 export const GET_ALL_NOTES = `${organizationUrl}notes`;
 export const UPDATE_NOTES = `${organizationUrl}notes/update`;
-export const GET_ALL_STATUS = `${organizationUrl}status`;
 export const UPDATE_ADMIN_STATIC_PAGES = `${organizationUrl}pages/update`;
 export const GET_ALL_ADMIN_STATIC_PAGES = `${organizationUrl}pages`;
 export const GET_ALL_GLOBAL_TYPES = `${organizationUrl}global-types`;

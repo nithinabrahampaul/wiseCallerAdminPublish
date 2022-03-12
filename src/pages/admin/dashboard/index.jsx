@@ -54,6 +54,7 @@ const overviews = [
     title: "Custom Status",
     count: 0,
     icon: faPhoenixSquadron,
+    key: "totalCustomStatus",
   },
 ];
 
@@ -96,7 +97,7 @@ const AdminDashboard = () => {
           <WCGraph
             title={"Employees"}
             totalCount={74}
-            graphData={overview.monthlyUsers}
+            graphData={overview?.monthlyUsers}
           />
         </Col>
       </Row>
