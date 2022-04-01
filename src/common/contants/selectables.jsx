@@ -30,3 +30,25 @@ export const iconTypesOptions = [
     value: "YELLOW_WARNING",
   },
 ];
+
+export const typeOptions = [
+  {
+    label: "Organization",
+    value: "ORGANIZATION",
+  },
+  {
+    label: "user",
+    value: "USER",
+  },
+];
+
+export const couponTypeOptions = [
+  {
+    label: "Cash Discount",
+    value: "CASH_DISCOUNT",
+  },
+  {
+    label: "Organization",
+    value: "ORGANIZATION",
+  },
+];

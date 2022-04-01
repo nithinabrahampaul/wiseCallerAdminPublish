@@ -15,7 +15,10 @@ export const Subscription = ({
   const { loading } = useLoader();
 
   useEffect(() => {
-    getOrganizationSubscriptions();
+    let fetchAll = async () => {
+      await getOrganizationSubscriptions();
+    };
+    fetchAll();
   }, [getOrganizationSubscriptions]);
 
   const onRenewSubscriptions = (subscription) => {
@@ -58,6 +61,14 @@ export const Subscription = ({
             </div>
           </Card.Body>
           <Card.Footer className="border-gray-100 d-grid px-4 pb-4">
+            {/* {coupons.map((item) => item.subscription === item._id) && (
+              <Button
+                className="w-100 btn btn-gray-800 mt-2"
+                onClick={onRenewSubscriptions.bind(this, subscription)}
+              >
+                Renew
+              </Button>
+            )} */}
             <Button
               className="w-100 btn btn-gray-800 mt-2"
               onClick={onRenewSubscriptions.bind(this, subscription)}

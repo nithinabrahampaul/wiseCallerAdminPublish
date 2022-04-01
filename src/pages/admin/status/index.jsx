@@ -79,14 +79,25 @@ const AdminStatus = () => {
 
   useEffect(() => {
     if (globalTypes) {
-      setTypes(
-        globalTypes.map((item) => {
-          return {
-            label: item.type,
-            value: item._id,
-          };
-        })
-      );
+      if (globalTypes?.docs) {
+        setTypes(
+          globalTypes?.docs.map((item) => {
+            return {
+              label: item.type,
+              value: item._id,
+            };
+          })
+        );
+      } else {
+        setTypes(
+          globalTypes.map((item) => {
+            return {
+              label: item.type,
+              value: item._id,
+            };
+          })
+        );
+      }
     }
   }, [globalTypes]);
 

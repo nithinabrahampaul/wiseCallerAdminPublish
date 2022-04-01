@@ -8,15 +8,14 @@ import {
 } from "../apis/api-urls";
 import { executePostApi, setUserCookies } from "../apis/base-api";
 import { toast } from "react-toastify";
-// import { OrganizationContext } from "./organazation-context";
 
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [isLoginForm, setLoginForm] = useState(true);
   const [subscriptionLogin, setSubscriptionLogin] = useState(false);
+  const [redirectLogin, setRedirectLogin] = useState(false);
   const { setLoading } = useContext(LoaderContext);
-  // const { getOrganizationDetails } = useContext(OrganizationContext);
 
   const onHandleLogin = async (values) => {
     try {
@@ -68,6 +67,7 @@ export const AuthProvider = ({ children }) => {
 
   const onHandleOrganizationSubscription = async (values) => {
     try {
+      setRedirectLogin(false);
       setLoading(true);
       let result = await executePostApi(ORGANIZATON_REGISTER_API, values);
       if (result?.data?.success) {
@@ -80,6 +80,9 @@ export const AuthProvider = ({ children }) => {
           toast.error(loginResult?.data?.message);
         }
       } else {
+        if (result?.data?.message === "Email already exists.") {
+          setRedirectLogin(true);
+        }
         toast.error(result?.data?.message);
       }
       setLoading(false);
@@ -91,6 +94,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     isLoginForm,
     subscriptionLogin,
+    redirectLogin,
     onHandleLogin,
     onHandleRegister,
     onHandleVerifyOTP,

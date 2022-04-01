@@ -4,6 +4,7 @@ import {
   faBarcode,
   faBuilding,
   faChartBar,
+  faGlobe,
   faRocket,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +20,11 @@ export const organizationMenu = [
     title: "Employees",
     link: componentRoutes.organizationEmployees,
     icon: faUsers,
+  },
+  {
+    title: "Subscription",
+    link: componentRoutes.organizationAccountSubscription,
+    icon: faRocket,
   },
   {
     title: "Coupon Code",
@@ -47,6 +53,16 @@ export const adminMenu = [
     title: "Subscriptions",
     link: componentRoutes.adminSubscriptions,
     icon: faRocket,
+  },
+  {
+    title: "Coupon",
+    link: componentRoutes.adminCoupon,
+    icon: faBarcode,
+  },
+  {
+    title: "Global Type",
+    link: componentRoutes.adminGlobalTypes,
+    icon: faGlobe,
   },
   {
     title: "Status",

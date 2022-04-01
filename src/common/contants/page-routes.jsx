@@ -15,9 +15,11 @@ import AdminOrganization from "../../pages/admin/organizations";
 import AdminSubscriptions from "../../pages/admin/subscriptions";
 import AdminNotes from "../../pages/admin/notes";
 import AdminStatus from "../../pages/admin/status";
+import AdminCoupon from "../../pages/admin/coupon";
 import OrganizationAccountProfile from "../../pages/organization/accout/profile";
 import OrganizationAccountSubscription from "../../pages/organization/accout/subscription";
 import AdminStaticPages from "../../pages/admin/static-pages";
+import { AdminGlobalTypes } from "../../pages/admin/global-types";
 
 export const rootRoutes = [
   {
@@ -82,8 +84,18 @@ export const adminRoutes = [
     layout: MainLayout,
   },
   {
+    path: componentRoutes.adminCoupon,
+    component: AdminCoupon,
+    layout: MainLayout,
+  },
+  {
     path: componentRoutes.adminPages,
     component: AdminStaticPages,
+    layout: MainLayout,
+  },
+  {
+    path: componentRoutes.adminGlobalTypes,
+    component: AdminGlobalTypes,
     layout: MainLayout,
   },
 ];

@@ -12,6 +12,7 @@ import {
   CouponProvider,
   PageProvider,
   GlablTypesProvider,
+  NotificationProvider,
 } from "../../common/contexts";
 
 export const AppWrapper = ({ children }) => {
@@ -26,11 +27,13 @@ export const AppWrapper = ({ children }) => {
                   <PlanProvider>
                     <NoteProvider>
                       <PageProvider>
-                        <GlablTypesProvider>
-                          <UserStatusProvider>
-                            <AuthProvider>{children}</AuthProvider>
-                          </UserStatusProvider>
-                        </GlablTypesProvider>
+                        <NotificationProvider>
+                          <GlablTypesProvider>
+                            <UserStatusProvider>
+                              <AuthProvider>{children}</AuthProvider>
+                            </UserStatusProvider>
+                          </GlablTypesProvider>
+                        </NotificationProvider>
                       </PageProvider>
                     </NoteProvider>
                   </PlanProvider>

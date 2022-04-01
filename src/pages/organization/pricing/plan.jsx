@@ -21,7 +21,7 @@ export const Plan = ({
   const { plans, getSubscriptionPlans } = usePlans();
   const { loading } = useLoader();
   useEffect(() => {
-    getSubscriptionPlans(pricingForm.subscription);
+    getSubscriptionPlans(pricingForm.subscription._id);
   }, [getSubscriptionPlans, pricingForm]);
 
   const onPlanSelect = (values) => {
@@ -48,7 +48,12 @@ export const Plan = ({
           "quantity",
           `Please enter the subscribers between ${selectedPlan.minSlab} - ${selectedPlan.maxSlab}`,
           (value) => {
-            return true;
+            if (
+              Number(value) > selectedPlan.minSlab &&
+              Number(value) <= selectedPlan.maxSlab
+            ) {
+              return true;
+            }
           }
         ),
     });
@@ -101,11 +106,13 @@ export const Plan = ({
           <Card className="mb-4 mb-xl-0">
             <Card.Header className="border-gray-100 py-5 px-4">
               <div className="d-flex mb-3">
-                <h5 className="mb-0">$</h5>
+                <h5 className="mb-0">₹</h5>
                 <span className="price display-2 text-gray-800 mb-0">
                   <span>{plan.amount}</span>
                 </span>
-                <h6 className="fw-normal align-self-end">/ year</h6>
+                <h6 className="fw-normal align-self-end">
+                  / {pricingForm.subscription.duration} - Months
+                </h6>
               </div>
               <h4 className="mb-3 text-black">{plan.name}</h4>
             </Card.Header>
@@ -115,6 +122,20 @@ export const Plan = ({
                 <span>
                   {plan.minSlab} - {plan.maxSlab} Subscriptions
                 </span>
+              </div>
+              {pricingForm.subscription.features.map((item, index) => (
+                <div className="d-flex align-items-center mb-3" key={index}>
+                  <FontAwesomeIcon icon={faCheck} className="me-2" />
+                  <span>{item.text}</span>
+                </div>
+              ))}
+              <div className="d-flex align-items-center mb-3">
+                <FontAwesomeIcon icon={faCheck} className="me-2" />
+                <span>{pricingForm.subscription.gst_percentage}% GST</span>
+              </div>
+              <div className="d-flex align-items-center mb-3">
+                <FontAwesomeIcon icon={faCheck} className="me-2" />
+                <span>{pricingForm.subscription.cess_percentage}% GST</span>
               </div>
             </Card.Body>
             <Card.Footer className="border-gray-100 d-grid px-4 pb-4">

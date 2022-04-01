@@ -6,8 +6,8 @@ import DateTimePicker from "react-datetime";
 import { Controller } from "react-hook-form";
 import moment from "moment";
 
-export const WCFormDate = React.forwardRef(
-  ({ name, label, control, error }, ref) => {
+export const WCFormDateRange = React.forwardRef(
+  ({ label, name, control }, ref) => {
     return (
       <Form.Group>
         <Form.Label>{label}</Form.Label>
@@ -17,7 +17,6 @@ export const WCFormDate = React.forwardRef(
           render={({ field }) => {
             return (
               <DateTimePicker
-                timeFormat
                 {...field}
                 renderInput={(props, openCalender) => (
                   <InputGroup>
@@ -41,7 +40,6 @@ export const WCFormDate = React.forwardRef(
             );
           }}
         />
-        {error && <span className="form_error">{error?.message}</span>}
       </Form.Group>
     );
   }

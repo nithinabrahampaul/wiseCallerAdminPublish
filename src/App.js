@@ -8,6 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 // import "@fortawesome/fontawesome-free/css/all.css";
 import "react-datetime/css/react-datetime.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css"; // theme css file
 
 const App = () => {
   return (

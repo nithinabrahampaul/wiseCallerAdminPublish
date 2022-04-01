@@ -21,8 +21,10 @@ const adminRoutes = {
   adminOrganizations: "/admin/organizations",
   adminSubscriptions: "/admin/subscriptions",
   adminStatus: "/admin/status",
+  adminCoupon: "/admin/coupon",
   adminNotes: "/admin/notes",
   adminPages: "/admin/pages",
+  adminGlobalTypes: "/admin/global-types",
 };
 
 export const componentRoutes = {

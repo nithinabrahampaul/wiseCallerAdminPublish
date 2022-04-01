@@ -21,6 +21,7 @@ import { componentRoutes } from "../../../common/contants";
 import { useAuth, useLoader, useSubscription } from "../../../common/hooks";
 import { companyFormValidation } from "../../../common/validations/auth";
 import { VerifyOTPForm } from "./verify-otp-form";
+import { removeUserCookies } from "../../../common/apis/base-api";
 
 export const Company = ({ onPageChange, activeStep, pricingForm }) => {
   const [isOpen, setOpen] = useState(false);
@@ -34,7 +35,8 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
     resolver: yupResolver(companyFormValidation),
   });
   const { isSubscriptionDone } = useSubscription();
-  const { onHandleOrganizationSubscription, subscriptionLogin } = useAuth();
+  const { onHandleOrganizationSubscription, subscriptionLogin, redirectLogin } =
+    useAuth();
   const { loading } = useLoader();
 
   const onCompanyDetails = async (values) => {
@@ -55,9 +57,16 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
   useEffect(() => {
     if (isSubscriptionDone) {
       setOpen(false);
-      navigate(componentRoutes.root);
+      removeUserCookies();
+      navigate(componentRoutes.login);
     }
   }, [isSubscriptionDone, navigate]);
+
+  useEffect(() => {
+    if (redirectLogin) {
+      navigate(componentRoutes.login);
+    }
+  }, [redirectLogin, navigate]);
 
   return loading ? (
     <WCPreLoader />

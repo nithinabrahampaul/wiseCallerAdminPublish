@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import SimpleBar from "simplebar-react";
 import { CSSTransition } from "react-transition-group";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSignOutAlt, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Nav, Badge, Image, Button, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import ReactHero from "../../assets/images/img/technologies/react-hero-logo.svg";
-import ProfilePicture from "../../assets/images/img/team/profile-picture-3.jpg";
 import { organizationMenu, adminMenu } from "../contants/sidebar-menu";
 import { useCookies } from "react-cookie";
 
@@ -125,27 +124,6 @@ export const WCSidebar = () => {
         >
           <div className="sidebar-inner px-4 pt-3">
             <div className="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
-              <div className="d-flex align-items-center">
-                <div className="user-avatar lg-avatar me-4">
-                  <Image
-                    src={ProfilePicture}
-                    className="card-img-top rounded-circle border-white"
-                  />
-                </div>
-                <div className="d-block">
-                  <h6>Hi, Jane</h6>
-                  <Button
-                    as={NavLink}
-                    variant="secondary"
-                    size="xs"
-                    to={"/"}
-                    className="text-dark"
-                  >
-                    <FontAwesomeIcon icon={faSignOutAlt} className="me-2" />{" "}
-                    Sign Out
-                  </Button>
-                </div>
-              </div>
               <Nav.Link
                 className="collapse-close d-md-none"
                 onClick={setCollapse.bind(this, !collapse)}
@@ -154,7 +132,7 @@ export const WCSidebar = () => {
               </Nav.Link>
             </div>
             <Nav className="flex-column pt-3 pt-md-0">
-              <NavItem title="Wise Caller" link={"/home"} image={ReactHero} />
+              <NavItem title="Wise Caller" link={"/"} image={ReactHero} />
               {cookies.role === "ADMIN"
                 ? adminMenu.map((item, index) => (
                     <NavItem

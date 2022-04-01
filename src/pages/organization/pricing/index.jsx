@@ -5,6 +5,7 @@ import { Plan } from "./plan";
 import { Subscription } from "./subscription";
 import { Company } from "./company";
 import BgImage from "../../../assets/images/img/illustrations/signin.svg";
+import { WCBlankHeader } from "../../../common/components/wc-blank-header";
 
 let steps = [
   { title: "Subscription" },
@@ -18,6 +19,7 @@ const OrganizationPricing = () => {
 
   return (
     <React.Fragment>
+      <WCBlankHeader />
       <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <Container>
           <StepWizard steps={steps} activeStep={activeStep} />
@@ -26,30 +28,32 @@ const OrganizationPricing = () => {
             style={{ backgroundImage: `url(${BgImage})` }}
           >
             <Col className="pt-4">
-              {activeStep === 0 && (
-                <Subscription
-                  onPageChange={setActiveStep}
-                  activeStep={activeStep}
-                  onFormChange={setPricingForm}
-                  pricingForm={pricingForm}
-                />
-              )}
-              {activeStep === 1 && (
-                <Plan
-                  onPageChange={setActiveStep}
-                  activeStep={activeStep}
-                  onFormChange={setPricingForm}
-                  pricingForm={pricingForm}
-                />
-              )}
-              {activeStep === 2 && (
-                <Company
-                  onPageChange={setActiveStep}
-                  activeStep={activeStep}
-                  onFormChange={setPricingForm}
-                  pricingForm={pricingForm}
-                />
-              )}
+              <Row>
+                {activeStep === 0 && (
+                  <Subscription
+                    onPageChange={setActiveStep}
+                    activeStep={activeStep}
+                    onFormChange={setPricingForm}
+                    pricingForm={pricingForm}
+                  />
+                )}
+                {activeStep === 1 && (
+                  <Plan
+                    onPageChange={setActiveStep}
+                    activeStep={activeStep}
+                    onFormChange={setPricingForm}
+                    pricingForm={pricingForm}
+                  />
+                )}
+                {activeStep === 2 && (
+                  <Company
+                    onPageChange={setActiveStep}
+                    activeStep={activeStep}
+                    onFormChange={setPricingForm}
+                    pricingForm={pricingForm}
+                  />
+                )}
+              </Row>
             </Col>
           </Row>
         </Container>

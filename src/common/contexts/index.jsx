@@ -15,3 +15,7 @@ export { EmployeeContext, EmployeeProvider } from "./employee-context";
 export { CouponContext, CouponProvider } from "./coupon-context";
 export { PageContext, PageProvider } from "./page-context";
 export { GlobalTypesContext, GlablTypesProvider } from "./global-types.context";
+export {
+  NotificationContext,
+  NotificationProvider,
+} from "./notification-context";

@@ -12,16 +12,18 @@ import {
   InputGroup,
   Row,
 } from "react-bootstrap";
-import { useTable } from "react-table";
+import { useTable, useRowSelect } from "react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheck,
   faCog,
+  faPaperPlane,
   faPlusCircle,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDebounce } from "use-lodash-debounce";
 import { useEffect } from "react";
+import { WCSelection } from "./wc-selection";
 
 const pageLimits = [10, 20, 50];
 
@@ -40,17 +42,42 @@ export const WCDataTable = ({
   filters,
   onHandleSearch,
   onHandleCreate,
+  onHandleSelected = null,
+  onHandleSendNotification,
+  onExportCSV,
 }) => {
   const [searchValue, setSearchValue] = useState(null);
   const search = useDebounce(searchValue, 1000);
-  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
-    useTable({ data, columns, initialState: {} });
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    prepareRow,
+    rows,
+    selectedFlatRows,
+  } = useTable({ data, columns, initialState: {} }, useRowSelect, (hooks) =>
+    hooks.visibleColumns.push((columns) => [
+      {
+        Header: ({ getToggleAllRowsSelectedProps }) => (
+          <WCSelection {...getToggleAllRowsSelectedProps()} />
+        ),
+        Cell: ({ row }) => <WCSelection {...row.getToggleRowSelectedProps()} />,
+      },
+      ...columns,
+    ])
+  );
 
   useEffect(() => {
     if (search?.target?.value || search?.target?.value === "") {
       onHandleSearch({ ...filters, search: search.target.value });
     }
   }, [search, filters, onHandleSearch]);
+
+  useEffect(() => {
+    if (onHandleSelected) {
+      onHandleSelected(selectedFlatRows);
+    }
+  }, [onHandleSelected, selectedFlatRows]);
 
   return (
     <React.Fragment>
@@ -67,7 +94,7 @@ export const WCDataTable = ({
             >
               Filter
             </Button>
-            <Button variant="outline-primary" size="sm">
+            <Button variant="outline-primary" size="sm" onClick={onExportCSV}>
               Export
             </Button>
           </ButtonGroup>
@@ -90,6 +117,17 @@ export const WCDataTable = ({
           </Col>
           <Col xs={4} md={2} xl={1} className="ps-md-0 text-end">
             <React.Fragment>
+              {onHandleSendNotification ? (
+                <ButtonGroup>
+                  <Button variant="link" onClick={onHandleSendNotification}>
+                    <span className="icon icon-sm icon-gray">
+                      <FontAwesomeIcon icon={faPaperPlane} />
+                    </span>
+                  </Button>
+                </ButtonGroup>
+              ) : (
+                <></>
+              )}
               {onHandleCreate && (
                 <ButtonGroup>
                   <Button variant="link" onClick={onHandleCreate}>

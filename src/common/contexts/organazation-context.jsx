@@ -4,8 +4,11 @@ import {
   executeGetApi,
   setOrganizationCookies,
   executePostApi,
+  executeDeleteApi,
 } from "../apis/base-api";
 import {
+  DELETE_ORGANIZATION_BY_ADMIN,
+  EXPORT_ORGANIZATION_CSV,
   GET_ALL_ORGANIZATIONS,
   GET_ORGANIZATION_USERS,
   ORGANIZATION_OVERVIEW,
@@ -14,14 +17,17 @@ import {
 } from "../apis/api-urls";
 import { useCallback } from "react";
 import { toast } from "react-toastify";
+import { useDownload } from "../hooks";
 
 export const OrganizationContext = createContext({});
 export const OrganizationProvider = ({ children }) => {
   const [allOrganizations, setAllOrganizations] = useState([]);
+  const [isUpdated, setUpdated] = useState(false);
   const [organization, setOrganization] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [overview, setOverview] = useState(null);
   const { setLoading } = useContext(LoaderContext);
+  const [downloadCSV] = useDownload();
 
   const getOrganizationDetails = useCallback(async () => {
     try {
@@ -60,6 +66,7 @@ export const OrganizationProvider = ({ children }) => {
   const getAllOrganizations = useCallback(
     async (params) => {
       setLoading(true);
+      setUpdated(false);
       let result = await executePostApi(GET_ALL_ORGANIZATIONS, params);
       if (result?.data?.success) {
         setAllOrganizations(result.data.data);
@@ -77,7 +84,8 @@ export const OrganizationProvider = ({ children }) => {
       let result = await executePostApi(UPDATE_ORGANIZATION_PROFILE, values);
       if (result?.data?.success) {
         setOrganization(result.data.data);
-        toast.success("Profile updated successfully");
+        setUpdated(true);
+        toast.success("Organization updated successfully");
       } else {
         toast.error(result?.data.message);
       }
@@ -104,8 +112,50 @@ export const OrganizationProvider = ({ children }) => {
     [setLoading]
   );
 
+  const onDeleteOrganization = useCallback(
+    async (id) => {
+      try {
+        setLoading(true);
+        let result = await executeDeleteApi(
+          `${DELETE_ORGANIZATION_BY_ADMIN}/${id}`
+        );
+        if (result?.data?.success) {
+          setUpdated(true);
+          toast.success("Organization deleted successfully!");
+        } else {
+          toast.error(result?.data?.message);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
+  const onExportOrganizationCSV = useCallback(
+    async (params) => {
+      try {
+        setLoading(true);
+        let result = await executePostApi(EXPORT_ORGANIZATION_CSV, params);
+        if (result.data?.success) {
+          downloadCSV(result.data.data, "organization", "csv");
+          toast.success("CSV exported successfully");
+        } else {
+          toast.error(result.data?.message);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        setLoading(false);
+      }
+    },
+    [setLoading, downloadCSV]
+  );
+
   let value = {
     organization,
+    isUpdated,
     employees,
     overview,
     allOrganizations,
@@ -135,6 +185,18 @@ export const OrganizationProvider = ({ children }) => {
         getOrganizationOverview(params);
       },
       [getOrganizationOverview]
+    ),
+    onDeleteOrganization: useCallback(
+      (id) => {
+        onDeleteOrganization(id);
+      },
+      [onDeleteOrganization]
+    ),
+    onExportOrganizationCSV: useCallback(
+      (params) => {
+        onExportOrganizationCSV(params);
+      },
+      [onExportOrganizationCSV]
     ),
   };
   return (

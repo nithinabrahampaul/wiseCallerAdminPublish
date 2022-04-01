@@ -10,6 +10,7 @@ import {
   ORGANIZATON_VERIFY_API,
   PAYMENT_ORDER_API,
   RENEW_ORGANIZATION_SUBSCRIPTION,
+  UPDATE_SUBSCRIPTION,
 } from "../apis/api-urls";
 import { setUserCookies } from "../apis/base-api";
 import { useLoader, useGenerateVoucher, useOrganization } from "../hooks";
@@ -21,6 +22,7 @@ export const SubscrptionProvider = ({ children }) => {
   const [isSubscriptionDone, setSubscriptionDone] = useState(false);
   const [isSubscriptionRenewed, setSubscriptionRenewed] = useState(false);
   const { setLoading } = useLoader();
+  const [isUpdated, setUpdated] = useState(false);
   const razorPay = useRazorPay();
   const generateVoucher = useGenerateVoucher();
   const { getOrganizationDetails } = useOrganization();
@@ -121,6 +123,7 @@ export const SubscrptionProvider = ({ children }) => {
   const getAllSubscriptions = useCallback(
     async (params) => {
       try {
+        setUpdated(false);
         setLoading(true);
         let result = await executePostApi(GET_ALL_SUBSCRIPTIONS, params);
         if (result?.data?.success) {
@@ -136,6 +139,24 @@ export const SubscrptionProvider = ({ children }) => {
     [setLoading]
   );
 
+  const onUpdateSubscription = useCallback(
+    async (values) => {
+      try {
+        setLoading(true);
+        let result = await executePostApi(UPDATE_SUBSCRIPTION, values);
+        if (result?.data?.success) {
+          setUpdated(true);
+          toast.success("Subscriptions updated successfully");
+        } else {
+          toast.error(result.data.message);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
   const onRenewSubscription = useCallback(
     async (values) => {
       try {
@@ -215,6 +236,7 @@ export const SubscrptionProvider = ({ children }) => {
 
   let value = {
     subscriptions,
+    isUpdated,
     isSubscriptionDone,
     setSubscriptionDone,
     isSubscriptionRenewed,
@@ -233,6 +255,12 @@ export const SubscrptionProvider = ({ children }) => {
         getAllSubscriptions(params);
       },
       [getAllSubscriptions]
+    ),
+    onUpdateSubscription: useCallback(
+      (params) => {
+        onUpdateSubscription(params);
+      },
+      [onUpdateSubscription]
     ),
     onRenewSubscription: useCallback(
       (params) => {

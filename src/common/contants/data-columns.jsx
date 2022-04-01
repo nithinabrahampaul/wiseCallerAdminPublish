@@ -7,14 +7,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Button } from "react-bootstrap";
-import { WCFormSelect } from "../components/wc-formselect";
-import { statusOptions } from "./selectables";
 // import { faEdit, faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const organizationEmployeeColumns = (
   onPlanRevoke,
-  onSendNotification
+  subscriptions,
+  onHandleSendNotification,
+  onGenerateInvoice
 ) => {
   return [
     {
@@ -42,7 +42,10 @@ export const organizationEmployeeColumns = (
         return (
           <span>
             {row?.organization_subscription?.subscription
-              ? row.organization_subscription.subscription
+              ? subscriptions.find(
+                  (item) =>
+                    item._id === row.organization_subscription.subscription
+                )?.title
               : "__"}
           </span>
         );
@@ -69,8 +72,8 @@ export const organizationEmployeeColumns = (
       accessor: (row) => {
         return (
           <span>
-            {row.user_subscription?.subscription_created_date
-              ? row.user_subscription.subscription_created_date
+            {row.organization_subscription?.subscription_created_date
+              ? row.organization_subscription.subscription_created_date
               : "__"}
           </span>
         );
@@ -142,32 +145,28 @@ export const organizationEmployeeColumns = (
             >
               {"Revoke"}
             </Button>
-            <Button size="sm" onClick={onSendNotification}>
+            <Button
+              size="sm"
+              onClick={onHandleSendNotification.bind(this, row)}
+              style={{ marginRight: 5 }}
+            >
               {"Send Notification"}
+            </Button>
+            <Button
+              size="sm"
+              disabled={
+                row?.organization_subscription ||
+                row?.organization_subscription === null ||
+                !row?.used_subscription
+              }
+              onClick={onGenerateInvoice.bind(this, { user_id: row._id })}
+            >
+              {"Download Invoice"}
             </Button>
           </React.Fragment>
         );
       },
     },
-
-    // {
-    //   Header: "Action",
-    //   accessor: (row) => {
-    //     return (
-    //       <React.Fragment>
-    //         <span className="p-2" role={"button"}>
-    //           <FontAwesomeIcon icon={faEye} className="me-2" />
-    //         </span>
-    //         <span className="p-2" role={"button"}>
-    //           <FontAwesomeIcon icon={faEdit} className="me-2" />
-    //         </span>
-    //         <span className="p-2 text-danger" role={"button"}>
-    //           <FontAwesomeIcon icon={faTrashAlt} className="me-2" />
-    //         </span>
-    //       </React.Fragment>
-    //     );
-    //   },
-    // },
   ];
 };
 
@@ -194,19 +193,21 @@ export const organizationCouponColumns = (onDeactivateCoupon) => {
     {
       Header: "Total Slots",
       accessor: (row) => {
-        return <span>{row?.can_use_for ? row.can_use_for : "__"}</span>;
+        return row?.can_use_for ? row.can_use_for : "0";
       },
     },
     {
       Header: "User Subscribed",
       accessor: (row) => {
-        return 0;
+        return row?.used_subscription ? row.used_subscription : "0";
       },
     },
     {
       Header: "Open Slots",
       accessor: (row) => {
-        return 0;
+        return row?.can_use_for && row?.used_subscription
+          ? row.can_use_for - row?.used_subscription
+          : "0";
       },
     },
     {
@@ -256,7 +257,12 @@ export const organizationCouponColumns = (onDeactivateCoupon) => {
   ];
 };
 
-export const adminUsersColumns = (onStatusChange, control, setPlanVisible) => {
+export const adminUsersColumns = (
+  onHandleDeactivateUser,
+  onHandlePlanChange,
+  onHandleSendNotification,
+  onGenerateInvoice
+) => {
   return [
     {
       Header: "First Name",
@@ -296,17 +302,47 @@ export const adminUsersColumns = (onStatusChange, control, setPlanVisible) => {
       accessor: (row) => row?.createdAt || "__",
     },
     {
-      Header: "Work life",
-      accessor: (row) => row?.modes?.workLifeBalance?.is_active || "__",
+      Header: "Work Life balance",
+      accessor: (row) => {
+        return (
+          <span
+            className={`fw-normal text-${
+              row?.modes?.workLifeBalance?.is_active ? "success" : "danger"
+            }`}
+          >
+            {row?.modes?.workLifeBalance?.is_active ? "Active" : "Inactive"}
+          </span>
+        );
+      },
     },
     {
       Header: "Road Safety",
-      accessor: (row) => row?.modes?.roadSafety?.is_active || "__",
+      accessor: (row) => {
+        return (
+          <span
+            className={`fw-normal text-${
+              row?.modes?.roadSafety?.is_active ? "success" : "danger"
+            }`}
+          >
+            {row?.modes?.roadSafety?.is_active ? "Active" : "Inactive"}
+          </span>
+        );
+      },
     },
-    // {
-    //   Header: "Calendar",
-    //   accessor: (row) => row?.modes?.syncCalender?.status || "__",
-    // },
+    {
+      Header: "Calender Sync",
+      accessor: (row) => {
+        return (
+          <span
+            className={`fw-normal text-${
+              row?.modes?.syncCalender?.is_active ? "success" : "danger"
+            }`}
+          >
+            {row?.modes?.syncCalender?.is_active ? "Active" : "Inactive"}
+          </span>
+        );
+      },
+    },
     {
       Header: "Custom Status",
       accessor: (row) =>
@@ -318,15 +354,11 @@ export const adminUsersColumns = (onStatusChange, control, setPlanVisible) => {
       Header: "Status",
       accessor: (row) => {
         return (
-          <WCFormSelect
-            name="status"
-            control={control}
-            options={statusOptions}
-            size={"sm"}
-            style={{ paddingRight: "30px", width: "inherit" }}
-            onChange={onStatusChange.bind(this)}
-            defaultValue={row.isActive}
-          />
+          <span
+            className={`fw-normal text-${row.isActive ? "success" : "danger"}`}
+          >
+            {row.isActive ? "Active" : "Inactive"}
+          </span>
         );
       },
     },
@@ -334,23 +366,50 @@ export const adminUsersColumns = (onStatusChange, control, setPlanVisible) => {
       Header: "Action",
       accessor: (row) => {
         return (
-          <>
+          <React.Fragment>
             <Button
               size="sm"
               variant="primary"
-              onClick={setPlanVisible.bind(this, true)}
-              disabled={row?.organization_subscription ? true : false}
+              onClick={onHandleDeactivateUser.bind(this, row.isActive, row._id)}
+              style={{ marginRight: 5 }}
             >
-              {"Plan"}
+              {"Deactivate"}
             </Button>
-          </>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={onHandlePlanChange.bind(this, row)}
+              disabled={row?.used_subscription ? false : true}
+              style={{ marginRight: 5 }}
+            >
+              {"Change Plan"}
+            </Button>
+            <Button
+              size="sm"
+              onClick={onHandleSendNotification.bind(this, row)}
+              style={{ marginRight: 5 }}
+            >
+              {"Send Notification"}
+            </Button>
+            <Button
+              size="sm"
+              disabled={
+                (row?.organization_subscription ||
+                  row?.organization_subscription === null) &&
+                !row?.user_subscription
+              }
+              onClick={onGenerateInvoice.bind(this, { user_id: row._id })}
+            >
+              {"Download Invoice"}
+            </Button>
+          </React.Fragment>
         );
       },
     },
   ];
 };
 
-export const adminOrganizationColumns = () => {
+export const adminOrganizationColumns = (onHandleOperations) => {
   return [
     {
       Header: "Name",
@@ -366,86 +425,43 @@ export const adminOrganizationColumns = () => {
     },
     {
       Header: "Email",
-      accessor: "email",
+      accessor: (row) => row?.contact_information?.email || "__",
     },
     {
       Header: "GST",
       accessor: (row) => row?.gst || "__",
     },
     {
-      Header: "Email Id",
-      accessor: (row) => row?.email || "__",
+      Header: "PAN",
+      accessor: (row) => row?.pan || "__",
     },
-    // {
-    //   Header: "Coupon Codes",
-    //   accessor: "00",
-    // },
-    // {
-    //   Header: "Active Slots",
-    //   accessor: 0,
-    // },
-    // {
-    //   Header: "total Slots",
-    //   accessor: 0,
-    // },
-    // {
-    //   Header: "Free Slots",
-    //   accessor: 0,
-    // },
-    // {
-    //   Header: "Subscriptions",
-    //   accessor: (row) => row?.email || "__",
-    // },
-    // {
-    //   Header: "Action",
-    //   accessor: (row) => {
-    //     return (
-    //       <Dropdown as={ButtonGroup}>
-    //         <Dropdown.Toggle
-    //           as={Button}
-    //           split
-    //           variant="link"
-    //           className="text-dark m-0 p-0"
-    //         >
-    //           <span className="icon icon-sm">
-    //             <FontAwesomeIcon icon={faEllipsisH} className="icon-dark" />
-    //           </span>
-    //         </Dropdown.Toggle>
-    //         <Dropdown.Menu>
-    //           <Dropdown.Item>
-    //             <FontAwesomeIcon icon={faEye} className="me-2" /> View Details
-    //           </Dropdown.Item>
-    //           <Dropdown.Item>
-    //             <FontAwesomeIcon icon={faEdit} className="me-2" /> Edit
-    //           </Dropdown.Item>
-    //           <Dropdown.Item className="text-danger">
-    //             <FontAwesomeIcon icon={faTrashAlt} className="me-2" /> Remove
-    //           </Dropdown.Item>
-    //         </Dropdown.Menu>
-    //       </Dropdown>
-    //     );
-    //   },
-    // },
-    //   {
-    //     Header: "Coupons",
-    //     accessor: (row) => "__",
-    //   },
-    //   {
-    //     Header: "Free Slots",
-    //     accessor: (row) => "__",
-    //   },
-    //   {
-    //     Header: "Active Slots",
-    //     accessor: (row) => "__",
-    //   },
-    //   {
-    //     Header: "Total Slots",
-    //     accessor: (row) => "__",
-    //   },
+    {
+      Header: "Action",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            {/* <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faPencilAlt}
+                className="me-2"
+                onClick={onHandleOperations.bind(this, "update", row)}
+              />
+            </span> */}
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="me-2 text-danger"
+                onClick={onHandleOperations.bind(this, "delete", row)}
+              />
+            </span>
+          </React.Fragment>
+        );
+      },
+    },
   ];
 };
 
-export const adminSubscriptionColumns = () => {
+export const adminSubscriptionColumns = (onHandleOperations) => {
   return [
     {
       Header: "Name",
@@ -453,11 +469,11 @@ export const adminSubscriptionColumns = () => {
     },
     {
       Header: "Duration",
-      accessor: (row) => `${row.duration} Months`,
+      accessor: (row) => `${row.duration ? row.duration : 0} Months`,
     },
     {
       Header: "Price",
-      accessor: (row) => `₹${row.original_price}`,
+      accessor: (row) => `₹${row.original_price ? row.original_price : 0}`,
     },
     {
       Header: "Type",
@@ -465,11 +481,34 @@ export const adminSubscriptionColumns = () => {
     },
     {
       Header: "GST",
-      accessor: (row) => `${row.gst_percentage}%`,
+      accessor: (row) => `${row.gst_percentage ? row.gst_percentage : 0}%`,
     },
     {
       Header: "CESS",
-      accessor: (row) => `${row.cess_percentage}%`,
+      accessor: (row) => `${row.cess_percentage ? row.cess_percentage : 0}%`,
+    },
+    {
+      Header: "Action",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faPencilAlt}
+                className="me-2"
+                onClick={onHandleOperations.bind(this, "update", row)}
+              />
+            </span>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="me-2 text-danger"
+                onClick={onHandleOperations.bind(this, "delete", row)}
+              />
+            </span>
+          </React.Fragment>
+        );
+      },
     },
   ];
 };
@@ -507,6 +546,77 @@ export const adminStatusColumns = (onHandleOperations) => {
                 onClick={onHandleOperations.bind(this, "delete", row)}
               />
             </span>
+          </React.Fragment>
+        );
+      },
+    },
+  ];
+};
+
+export const adminCouponColumns = (onDeactivateCoupon, onPlanChange) => {
+  return [
+    {
+      Header: "Name",
+      accessor: (row) => {
+        return row?.coupon_code ? row.coupon_code : "__";
+      },
+    },
+    {
+      Header: "Type",
+      accessor: (row) => {
+        return row?.type ? row.type : "__";
+      },
+    },
+    {
+      Header: "Total Slots",
+      accessor: (row) => {
+        return row?.can_use_for ? row.can_use_for : "0";
+      },
+    },
+    {
+      Header: "User Subscribed",
+      accessor: (row) => {
+        return row?.used_subscription ? row.used_subscription : "0";
+      },
+    },
+    {
+      Header: "Open Slots",
+      accessor: (row) => {
+        return row?.can_use_for && row?.used_subscription
+          ? row.can_use_for - row?.used_subscription
+          : "0";
+      },
+    },
+    {
+      Header: "Organization",
+      accessor: (row) => {
+        return row?.subscription?.organization
+          ? row?.subscription?.organization?.name
+          : "__";
+      },
+    },
+    {
+      Header: "Action",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={onDeactivateCoupon.bind(this, row._id)}
+              style={{ marginRight: 5 }}
+            >
+              {"Deactivate"}
+            </Button>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={onPlanChange.bind(this, row)}
+              style={{ marginRight: 5 }}
+              disabled={row?.type === "CASH_DISCOUNT"}
+            >
+              {"Change Plan"}
+            </Button>
           </React.Fragment>
         );
       },
@@ -602,6 +712,42 @@ export const adminPagesColumns = (onHandleOperations) => {
                 onClick={onHandleOperations.bind(this, "view", row)}
               />
             </span>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faPencilAlt}
+                className="me-2"
+                onClick={onHandleOperations.bind(this, "update", row)}
+              />
+            </span>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="me-2 text-danger"
+                onClick={onHandleOperations.bind(this, "delete", row)}
+              />
+            </span>
+          </React.Fragment>
+        );
+      },
+    },
+  ];
+};
+
+export const adminGlobalTypesColumns = (onHandleOperations) => {
+  return [
+    {
+      Header: "Name",
+      accessor: "type",
+    },
+    {
+      Header: "Order",
+      accessor: "order",
+    },
+    {
+      Header: "Action",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
             <span className="p-2" role={"button"}>
               <FontAwesomeIcon
                 icon={faPencilAlt}

@@ -1,9 +1,16 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Card, Col, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-export const WCCounter = ({ count, title, icon }) => {
+export const WCCounter = ({ count, title, icon, url }) => {
+  const navigate = useNavigate();
   return (
-    <Card border="light" className="shadow-sm">
+    <Card
+      border="light"
+      className="shadow-sm"
+      style={{ cursor: "pointer" }}
+      onClick={navigate.bind(this, url)}
+    >
       <Card.Body>
         <Row className="d-block d-xl-flex align-items-center">
           <Col

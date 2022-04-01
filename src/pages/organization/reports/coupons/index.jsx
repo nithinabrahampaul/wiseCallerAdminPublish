@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+import swal from "sweetalert";
 import { WCDataTable } from "../../../../common/components/wc-datatable";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
 import { organizationCouponColumns } from "../../../../common/contants";
@@ -14,7 +15,8 @@ const OrganizationCoupons = () => {
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [filters, setFilters] = useState({});
 
-  const { coupons, getAllCoupons, onDeactivateCoupon } = useCoupon();
+  const { coupons, getAllCoupons, onDeactivateCoupon, onExportCouponCSV } =
+    useCoupon();
   const { loading } = useLoader();
   const [cookies] = useCookies();
 
@@ -24,8 +26,21 @@ const OrganizationCoupons = () => {
 
   const onCouponDeactivate = useCallback(
     async (id) => {
-      await onDeactivateCoupon(id);
-      await getAllCoupons({ page, limit, role: cookies.role, ...filters });
+      swal({
+        title: "Are you sure?",
+        text: "You want to deactivate the coupon!",
+        icon: "warning",
+        dangerMode: true,
+        buttons: {
+          confirm: "Confirm",
+          cancel: "Cancel",
+        },
+      }).then(async (value) => {
+        if (value) {
+          await onDeactivateCoupon(id);
+          await getAllCoupons({ page, limit, role: cookies.role, ...filters });
+        }
+      });
     },
     [page, limit, cookies, filters, getAllCoupons, onDeactivateCoupon]
   );
@@ -54,6 +69,7 @@ const OrganizationCoupons = () => {
         filters={filters}
         onHandleFilter={setFilterVisible.bind(this, true)}
         onHandleSearch={setFilters}
+        onExportCSV={onExportCouponCSV.bind(this, filters)}
       />
       {isFilterVisible && (
         <CouponFilter

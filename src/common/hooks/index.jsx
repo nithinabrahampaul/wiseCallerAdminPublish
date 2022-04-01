@@ -10,3 +10,5 @@ export { useEmployee } from "./employee-hook";
 export { useCoupon } from "./coupon-hook";
 export { usePages } from "./pages-hook";
 export { useGlobalTypes } from "./global-types-hook";
+export { useNotificaton } from "./notification-hook";
+export { useDownload } from "./download-hook";

@@ -47,3 +47,7 @@ export const emailOtpFormValidation = yup.object().shape({
     .email("Invalid email address"),
   otp: yup.string().required("OTP is required"),
 });
+
+export const noteFormValidation = yup.object().shape({
+  text: yup.string().required("Text is required")
+});
