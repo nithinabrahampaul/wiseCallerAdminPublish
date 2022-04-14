@@ -3,16 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import Profile4 from "../../assets/images/img/team/profile-picture-4.jpg";
-import { removeUserCookies } from "../apis/base-api";
+import { removeUserCookies, cookies } from "../apis/base-api";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../contants";
 import { useLoader, useOrganization } from "../hooks";
 import { useEffect } from "react";
 import { WCPreLoader } from "./wc-preloader";
-import { Cookies } from "react-cookie";
+// import { Cookies } from "react-cookie";
 
 export const WCHeader = () => {
-  const cookies = new Cookies();
+  // const cookies = new Cookies();
   const navigate = useNavigate();
   const { organization, getOrganizationDetails } = useOrganization();
   const { loading } = useLoader();

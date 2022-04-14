@@ -24,3 +24,4 @@ export {
   organizationEmployeeColumns,
   organizationCouponColumns,
 } from "./data-columns";
+export { filtersData } from "./filters-data";

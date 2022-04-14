@@ -12,11 +12,13 @@ import { faPhoenixSquadron } from "@fortawesome/free-brands-svg-icons";
 import { useLoader, useOrganization } from "../../../common/hooks";
 import { WCPreLoader } from "../../../common/components/wc-preloader";
 import { WCGraph } from "../../../common/components/wc-graph";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../../../common/contants";
 import { WCPieGraph } from "../../../common/components/wc-pie-graph";
 import { DashboardFilter } from "./filter";
+import moment from "moment";
+import { WCAppliedFilter } from "../../../common/components/wc-applied-filter";
 
 const overviews = [
   {
@@ -70,16 +72,19 @@ const overviews = [
 
 const OrganizationDashboard = () => {
   const [summary, setSummary] = useState([]);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({
+    start_date: moment().startOf("year").startOf("day").utc(true).toDate(),
+    end_date: moment().utc(true).toDate(),
+  });
   const [isFilterVisible, setFilterVisible] = useState(false);
-  const [cookies] = useCookies();
+  // const [cookies] = useCookies();
   const { getOrganizationOverview, overview } = useOrganization();
   const { loading } = useLoader();
   const navigate = useNavigate();
 
   useEffect(() => {
-    getOrganizationOverview({ role: cookies.role, ...filters });
-  }, [getOrganizationOverview, cookies, filters]);
+    getOrganizationOverview({ ...filters });
+  }, [getOrganizationOverview, filters]);
 
   useEffect(() => {
     if (overview) {
@@ -125,12 +130,14 @@ const OrganizationDashboard = () => {
         </div>
       </div>
 
+      <WCAppliedFilter filters={filters} onUpdateFilter={setFilters} />
       <Row className="justify-content-md-center">
         <Col sm={12} md={12} xs={12} className="mb-4 d-none d-sm-block">
           <WCGraph
             title={"Employees"}
             totalCount={overview?.totalEmployees}
             graphData={overview?.monthlyUsers}
+            filters={filters}
           />
         </Col>
       </Row>

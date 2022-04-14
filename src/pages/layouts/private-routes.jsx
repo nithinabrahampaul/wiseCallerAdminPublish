@@ -1,13 +1,12 @@
 import React, { useEffect } from "react";
-import { Cookies } from "react-cookie";
 import { useJwt } from "react-jwt";
 import { Navigate } from "react-router-dom";
-import { removeUserCookies } from "../../common/apis/base-api";
+import { removeUserCookies, cookies } from "../../common/apis/base-api";
 import { componentRoutes } from "../../common/contants";
 
 export const PrivateRoutes = ({ route }) => {
-  const cookies = new Cookies();
-  const { isExpired } = useJwt(cookies.get("token"));
+  let token = cookies.get("token");
+  const { isExpired } = useJwt(token);
 
   const RenderComponent = ({ route }) => {
     return (

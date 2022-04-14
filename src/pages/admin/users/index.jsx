@@ -127,8 +127,20 @@ const AdminUsers = () => {
   );
 
   useEffect(() => {
-    getAllEmployees({ page, limit, ...filters });
-  }, [getAllEmployees, page, limit, filters, isDeactivated]);
+    let options = {
+      page,
+      limit,
+      ...filters,
+    };
+    if (location.search) {
+      let search = location.search.slice(1).split("=");
+      options = {
+        ...options,
+        [search[0]]: search[1],
+      };
+    }
+    getAllEmployees(options);
+  }, [getAllEmployees, page, limit, filters, isDeactivated, location]);
 
   useEffect(() => {
     let getFetchData = async () => {
@@ -170,13 +182,6 @@ const AdminUsers = () => {
         })
       );
   }, [subscriptions, coupons, allOrganizations]);
-
-  useEffect(() => {
-    if (location.search) {
-      let search = location.search.slice(1).split("=");
-      setFilters({ [search[0]]: search[1] });
-    }
-  }, [location]);
 
   return loading ? (
     <WCPreLoader />

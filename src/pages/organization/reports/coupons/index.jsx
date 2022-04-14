@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 import swal from "sweetalert";
 import { WCDataTable } from "../../../../common/components/wc-datatable";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
@@ -18,11 +18,11 @@ const OrganizationCoupons = () => {
   const { coupons, getAllCoupons, onDeactivateCoupon, onExportCouponCSV } =
     useCoupon();
   const { loading } = useLoader();
-  const [cookies] = useCookies();
+  // const [cookies] = useCookies();
 
   useEffect(() => {
-    getAllCoupons({ page, limit, role: cookies.role, ...filters });
-  }, [page, limit, cookies, getAllCoupons, filters]);
+    getAllCoupons({ page, limit, ...filters });
+  }, [page, limit, getAllCoupons, filters]);
 
   const onCouponDeactivate = useCallback(
     async (id) => {
@@ -38,11 +38,11 @@ const OrganizationCoupons = () => {
       }).then(async (value) => {
         if (value) {
           await onDeactivateCoupon(id);
-          await getAllCoupons({ page, limit, role: cookies.role, ...filters });
+          await getAllCoupons({ page, limit, ...filters });
         }
       });
     },
-    [page, limit, cookies, filters, getAllCoupons, onDeactivateCoupon]
+    [page, limit, filters, getAllCoupons, onDeactivateCoupon]
   );
 
   const columns = useMemo(

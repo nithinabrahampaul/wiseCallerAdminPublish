@@ -3,15 +3,17 @@ import Chartist from "react-chartist";
 import ChartistTooltip from "chartist-plugin-tooltips-updated";
 import moment from "moment";
 
-export const WCGraph = ({ title, totalCount = [], graphData = [] }) => {
+export const WCGraph = ({
+  title,
+  totalCount = [],
+  graphData = [],
+  filters,
+}) => {
   let months = [];
-  let diff = moment(moment().utc(true)).diff(
-    moment().startOf("year").startOf("day").utc(true).toISOString(),
-    "months"
-  );
+  let diff = moment(filters?.end_date).diff(filters?.start_date, "months");
 
   for (let i = 0; i < diff + 1; i++) {
-    let month = moment().month(i).format("MMMM");
+    let month = moment(filters?.start_date).add(i, "month").format("MMMM-YYYY");
     months.push({ name: month, index: i + 1, count: 0 });
   }
 
@@ -19,7 +21,11 @@ export const WCGraph = ({ title, totalCount = [], graphData = [] }) => {
     labels: months.map((item) => item.name),
     series: [
       months.map((item) => {
-        let value = graphData.find((graph) => graph._id.month === item.index);
+        let value = graphData.find(
+          (graph) =>
+            moment(item.name, "MMMM-YYYY").format("M-YYYY") ===
+            `${graph._id.month}-${graph._id.year}`
+        );
         return (item.count = value ? value.count : item.count);
       }),
     ],
@@ -48,23 +54,7 @@ export const WCGraph = ({ title, totalCount = [], graphData = [] }) => {
         <div className="d-block">
           <h5 className="fw-normal mb-2">{title}</h5>
           <h3>{totalCount}</h3>
-          {/* <small className="fw-bold mt-2">
-          <span className="me-2">Yesterday</span>
-          <FontAwesomeIcon
-            icon={percentageIcon}
-            className={`${percentageColor} me-1`}
-          />
-          <span className={percentageColor}>{percentage}%</span>
-        </small> */}
         </div>
-        {/* <div className="d-flex ms-auto">
-        <Button variant="secondary" size="sm" className="me-2">
-          Month
-        </Button>
-        <Button variant="primary" size="sm" className="me-3">
-          Week
-        </Button>
-      </div> */}
       </Card.Header>
       <Card.Body className="p-2">
         <Chartist

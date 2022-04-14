@@ -4,8 +4,8 @@ export const notesFormValidation = yup.object().shape({
   text: yup.string().required("Text is required"),
   type: yup.string().required("Please select any type"),
   is_custom: yup.string().required("Please select custom option"),
-  display_to: yup.string().required("Please select display option"),
-  auto_sms: yup.string().required("Please select auto sms option"),
+  // display_to: yup.string().required("Please select display option"),
+  // auto_sms: yup.string().required("Please select auto sms option"),
 });
 
 export const subscriptionFormValidation = yup.object().shape({

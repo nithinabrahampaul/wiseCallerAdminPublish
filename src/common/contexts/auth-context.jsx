@@ -4,6 +4,7 @@ import { LoaderContext } from "./";
 import {
   ORGANIZATON_LOGIN_API,
   ORGANIZATON_REGISTER_API,
+  ORGANIZATON_RESEND_OTP_API,
   ORGANIZATON_VERIFY_API,
 } from "../apis/api-urls";
 import { executePostApi, setUserCookies } from "../apis/base-api";
@@ -55,10 +56,11 @@ export const AuthProvider = ({ children }) => {
           email: decoded.email,
           role: decoded.role,
         });
+        setLoginForm(true);
       } else {
+        setLoginForm(false);
         toast.error(result?.data?.message);
       }
-      setLoginForm(true);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -80,12 +82,33 @@ export const AuthProvider = ({ children }) => {
           toast.error(loginResult?.data?.message);
         }
       } else {
+        setRedirectLogin(true);
         if (result?.data?.message === "Email already exists.") {
-          setRedirectLogin(true);
+          let loginResult = await executePostApi(ORGANIZATON_LOGIN_API, {
+            email: values.email,
+          });
+          if (loginResult?.data?.success) {
+            setSubscriptionLogin(true);
+          } else {
+            toast.error(loginResult?.data?.message);
+          }
         }
         toast.error(result?.data?.message);
       }
       setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const onRenendOTP = async (values) => {
+    try {
+      setLoading(true);
+      let result = await executePostApi(ORGANIZATON_RESEND_OTP_API, values);
+      if (result?.data?.success) {
+        // setLoginForm(false);
+        setLoading(false);
+      }
     } catch (error) {
       setLoading(false);
     }
@@ -99,6 +122,7 @@ export const AuthProvider = ({ children }) => {
     onHandleRegister,
     onHandleVerifyOTP,
     onHandleOrganizationSubscription,
+    onRenendOTP,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

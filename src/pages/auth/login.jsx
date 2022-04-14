@@ -8,7 +8,6 @@ import { useAuth, useLoader } from "../../common/hooks";
 import BgImage from "../../assets/images/img/illustrations/signin.svg";
 
 import { WCPreLoader } from "../../common/components/wc-preloader";
-import { componentRoutes } from "../../common/contants";
 import { LoginForm } from "./login-form";
 import { OTPForm } from "./verify-otp-form";
 
@@ -46,19 +45,6 @@ const Login = () => {
                 ) : (
                   <OTPForm initialValues={initialValues} />
                 )}
-
-                <div className="d-flex justify-content-center align-items-center mt-4">
-                  <span className="fw-normal">
-                    Not registered?
-                    <Card.Link
-                      as={Link}
-                      to={componentRoutes.register}
-                      className="fw-bold"
-                    >
-                      {` Create account `}
-                    </Card.Link>
-                  </span>
-                </div>
               </div>
             </Col>
           </Row>

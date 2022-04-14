@@ -52,3 +52,30 @@ export const couponTypeOptions = [
     value: "ORGANIZATION",
   },
 ];
+
+export const staticPageOptions = [
+  {
+    label: "Privacy Policy",
+    value: "privacy_policy",
+  },
+  {
+    label: "Terms and Condition",
+    value: "terms_condition",
+  },
+  {
+    label: "About App",
+    value: "about_app",
+  },
+  {
+    label: "Contact Us",
+    value: "contact_us",
+  },
+  {
+    label: "About Us",
+    value: "about_us",
+  },
+  {
+    label: "Protection Policy",
+    value: "protection_policy",
+  },
+];

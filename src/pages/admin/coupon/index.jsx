@@ -3,7 +3,12 @@ import swal from "sweetalert";
 import { WCDataTable } from "../../../common/components/wc-datatable";
 import { WCPreLoader } from "../../../common/components/wc-preloader";
 import { adminCouponColumns } from "../../../common/contants/data-columns";
-import { useLoader, useCoupon, useSubscription } from "../../../common/hooks";
+import {
+  useLoader,
+  useCoupon,
+  useSubscription,
+  useOrganization,
+} from "../../../common/hooks";
 import { CreateCoupons } from "../organizations/create-coupon";
 import { CouponChangePlan } from "./coupon-plan";
 import { AdminCouponFilters } from "./filter";
@@ -20,6 +25,7 @@ const AdminCoupon = () => {
     []
   );
   const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [organizations, setOrganizations] = useState([]);
   const { loading } = useLoader();
   const {
     coupons,
@@ -30,10 +36,12 @@ const AdminCoupon = () => {
     onCreateCoupon,
   } = useCoupon();
   const { subscriptions, getAllSubscriptions } = useSubscription();
+  const { getAllOrganizations, allOrganizations } = useOrganization();
 
   useEffect(() => {
     getAllSubscriptions({});
-  }, [getAllSubscriptions]);
+    getAllOrganizations();
+  }, [getAllSubscriptions, getAllOrganizations]);
 
   useEffect(() => {
     getAllCoupons({ page, limit, ...filters });
@@ -93,7 +101,18 @@ const AdminCoupon = () => {
           })
       );
     }
-  }, [subscriptions]);
+
+    if (allOrganizations.length) {
+      setOrganizations(
+        allOrganizations.map((item) => {
+          return {
+            label: item.name,
+            value: item._id,
+          };
+        })
+      );
+    }
+  }, [subscriptions, allOrganizations]);
 
   const columns = useMemo(
     () => adminCouponColumns(onCouponDeactivate, onHandlePlanChange),
@@ -129,6 +148,7 @@ const AdminCoupon = () => {
           onClose={setFilterVisible.bind(this, false)}
           onSaveFilters={setFilters}
           filters={filters}
+          organizations={organizations}
         />
       )}
 

@@ -24,6 +24,7 @@ import {
 import { useDebounce } from "use-lodash-debounce";
 import { useEffect } from "react";
 import { WCSelection } from "./wc-selection";
+import { WCAppliedFilter } from "./wc-applied-filter";
 
 const pageLimits = [10, 20, 50];
 
@@ -164,6 +165,7 @@ export const WCDataTable = ({
             </React.Fragment>
           </Col>
         </Row>
+        <WCAppliedFilter filters={filters} onUpdateFilter={onHandleSearch} />
         <Card border="light" className="shadow-sm">
           <Table
             responsive

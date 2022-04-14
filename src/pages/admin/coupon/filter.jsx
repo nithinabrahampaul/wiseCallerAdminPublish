@@ -12,6 +12,7 @@ export const AdminCouponFilters = ({
   onClose,
   onSaveFilters,
   filters,
+  organizations,
 }) => {
   const { handleSubmit, control } = useForm({ defaultValues: filters });
   const onHandleFilters = (values) => {
@@ -44,6 +45,16 @@ export const AdminCouponFilters = ({
                     control={control}
                     label={"Select Status"}
                     options={statusOptions}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6} sm={12} className="mb-3">
+                  <WCFormSelect
+                    name="organization"
+                    control={control}
+                    label={"Select Organization"}
+                    options={organizations}
                   />
                 </Col>
               </Row>

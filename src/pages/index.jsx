@@ -1,12 +1,13 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { Cookies } from "react-cookie";
+import React, { useCallback, useEffect } from "react";
+// import { Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { cookies } from "../common/apis/base-api";
 import { WCPreLoader } from "../common/components/wc-preloader";
 import { componentRoutes } from "../common/contants";
 import { useLoader } from "../common/hooks";
 
 const Pages = () => {
-  const cookies = useMemo(() => new Cookies(), []);
+  // const cookies = useMemo(() => new Cookies(), []);
   const navigate = useNavigate();
   const { loading } = useLoader();
 
@@ -19,7 +20,7 @@ const Pages = () => {
     } else {
       navigate(componentRoutes.login);
     }
-  }, [cookies, navigate]);
+  }, [navigate]);
 
   useEffect(() => {
     handleNavigation();

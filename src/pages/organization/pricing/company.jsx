@@ -35,8 +35,7 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
     resolver: yupResolver(companyFormValidation),
   });
   const { isSubscriptionDone } = useSubscription();
-  const { onHandleOrganizationSubscription, subscriptionLogin, redirectLogin } =
-    useAuth();
+  const { onHandleOrganizationSubscription, subscriptionLogin } = useAuth();
   const { loading } = useLoader();
 
   const onCompanyDetails = async (values) => {
@@ -61,12 +60,6 @@ export const Company = ({ onPageChange, activeStep, pricingForm }) => {
       navigate(componentRoutes.login);
     }
   }, [isSubscriptionDone, navigate]);
-
-  useEffect(() => {
-    if (redirectLogin) {
-      navigate(componentRoutes.login);
-    }
-  }, [redirectLogin, navigate]);
 
   return loading ? (
     <WCPreLoader />

@@ -1,11 +1,14 @@
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import OtpInput from "react-otp-input";
+import { useNavigate } from "react-router-dom";
+import { cookies } from "../../../common/apis/base-api";
 import { WCFormInput } from "../../../common/components/wc-forminput";
-import { useSubscription } from "../../../common/hooks";
+import { componentRoutes } from "../../../common/contants";
+import { useAuth, useSubscription } from "../../../common/hooks";
 import { otpFormValidation } from "../../../common/validations/auth";
 
 export const VerifyOTPForm = ({ isOpen, onClose, initialValues }) => {
@@ -18,14 +21,34 @@ export const VerifyOTPForm = ({ isOpen, onClose, initialValues }) => {
     resolver: yupResolver(otpFormValidation),
     defaultValues: { email: initialValues.email },
   });
-
+  const navigate = useNavigate();
+  const { redirectLogin, onHandleVerifyOTP, onRenendOTP } = useAuth();
   const { onPlanSubscribe } = useSubscription();
 
   const onSubmitVarifyOTP = async (values) => {
     try {
-      await onPlanSubscribe({ otpForm: values, companyForm: initialValues });
+      if (redirectLogin) {
+        await onHandleVerifyOTP(values);
+      } else {
+        await onPlanSubscribe({ otpForm: values, companyForm: initialValues });
+      }
     } catch (error) {}
   };
+
+  const handleResentOTP = async () => {
+    await onRenendOTP({ email: initialValues.email });
+  };
+
+  useEffect(() => {
+    let role = cookies.get("role");
+    if (role) {
+      if (role === "ORGANIZATION") {
+        navigate(componentRoutes.organizationDashboard);
+      } else if (role === "ADMIN") {
+        navigate(componentRoutes.adminDashboard);
+      }
+    }
+  }, [navigate]);
 
   return (
     <Modal show={isOpen} onHide={onClose}>
@@ -58,6 +81,14 @@ export const VerifyOTPForm = ({ isOpen, onClose, initialValues }) => {
         <Modal.Footer>
           <Button type="submit" className="w-100 btn btn-gray-800">
             Verify
+          </Button>
+          <Button
+            variant="primary"
+            type="button"
+            className="w-100 btn-gray-800"
+            onClick={handleResentOTP.bind(this)}
+          >
+            {"Resend OTP"}
           </Button>
         </Modal.Footer>
       </Form>

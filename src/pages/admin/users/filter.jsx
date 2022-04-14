@@ -118,7 +118,7 @@ export const AdminUserFilter = ({
                   Filter
                 </Button>
                 <Button variant="primary" onClick={onClose}>
-                  Clear
+                  Cancel
                 </Button>
               </div>
             </Form>

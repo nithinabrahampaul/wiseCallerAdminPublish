@@ -15,6 +15,8 @@ import { WCPreLoader } from "../../../common/components/wc-preloader";
 import { WCCounter } from "../../../common/components/wc-counter";
 import { WCPieGraph } from "../../../common/components/wc-pie-graph";
 import { DashboardFilter } from "./filter";
+import moment from "moment";
+import { WCAppliedFilter } from "../../../common/components/wc-applied-filter";
 
 const overviews = [
   {
@@ -29,7 +31,7 @@ const overviews = [
     count: 0,
     icon: faBarcode,
     key: "totalCoupons",
-    url: "/admin/coupons",
+    url: "/admin/coupon",
   },
   // {
   //   title: "Available Slots",
@@ -68,14 +70,41 @@ const overviews = [
 
 const AdminDashboard = () => {
   const [summary, setSummary] = useState([]);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState({
+    start_date: moment().startOf("year").startOf("day").utc(true).toDate(),
+    end_date: moment().utc(true).toDate(),
+  });
   const [isFilterVisible, setFilterVisible] = useState(false);
-  const { getOrganizationOverview, overview } = useOrganization();
+  const [organizations, setOrganizations] = useState([]);
+
+  const {
+    getOrganizationOverview,
+    overview,
+    getAllOrganizations,
+    allOrganizations,
+  } = useOrganization();
   const { loading } = useLoader();
 
   useEffect(() => {
     getOrganizationOverview(filters);
   }, [getOrganizationOverview, filters]);
+
+  useEffect(() => {
+    getAllOrganizations();
+  }, [getAllOrganizations]);
+
+  useEffect(() => {
+    if (allOrganizations?.length) {
+      setOrganizations(
+        allOrganizations.map((item) => {
+          return {
+            label: item.name,
+            value: item._id,
+          };
+        })
+      );
+    }
+  }, [allOrganizations]);
 
   const onHandleFilters = (value) => {
     setFilters(value);
@@ -118,12 +147,15 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      <WCAppliedFilter filters={filters} onUpdateFilter={setFilters} />
+
       <Row className="justify-content-md-center">
         <Col xs={12} xl={6} className="mb-4 d-none d-sm-block">
           <WCGraph
             title={"Employees"}
             totalCount={overview?.totalEmployees}
             graphData={overview?.monthlyUsers}
+            filters={filters}
           />
         </Col>
         <Col xs={12} xl={6} className="mb-4 d-none d-sm-block">
@@ -131,6 +163,7 @@ const AdminDashboard = () => {
             title={"Organization"}
             totalCount={overview?.totalOrganization}
             graphData={overview?.monthlyOrganization}
+            filters={filters}
           />
         </Col>
       </Row>
@@ -163,6 +196,7 @@ const AdminDashboard = () => {
           onClose={setFilterVisible.bind(this, false)}
           onHandleFilters={onHandleFilters}
           filters={filters}
+          organizations={organizations}
         />
       )}
     </React.Fragment>

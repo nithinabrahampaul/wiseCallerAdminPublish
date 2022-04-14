@@ -4,6 +4,7 @@ const notificationUrl = `${process.env.REACT_APP_API}notification-service/api/v1
 export const ORGANIZATON_LOGIN_API = `${organizationUrl}auth/login`;
 export const ORGANIZATON_REGISTER_API = `${organizationUrl}auth/register`;
 export const ORGANIZATON_VERIFY_API = `${organizationUrl}auth/verify`;
+export const ORGANIZATON_RESEND_OTP_API = `${organizationUrl}auth/resend-otp`;
 export const ORGANIZATON_LIST_API = `${organizationUrl}list`;
 export const ORGANIZATION_PROFILE_API = `${organizationUrl}organization/get-profile`;
 export const GET_SUBSCRIPTIONS_API = `${subscriptionUrl}subscription`;

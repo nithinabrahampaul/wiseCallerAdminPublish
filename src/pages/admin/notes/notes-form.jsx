@@ -3,10 +3,7 @@ import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { WCFormInput } from "../../../common/components/wc-forminput";
 import { WCFormSelect } from "../../../common/components/wc-formselect";
-import {
-  displayOption,
-  statusOptions,
-} from "../../../common/contants/selectables";
+import { statusOptions } from "../../../common/contants/selectables";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { notesFormValidation } from "../../../common/validations/admin";
 
@@ -65,7 +62,7 @@ export const NotesForm = ({
                   />
                 </Col>
               </Row>
-              <Row>
+              {/* <Row>
                 <Col md={6}>
                   <WCFormSelect
                     name="display_to"
@@ -84,7 +81,7 @@ export const NotesForm = ({
                     error={errors?.auto_sms}
                   />
                 </Col>
-              </Row>
+              </Row> */}
             </Modal.Body>
           </Card.Body>
           <Card.Footer className="border-gray-100 d-grid px-4 pb-4">

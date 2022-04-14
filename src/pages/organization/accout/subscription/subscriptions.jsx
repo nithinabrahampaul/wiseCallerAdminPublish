@@ -2,7 +2,11 @@ import React, { useEffect } from "react";
 import { Button, Card, Col } from "react-bootstrap";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLoader, useSubscription } from "../../../../common/hooks";
+import {
+  useCoupon,
+  useLoader,
+  useSubscription,
+} from "../../../../common/hooks";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
 
 export const Subscription = ({
@@ -12,14 +16,16 @@ export const Subscription = ({
   subscriptionForm,
 }) => {
   const { getOrganizationSubscriptions, subscriptions } = useSubscription();
+  const { getAllCoupons, coupons } = useCoupon();
   const { loading } = useLoader();
 
   useEffect(() => {
     let fetchAll = async () => {
       await getOrganizationSubscriptions();
+      await getAllCoupons();
     };
     fetchAll();
-  }, [getOrganizationSubscriptions]);
+  }, [getOrganizationSubscriptions, getAllCoupons]);
 
   const onRenewSubscriptions = (subscription) => {
     onFormChange({ ...subscriptionForm, subscription: subscription });
@@ -69,11 +75,23 @@ export const Subscription = ({
                 Renew
               </Button>
             )} */}
+            {coupons?.length &&
+              coupons[coupons.length - 1].subscription === subscription._id && (
+                <Button
+                  className="w-100 btn mt-2"
+                  onClick={onRenewSubscriptions.bind(this, subscription)}
+                >
+                  Subscribed
+                  <div>
+                    Expired on ({coupons[coupons.length - 1].expires_at})
+                  </div>
+                </Button>
+              )}
             <Button
               className="w-100 btn btn-gray-800 mt-2"
               onClick={onRenewSubscriptions.bind(this, subscription)}
             >
-              Renew
+              {coupons.length ? "Renew" : "Subscription"}
             </Button>
           </Card.Footer>
         </Card>

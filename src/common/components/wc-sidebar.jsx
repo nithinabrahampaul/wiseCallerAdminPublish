@@ -7,13 +7,15 @@ import { Nav, Badge, Image, Button, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import ReactHero from "../../assets/images/img/technologies/react-hero-logo.svg";
 import { organizationMenu, adminMenu } from "../contants/sidebar-menu";
-import { useCookies } from "react-cookie";
+import { cookies } from "../apis/base-api";
+// import { useCookies } from "react-cookie";
 
 export const WCSidebar = () => {
   const [collapse, setCollapse] = useState(false);
   const location = useLocation();
   const { pathname } = location;
-  const [cookies] = useCookies();
+  const role = cookies.get("role");
+  // const [cookies] = useCookies();
 
   // const CollapsableNavItem = (props) => {
   //   const { eventKey, title, icon, children = null } = props;
@@ -133,7 +135,7 @@ export const WCSidebar = () => {
             </div>
             <Nav className="flex-column pt-3 pt-md-0">
               <NavItem title="Wise Caller" link={"/"} image={ReactHero} />
-              {cookies.role === "ADMIN"
+              {role === "ADMIN"
                 ? adminMenu.map((item, index) => (
                     <NavItem
                       key={index}

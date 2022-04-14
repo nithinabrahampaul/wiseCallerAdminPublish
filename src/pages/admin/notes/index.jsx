@@ -96,6 +96,7 @@ const AdminNotes = () => {
         page={notes.page}
         onPageChange={setPage}
         title={"Notes"}
+        filters={{}}
         limit={limit}
         onHandleCreate={onHandleOperations.bind(this, "create", "")}
       />

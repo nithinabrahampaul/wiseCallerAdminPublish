@@ -18,6 +18,7 @@ import {
 import { useCallback } from "react";
 import { toast } from "react-toastify";
 import { useDownload } from "../hooks";
+import { convertToBase64 } from "../utils/convert-base64";
 
 export const OrganizationContext = createContext({});
 export const OrganizationProvider = ({ children }) => {
@@ -81,6 +82,9 @@ export const OrganizationProvider = ({ children }) => {
   const onUpdateOrganization = useCallback(
     async (values) => {
       setLoading(true);
+      if (values.profile) {
+        values.profile = await convertToBase64(values.profile[0]);
+      }
       let result = await executePostApi(UPDATE_ORGANIZATION_PROFILE, values);
       if (result?.data?.success) {
         setOrganization(result.data.data);

@@ -5,10 +5,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { WCFormInput } from "../../common/components/wc-forminput";
 import { loginFormValidation } from "../../common/validations";
 import { useAuth } from "../../common/hooks";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../../common/contants";
 import { useEffect } from "react";
+import { cookies } from "../../common/apis/base-api";
 
 export const LoginForm = ({ setInitialValues }) => {
   const {
@@ -18,14 +19,15 @@ export const LoginForm = ({ setInitialValues }) => {
   } = useForm({ resolver: yupResolver(loginFormValidation) });
   const { onHandleLogin } = useAuth();
 
-  const [cookies] = useCookies();
+  // const [cookies] = useCookies();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (cookies?.token) {
+    const token = cookies.get("token");
+    if (token) {
       navigate(componentRoutes.root);
     }
-  }, [cookies, navigate]);
+  }, [navigate]);
 
   const handleLogin = async (values) => {
     try {

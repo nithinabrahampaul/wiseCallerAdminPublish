@@ -39,11 +39,6 @@ export const CreateNotes = ({ visible, onClose, notesData, onSaveNotes }) => {
                     error={errors?.text}
                     {...register("text")}
                   />
-                  {/* <WCFormDate
-                  name="createdAt"
-                  label="Created Date"
-                  {...createNote("createdAt")}
-               /> */}
                 </Col>
               </Row>
               <div className="mt-3 text-right">

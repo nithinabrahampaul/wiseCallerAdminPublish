@@ -7,9 +7,10 @@ import OtpInput from "react-otp-input";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { otpFormValidation } from "../../common/validations/auth";
 import { useAuth } from "../../common/hooks";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../../common/contants";
+import { cookies } from "../../common/apis/base-api";
 
 export const OTPForm = ({ initialValues }) => {
   const {
@@ -21,8 +22,8 @@ export const OTPForm = ({ initialValues }) => {
     defaultValues: initialValues,
     resolver: yupResolver(otpFormValidation),
   });
-  const { onHandleVerifyOTP } = useAuth();
-  const [cookies] = useCookies();
+  const { onHandleVerifyOTP, onRenendOTP } = useAuth();
+  // const [cookies] = useCookies();
   const navigate = useNavigate();
 
   const handleVerifyOTP = async (values) => {
@@ -31,38 +32,55 @@ export const OTPForm = ({ initialValues }) => {
     } catch (error) {}
   };
 
+  const handleResentOTP = async () => {
+    await onRenendOTP({ email: initialValues.email });
+  };
+
   useEffect(() => {
-    if (cookies?.token) {
+    const token = cookies.get("token");
+    if (token) {
       navigate(componentRoutes.root);
     }
-  }, [cookies, navigate]);
+  }, [navigate]);
 
   return (
-    <Form className="mt-4" onSubmit={handleSubmit(handleVerifyOTP)}>
-      <WCFormInput
-        label="Your Email"
-        placeholder="example@company.com"
-        icon={faUser}
-        error={errors?.email}
-        {...register("email")}
-      />
-      <Form.Group className="mb-4">
-        <Form.Label>{"OTP"}</Form.Label>
-        <Controller
-          name="otp"
-          control={control}
-          render={({ field }) => (
-            <OtpInput className="inputStyle" {...field} separator={"-"} />
-          )}
+    <React.Fragment>
+      <Form className="mt-4" onSubmit={handleSubmit(handleVerifyOTP)}>
+        <WCFormInput
+          label="Your Email"
+          placeholder="example@company.com"
+          icon={faUser}
+          error={errors?.email}
+          {...register("email")}
         />
-        {errors?.otp && (
-          <span className="form_error">{errors?.otp?.message}</span>
-        )}
-      </Form.Group>
+        <Form.Group className="mb-4">
+          <Form.Label>{"OTP"}</Form.Label>
+          <Controller
+            name="otp"
+            control={control}
+            render={({ field }) => (
+              <OtpInput className="inputStyle" {...field} separator={"-"} />
+            )}
+          />
+          {errors?.otp && (
+            <span className="form_error">{errors?.otp?.message}</span>
+          )}
+        </Form.Group>
 
-      <Button variant="primary" type="submit" className="w-100">
-        {"Sign in"}
-      </Button>
-    </Form>
+        <Button variant="primary" type="submit" className="w-100">
+          {"Sign in"}
+        </Button>
+      </Form>
+      <div className="d-flex justify-content-center align-items-center mt-4">
+        <Button
+          variant="primary"
+          type="button"
+          className="w-100"
+          onClick={handleResentOTP.bind(this)}
+        >
+          {"Resend OTP"}
+        </Button>
+      </div>
+    </React.Fragment>
   );
 };

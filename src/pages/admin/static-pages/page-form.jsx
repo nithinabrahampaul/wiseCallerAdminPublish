@@ -1,9 +1,9 @@
-import { faHtml5 } from "@fortawesome/free-brands-svg-icons";
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import { WCEditor } from "../../../common/components/wc-editor";
-import { WCFormInput } from "../../../common/components/wc-forminput";
+import { WCFormSelect } from "../../../common/components/wc-formselect";
+import { staticPageOptions } from "../../../common/contants/selectables";
 
 export const StaticPage = ({
   visible,
@@ -11,7 +11,7 @@ export const StaticPage = ({
   onSubmitForm,
   initialValues,
 }) => {
-  const { control, handleSubmit, register } = useForm({
+  const { control, handleSubmit } = useForm({
     defaultValues: initialValues,
   });
   return (
@@ -23,11 +23,11 @@ export const StaticPage = ({
             <Modal.Body>
               <Row>
                 <Col md={12} className="mb-3">
-                  <WCFormInput
-                    label="Name"
-                    placeholder="HTML Page"
-                    icon={faHtml5}
-                    {...register("name")}
+                  <WCFormSelect
+                    name="name"
+                    control={control}
+                    label={"Select HTML Page"}
+                    options={staticPageOptions}
                   />
                 </Col>
                 <Col md={12} className="mb-3">

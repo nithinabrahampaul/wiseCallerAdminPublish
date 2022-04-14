@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
-import { useCookies } from "react-cookie";
+// import { useCookies } from "react-cookie";
 import { useLocation } from "react-router-dom";
 import swal from "sweetalert";
 import { WCDataTable } from "../../../../common/components/wc-datatable";
@@ -33,20 +33,20 @@ const OrganizationEmployees = () => {
   const { onRevokePlan } = usePlans();
   const { loading } = useLoader();
   const { onSendCustomNotification } = useNotificaton();
-  const [cookies] = useCookies();
+  // const [cookies] = useCookies();
   const location = useLocation();
 
   useEffect(() => {
-    getAllEmployees({ page, limit, role: cookies.role, ...filters });
-  }, [getAllEmployees, page, limit, cookies, filters]);
+    getAllEmployees({ page, limit, ...filters });
+  }, [getAllEmployees, page, limit, filters]);
 
   useEffect(() => {
     let getFetchData = async () => {
       await getAllSubscriptions({ type: "ORGANIZATION" });
-      await getAllCoupons({ role: cookies.role });
+      await getAllCoupons();
     };
     getFetchData();
-  }, [getAllSubscriptions, cookies, getAllCoupons]);
+  }, [getAllSubscriptions, getAllCoupons]);
 
   useEffect(() => {
     subscriptions?.length &&
@@ -98,11 +98,11 @@ const OrganizationEmployees = () => {
             employee: row._id,
             coupon: row.organization_subscription.coupon_code,
           });
-          getAllEmployees({ page, limit, role: cookies.role });
+          getAllEmployees({ page, limit });
         }
       });
     },
-    [onRevokePlan, page, limit, cookies, getAllEmployees]
+    [onRevokePlan, page, limit, getAllEmployees]
   );
 
   const onSubmitNotification = async (values) => {

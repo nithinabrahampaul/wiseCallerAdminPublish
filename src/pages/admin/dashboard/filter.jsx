@@ -3,6 +3,7 @@ import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { WCFormDate } from "../../../common/components/wc-formdate";
+import { WCFormSelect } from "../../../common/components/wc-formselect";
 import { rangeFilterFormValidation } from "../../../common/validations";
 
 export const DashboardFilter = ({
@@ -10,6 +11,7 @@ export const DashboardFilter = ({
   onClose,
   onHandleFilters,
   filters,
+  organizations,
 }) => {
   const {
     handleSubmit,
@@ -43,6 +45,16 @@ export const DashboardFilter = ({
                   />
                 </Col>
               </Row>
+              <Row>
+                <Col md={6} sm={12} className="mb-3">
+                  <WCFormSelect
+                    name="organization"
+                    control={control}
+                    label={"Select Organization"}
+                    options={organizations}
+                  />
+                </Col>
+              </Row>
               <div className="mt-3 text-right">
                 <Button
                   variant="primary"
@@ -52,7 +64,7 @@ export const DashboardFilter = ({
                   Filter
                 </Button>
                 <Button variant="primary" onClick={onClose}>
-                  Clear
+                  Cancel
                 </Button>
               </div>
             </Form>

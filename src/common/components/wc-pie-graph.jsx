@@ -9,11 +9,11 @@ export const WCPieGraph = ({ title, totalCount = [], graphData = [] }) => {
     {
       id: 1,
       label: "ANDROID",
-      count: 10,
+      count: 0,
       color: "tertiary",
       icon: faMobileAlt,
     },
-    { id: 2, label: "IOS", count: 90, color: "secondary", icon: faMobileAlt },
+    { id: 2, label: "IOS", count: 0, color: "secondary", icon: faMobileAlt },
   ];
 
   prepare_data.forEach((item) => {

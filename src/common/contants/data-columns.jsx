@@ -52,7 +52,7 @@ export const organizationEmployeeColumns = (
       },
     },
     {
-      Header: "Redeem Coupon",
+      Header: "Redeemed Coupon",
       accessor: (row) => {
         return (
           <span>
@@ -335,10 +335,12 @@ export const adminUsersColumns = (
         return (
           <span
             className={`fw-normal text-${
-              row?.modes?.syncCalender?.is_active ? "success" : "danger"
+              row?.modes?.syncCalender?.calenders?.length ? "success" : "danger"
             }`}
           >
-            {row?.modes?.syncCalender?.is_active ? "Active" : "Inactive"}
+            {row?.modes?.syncCalender?.calenders?.length
+              ? "Active"
+              : "Inactive"}
           </span>
         );
       },
@@ -379,7 +381,12 @@ export const adminUsersColumns = (
               size="sm"
               variant="primary"
               onClick={onHandlePlanChange.bind(this, row)}
-              disabled={row?.used_subscription ? false : true}
+              disabled={
+                row.user_subscription &&
+                Object.keys(row.user_subscription).length > 2
+                  ? false
+                  : true
+              }
               style={{ marginRight: 5 }}
             >
               {"Change Plan"}

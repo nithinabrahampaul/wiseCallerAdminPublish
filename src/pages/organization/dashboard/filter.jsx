@@ -46,7 +46,7 @@ export const DashboardFilter = ({ visible, onClose, onHandleFilters }) => {
                   Filter
                 </Button>
                 <Button variant="primary" onClick={onClose}>
-                  Clear
+                  Cancel
                 </Button>
               </div>
             </Form>

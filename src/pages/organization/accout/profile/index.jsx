@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, Card, Col, Container, Row, Form } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { WCFormInput } from "../../../../common/components/wc-forminput";
 import {
   faBriefcase,
@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useLoader, useOrganization } from "../../../../common/hooks";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
+import { WCDropzone } from "../../../../common/components/wc-dropzone";
 
 const OrganizationAccountProfile = () => {
   const { organization, getOrganizationDetails, onUpdateOrganization } =
@@ -24,6 +25,7 @@ const OrganizationAccountProfile = () => {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
     reset,
   } = useForm({ defaultValues: organization });
@@ -77,6 +79,7 @@ const OrganizationAccountProfile = () => {
                       placeholder="example@company.com"
                       icon={faEnvelope}
                       error={errors?.email}
+                      disabled={true}
                       {...register("email")}
                     />
                   </Col>
@@ -139,6 +142,18 @@ const OrganizationAccountProfile = () => {
                       icon={faIdCard}
                       error={errors?.pan}
                       {...register("pan")}
+                    />
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6} className="mb-3">
+                    <Form.Label>{"Profile"}</Form.Label>
+                    <Controller
+                      name="profile"
+                      control={control}
+                      render={({ field: { onChange } }) => (
+                        <WCDropzone onChange={onChange} />
+                      )}
                     />
                   </Col>
                 </Row>
