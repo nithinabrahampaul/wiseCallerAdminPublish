@@ -3,12 +3,19 @@ import { useCallback, useState, createContext } from "react";
 import { toast } from "react-toastify";
 import { LoaderContext } from ".";
 import { executeGetApi, executePostApi } from "../apis";
-import { GET_PLANS_API, REVOKE_ORGANIZATION_EMPLOYEE } from "../apis/api-urls";
+import {
+  GET_ALL_PLANS,
+  GET_PLANS_API,
+  REVOKE_ORGANIZATION_EMPLOYEE,
+  UPDATE_PLAN,
+} from "../apis/api-urls";
 
 export const PlanContext = createContext();
 
 export const PlanProvider = ({ children }) => {
   const [plans, setPlans] = useState([]);
+  const [allPlans, setAllPlans] = useState([]);
+  const [isRefetched, setRefetched] = useState(false);
   const { setLoading } = useContext(LoaderContext);
 
   const getSubscriptionPlans = useCallback(
@@ -50,8 +57,81 @@ export const PlanProvider = ({ children }) => {
     [setLoading]
   );
 
+  const getPaginatedPlans = useCallback(
+    async (params) => {
+      try {
+        setLoading(true);
+        let result = await executePostApi(GET_ALL_PLANS, params);
+        if (result?.data?.success) {
+          setAllPlans(result.data.data);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
+  const onCreatePlans = useCallback(
+    async (values) => {
+      try {
+        setRefetched(false);
+        setLoading(true);
+        let result = await executePostApi(UPDATE_PLAN, values);
+        if (result?.data?.success) {
+          setRefetched(true);
+          toast.success("Plan created successfully");
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
+  const onUpdatePlans = useCallback(
+    async (values) => {
+      try {
+        setRefetched(false);
+        setLoading(true);
+        let result = await executePostApi(UPDATE_PLAN, values);
+        if (result?.data?.success) {
+          setRefetched(true);
+          toast.success("Plan updated successfully");
+        }
+        setRefetched(true);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
+  const onDeletePlans = useCallback(
+    async (values) => {
+      try {
+        setRefetched(false);
+        setLoading(true);
+        let result = await executePostApi(UPDATE_PLAN, values);
+        if (result?.data?.success) {
+          setRefetched(true);
+          toast.success("Plan deleted successfully");
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
   let value = {
     plans,
+    allPlans,
+    isRefetched,
     getSubscriptionPlans: useCallback(
       (subscription) => {
         getSubscriptionPlans(subscription);
@@ -63,6 +143,30 @@ export const PlanProvider = ({ children }) => {
         onRevokePlan(values);
       },
       [onRevokePlan]
+    ),
+    getPaginatedPlans: useCallback(
+      (params) => {
+        getPaginatedPlans(params);
+      },
+      [getPaginatedPlans]
+    ),
+    onCreatePlans: useCallback(
+      (values) => {
+        onCreatePlans(values);
+      },
+      [onCreatePlans]
+    ),
+    onUpdatePlans: useCallback(
+      (values) => {
+        onUpdatePlans(values);
+      },
+      [onUpdatePlans]
+    ),
+    onDeletePlans: useCallback(
+      (values) => {
+        onDeletePlans(values);
+      },
+      [onDeletePlans]
     ),
   };
   return <PlanContext.Provider value={value}>{children}</PlanContext.Provider>;

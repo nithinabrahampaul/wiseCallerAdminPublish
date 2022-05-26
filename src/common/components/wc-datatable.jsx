@@ -7,16 +7,15 @@ import {
   Button,
   ButtonGroup,
   Col,
-  Dropdown,
   Form,
   InputGroup,
   Row,
 } from "react-bootstrap";
-import { useTable, useRowSelect } from "react-table";
+import { useTable, useRowSelect, useExpanded } from "react-table";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCheck,
-  faCog,
+  faArrowCircleDown,
+  faArrowCircleRight,
   faPaperPlane,
   faPlusCircle,
   faSearch,
@@ -26,7 +25,49 @@ import { useEffect } from "react";
 import { WCSelection } from "./wc-selection";
 import { WCAppliedFilter } from "./wc-applied-filter";
 
-const pageLimits = [10, 20, 50];
+// const pageLimits = [10, 20, 50];
+let expandableColumnOptions = {
+  id: "expander",
+  Header: ({ getToggleAllRowsExpandedProps, isAllRowsExpanded }) =>
+    isAllRowsExpanded ? (
+      <FontAwesomeIcon
+        icon={faArrowCircleDown}
+        {...getToggleAllRowsExpandedProps()}
+      />
+    ) : (
+      <FontAwesomeIcon
+        icon={faArrowCircleRight}
+        {...getToggleAllRowsExpandedProps()}
+      />
+    ),
+  Cell: ({ row }) =>
+    row.canExpand ? (
+      row.isExpanded ? (
+        <FontAwesomeIcon
+          icon={faArrowCircleDown}
+          {...row.getToggleRowExpandedProps()}
+        />
+      ) : (
+        <FontAwesomeIcon
+          icon={faArrowCircleRight}
+          {...row.getToggleRowExpandedProps()}
+        />
+      )
+    ) : null,
+};
+
+let selectableColumnOptions = {
+  Header: ({ getToggleAllRowsSelectedProps }) => (
+    <WCSelection {...getToggleAllRowsSelectedProps()} />
+  ),
+  Cell: ({ row }) => {
+    return !row.depth ? (
+      <WCSelection {...row.getToggleRowSelectedProps()} />
+    ) : null;
+  },
+};
+
+let columnsOptions = [];
 
 export const WCDataTable = ({
   data,
@@ -40,15 +81,25 @@ export const WCDataTable = ({
   title,
   limit,
   onHandleFilter,
-  filters,
+  filters = {},
   onHandleSearch,
   onHandleCreate,
   onHandleSelected = null,
   onHandleSendNotification,
   onExportCSV,
+  expandable = false,
 }) => {
   const [searchValue, setSearchValue] = useState(null);
   const search = useDebounce(searchValue, 1000);
+
+  useEffect(() => {
+    if (expandable) {
+      columnsOptions = [expandableColumnOptions, selectableColumnOptions];
+    } else {
+      columnsOptions = [selectableColumnOptions];
+    }
+  }, [expandable]);
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -56,16 +107,12 @@ export const WCDataTable = ({
     prepareRow,
     rows,
     selectedFlatRows,
-  } = useTable({ data, columns, initialState: {} }, useRowSelect, (hooks) =>
-    hooks.visibleColumns.push((columns) => [
-      {
-        Header: ({ getToggleAllRowsSelectedProps }) => (
-          <WCSelection {...getToggleAllRowsSelectedProps()} />
-        ),
-        Cell: ({ row }) => <WCSelection {...row.getToggleRowSelectedProps()} />,
-      },
-      ...columns,
-    ])
+  } = useTable(
+    { data, columns, initialState: {} },
+    useExpanded,
+    useRowSelect,
+    (hooks) =>
+      hooks.visibleColumns.push((columns) => [...columnsOptions, ...columns])
   );
 
   useEffect(() => {
@@ -138,7 +185,7 @@ export const WCDataTable = ({
                   </Button>
                 </ButtonGroup>
               )}
-              <Dropdown as={ButtonGroup}>
+              {/* <Dropdown as={ButtonGroup}>
                 <Dropdown.Toggle
                   split
                   as={Button}
@@ -161,7 +208,7 @@ export const WCDataTable = ({
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
-              </Dropdown>
+              </Dropdown> */}
             </React.Fragment>
           </Col>
         </Row>

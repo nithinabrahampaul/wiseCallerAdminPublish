@@ -5,12 +5,18 @@ import { useForm } from "react-hook-form";
 import { WCFormDate } from "../../../common/components/wc-formdate";
 import { rangeFilterFormValidation } from "../../../common/validations";
 
-export const DashboardFilter = ({ visible, onClose, onHandleFilters }) => {
+export const DashboardFilter = ({
+  visible,
+  onClose,
+  onHandleFilters,
+  filters,
+}) => {
   const {
     handleSubmit,
     control,
     formState: { errors },
   } = useForm({
+    defaultValues: filters,
     resolver: yupResolver(rangeFilterFormValidation),
   });
   return (

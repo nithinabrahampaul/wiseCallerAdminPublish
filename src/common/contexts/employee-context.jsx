@@ -18,12 +18,14 @@ export const EmployeeContext = createContext({});
 export const EmployeeProvider = ({ children }) => {
   const [employees, setEmployees] = useState([]);
   const [isDeactivated, setDeactivated] = useState(false);
+  const [isRefetched, setRefetched] = useState(false);
   const { setLoading } = useContext(LoaderContext);
   const [downloadCSV] = useDownload();
 
   const getAllEmployees = useCallback(
     async (params) => {
       try {
+        setRefetched(false);
         setDeactivated(false);
         setLoading(true);
         let result = await executePostApi(GET_ALL_USERS, params);
@@ -83,6 +85,7 @@ export const EmployeeProvider = ({ children }) => {
         setLoading(true);
         let result = await executePutApi(CHANGE_USER_PLAN, values);
         if (result?.data?.success) {
+          setRefetched(true);
           toast.success("Plan changes successfully");
         } else {
           toast.error(result?.data?.message);
@@ -114,6 +117,7 @@ export const EmployeeProvider = ({ children }) => {
   const value = {
     employees,
     isDeactivated,
+    isRefetched,
     getAllEmployees: useCallback(
       (params) => {
         getAllEmployees(params);

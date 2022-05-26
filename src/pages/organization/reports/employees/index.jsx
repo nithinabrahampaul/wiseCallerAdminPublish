@@ -15,6 +15,7 @@ import {
   useSubscription,
 } from "../../../../common/hooks";
 import { EmployeeFilter } from "./filter";
+import { ViewDetails } from "./view-details";
 
 const OrganizationEmployees = () => {
   const [page, setPage] = useState(1);
@@ -25,6 +26,8 @@ const OrganizationEmployees = () => {
   const [allCoupons, setAllCoupons] = useState([]);
   const [isNotification, setNotification] = useState(false);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [isViewable, setViewable] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const { employees, getAllEmployees, onExportEmployeeCSV, onGenerateInvoice } =
     useEmployee();
@@ -95,14 +98,16 @@ const OrganizationEmployees = () => {
       }).then(async (value) => {
         if (value) {
           await onRevokePlan({
-            employee: row._id,
-            coupon: row.organization_subscription.coupon_code,
+            ...row,
+            employee: selectedUser._id,
+            active_subscriptions: selectedUser.active_subscriptions,
           });
           getAllEmployees({ page, limit });
+          setViewable(false);
         }
       });
     },
-    [onRevokePlan, page, limit, getAllEmployees]
+    [onRevokePlan, page, limit, getAllEmployees, selectedUser]
   );
 
   const onSubmitNotification = async (values) => {
@@ -124,13 +129,19 @@ const OrganizationEmployees = () => {
     setNotification(true);
   }, []);
 
+  const onHandleViewDetails = async (values) => {
+    setSelectedUser(values);
+    setViewable(true);
+  };
+
   let columns = useMemo(
     () =>
       organizationEmployeeColumns(
         onPlanRevoke,
         subscriptions,
         onHandleSendNotification,
-        onGenerateInvoice
+        onGenerateInvoice,
+        onHandleViewDetails
       ),
     [onPlanRevoke, subscriptions, onHandleSendNotification, onGenerateInvoice]
   );
@@ -163,6 +174,7 @@ const OrganizationEmployees = () => {
         onHandleSendNotification={setNotification.bind(this, true)}
         onExportCSV={onExportEmployeeCSV.bind(this, filters)}
       />
+
       {isFilterVisible && (
         <EmployeeFilter
           visible={isFilterVisible}
@@ -173,11 +185,22 @@ const OrganizationEmployees = () => {
           coupons={allCoupons}
         />
       )}
+
       {isNotification && (
         <WCSendNotification
           visible={isNotification}
           onClose={setNotification.bind(this, false)}
           onSubmitForm={onSubmitNotification}
+        />
+      )}
+
+      {isViewable && (
+        <ViewDetails
+          visible={isViewable}
+          onClose={setViewable.bind(this, false)}
+          user={selectedUser}
+          subscriptions={subscriptions}
+          onPlanRevoke={onPlanRevoke}
         />
       )}
     </React.Fragment>

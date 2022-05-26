@@ -2,7 +2,7 @@ import moment from "moment";
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { WCFormDate } from "../../../../common/components/wc-formdate";
+import { WCFormDateRange } from "../../../../common/components/wc-formdaterange";
 import { WCFormSelect } from "../../../../common/components/wc-formselect";
 import { statusOptions } from "../../../../common/contants";
 
@@ -60,14 +60,14 @@ export const EmployeeFilter = ({
               </Row>
               <Row>
                 <Col md={6} sm={12} className="mb-3">
-                  <WCFormDate
+                  <WCFormDateRange
                     name="registered_date"
                     label="Select Registered Date"
                     control={control}
                   />
                 </Col>
                 <Col md={6} sm={12} className="mb-3">
-                  <WCFormDate
+                  <WCFormDateRange
                     name="subscribed_date"
                     label="Select Subscribed Date"
                     control={control}

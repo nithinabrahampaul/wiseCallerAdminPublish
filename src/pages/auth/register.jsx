@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
@@ -8,7 +8,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { Col, Row, Form, Card, Button, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BgImage from "../../assets/images/img/illustrations/signin.svg";
 import { componentRoutes } from "../../common/contants";
 import { WCFormInput } from "../../common/components/wc-forminput";
@@ -22,13 +22,21 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(registerFormValidation) });
-  const { onHandleRegister } = useAuth();
+  const { onHandleRegister, redirectLogin, setRedirectLogin } = useAuth();
+  const navigate = useNavigate();
 
   const handleRegister = async (values) => {
     try {
       await onHandleRegister(values);
     } catch (error) {}
   };
+
+  useEffect(() => {
+    if (redirectLogin) {
+      setRedirectLogin(false);
+      navigate(componentRoutes.login);
+    }
+  }, [redirectLogin, navigate, setRedirectLogin]);
   return (
     <section className="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
       <Container>

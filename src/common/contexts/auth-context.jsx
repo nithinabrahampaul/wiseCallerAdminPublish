@@ -9,7 +9,7 @@ import {
 } from "../apis/api-urls";
 import { executePostApi, setUserCookies } from "../apis/base-api";
 import { toast } from "react-toastify";
-
+import { OrganizationContext } from "./organazation-context";
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
   const [subscriptionLogin, setSubscriptionLogin] = useState(false);
   const [redirectLogin, setRedirectLogin] = useState(false);
   const { setLoading } = useContext(LoaderContext);
+  const { setOrganization } = useContext(OrganizationContext);
 
   const onHandleLogin = async (values) => {
     try {
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       let result = await executePostApi(ORGANIZATON_REGISTER_API, values);
       if (result?.data?.success) {
+        setRedirectLogin(true);
       } else {
         toast.error(result.data.message);
       }
@@ -51,6 +53,7 @@ export const AuthProvider = ({ children }) => {
       let result = await executePostApi(ORGANIZATON_VERIFY_API, values);
       if (result?.data?.success) {
         let decoded = decode(result.data.data.token);
+        setOrganization(decoded);
         await setUserCookies({
           ...result.data.data,
           email: decoded.email,
@@ -118,6 +121,7 @@ export const AuthProvider = ({ children }) => {
     isLoginForm,
     subscriptionLogin,
     redirectLogin,
+    setRedirectLogin,
     onHandleLogin,
     onHandleRegister,
     onHandleVerifyOTP,

@@ -14,16 +14,21 @@ export const organizationEmployeeColumns = (
   onPlanRevoke,
   subscriptions,
   onHandleSendNotification,
-  onGenerateInvoice
+  onGenerateInvoice,
+  onHandleViewDetails
 ) => {
   return [
     {
       Header: "First Name",
-      accessor: "first_name",
+      accessor: (row) => {
+        return <span>{row.email ? row.first_name : "__"}</span>;
+      },
     },
     {
       Header: "Last Name",
-      accessor: "last_name",
+      accessor: (row) => {
+        return <span>{row.email ? row.last_name : "__"}</span>;
+      },
     },
     {
       Header: "Phone Number",
@@ -35,49 +40,9 @@ export const organizationEmployeeColumns = (
         return <span>{row.email ? row.email : "__"}</span>;
       },
     },
-
-    {
-      Header: "Plan",
-      accessor: (row) => {
-        return (
-          <span>
-            {row?.organization_subscription?.subscription
-              ? subscriptions.find(
-                  (item) =>
-                    item._id === row.organization_subscription.subscription
-                )?.title
-              : "__"}
-          </span>
-        );
-      },
-    },
-    {
-      Header: "Redeemed Coupon",
-      accessor: (row) => {
-        return (
-          <span>
-            {row.organization_subscription?.coupon_code
-              ? row.organization_subscription.coupon_code
-              : "__"}
-          </span>
-        );
-      },
-    },
     {
       Header: "Registered Date",
       accessor: "createdAt",
-    },
-    {
-      Header: "Subscribed Date",
-      accessor: (row) => {
-        return (
-          <span>
-            {row.organization_subscription?.subscription_created_date
-              ? row.organization_subscription.subscription_created_date
-              : "__"}
-          </span>
-        );
-      },
     },
     {
       Header: "Work Life balance",
@@ -138,12 +103,19 @@ export const organizationEmployeeColumns = (
       accessor: (row) => {
         return (
           <React.Fragment>
-            <Button
+            {/* <Button
               size="sm"
               style={{ marginRight: 5 }}
               onClick={onPlanRevoke.bind(this, row)}
             >
               {"Revoke"}
+            </Button> */}
+            <Button
+              size="sm"
+              onClick={onHandleViewDetails.bind(this, row)}
+              style={{ marginRight: 5 }}
+            >
+              {"View"}
             </Button>
             <Button
               size="sm"
@@ -152,7 +124,7 @@ export const organizationEmployeeColumns = (
             >
               {"Send Notification"}
             </Button>
-            <Button
+            {/* <Button
               size="sm"
               disabled={
                 row?.organization_subscription ||
@@ -162,7 +134,7 @@ export const organizationEmployeeColumns = (
               onClick={onGenerateInvoice.bind(this, { user_id: row._id })}
             >
               {"Download Invoice"}
-            </Button>
+            </Button> */}
           </React.Fragment>
         );
       },
@@ -261,7 +233,8 @@ export const adminUsersColumns = (
   onHandleDeactivateUser,
   onHandlePlanChange,
   onHandleSendNotification,
-  onGenerateInvoice
+  onGenerateInvoice,
+  onHandleViewDetails
 ) => {
   return [
     {
@@ -283,19 +256,6 @@ export const adminUsersColumns = (
     {
       Header: "Secondary Phone",
       accessor: (row) => row.secondary_no || "__",
-    },
-    {
-      Header: "Subscription Plan",
-      accessor: (row) => row?.organization_subscription?.subscription || "__",
-    },
-    {
-      Header: "Expiry organization Plan",
-      accessor: (row) =>
-        row?.organization_subscription?.subscription_end_date || "__",
-    },
-    {
-      Header: "Redeem Coupon",
-      accessor: (row) => row?.organization_subscription?.coupon_code || "__",
     },
     {
       Header: "Registered Date",
@@ -372,12 +332,20 @@ export const adminUsersColumns = (
             <Button
               size="sm"
               variant="primary"
+              onClick={onHandleViewDetails.bind(this, row)}
+              style={{ marginRight: 5 }}
+            >
+              {"View"}
+            </Button>
+            <Button
+              size="sm"
+              variant="primary"
               onClick={onHandleDeactivateUser.bind(this, row.isActive, row._id)}
               style={{ marginRight: 5 }}
             >
               {"Deactivate"}
             </Button>
-            <Button
+            {/* <Button
               size="sm"
               variant="primary"
               onClick={onHandlePlanChange.bind(this, row)}
@@ -390,7 +358,7 @@ export const adminUsersColumns = (
               style={{ marginRight: 5 }}
             >
               {"Change Plan"}
-            </Button>
+            </Button> */}
             <Button
               size="sm"
               onClick={onHandleSendNotification.bind(this, row)}
@@ -398,7 +366,7 @@ export const adminUsersColumns = (
             >
               {"Send Notification"}
             </Button>
-            <Button
+            {/* <Button
               size="sm"
               disabled={
                 (row?.organization_subscription ||
@@ -408,7 +376,7 @@ export const adminUsersColumns = (
               onClick={onGenerateInvoice.bind(this, { user_id: row._id })}
             >
               {"Download Invoice"}
-            </Button>
+            </Button> */}
           </React.Fragment>
         );
       },
@@ -747,8 +715,56 @@ export const adminGlobalTypesColumns = (onHandleOperations) => {
       accessor: "type",
     },
     {
-      Header: "Order",
-      accessor: "order",
+      Header: "Action",
+      Cell: ({ row }) => {
+        return !row.depth ? (
+          <React.Fragment>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faPencilAlt}
+                className="me-2"
+                onClick={onHandleOperations.bind(this, "update", row.original)}
+              />
+            </span>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="me-2 text-danger"
+                onClick={onHandleOperations.bind(this, "delete", row.original)}
+              />
+            </span>
+          </React.Fragment>
+        ) : null;
+      },
+    },
+  ];
+};
+
+export const adminPlanColumns = (onHandleOperations) => {
+  return [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Subscription",
+      accessor: "subscription.title",
+    },
+    {
+      Header: "Price",
+      accessor: "amount",
+    },
+    {
+      Header: "Discount Price",
+      accessor: "discount",
+    },
+    {
+      Header: "Minimum Slot",
+      accessor: "minSlab",
+    },
+    {
+      Header: "Maximum Slot",
+      accessor: "maxSlab",
     },
     {
       Header: "Action",

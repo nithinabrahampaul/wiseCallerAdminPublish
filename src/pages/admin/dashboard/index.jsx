@@ -17,6 +17,7 @@ import { WCPieGraph } from "../../../common/components/wc-pie-graph";
 import { DashboardFilter } from "./filter";
 import moment from "moment";
 import { WCAppliedFilter } from "../../../common/components/wc-applied-filter";
+import { WCBarGraph } from "../../../common/components/wc-bar-graph";
 
 const overviews = [
   {
@@ -71,8 +72,10 @@ const overviews = [
 const AdminDashboard = () => {
   const [summary, setSummary] = useState([]);
   const [filters, setFilters] = useState({
-    start_date: moment().startOf("year").startOf("day").utc(true).toDate(),
-    end_date: moment().utc(true).toDate(),
+    filtered_date: [
+      moment().startOf("year").startOf("day").utc(true).toDate(),
+      moment().utc(true).toDate(),
+    ],
   });
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [organizations, setOrganizations] = useState([]);
@@ -164,6 +167,24 @@ const AdminDashboard = () => {
             totalCount={overview?.totalOrganization}
             graphData={overview?.monthlyOrganization}
             filters={filters}
+          />
+        </Col>
+        <Col xs={12} xl={6} className="mb-4 d-none d-sm-block">
+          <WCGraph
+            title={"Usage"}
+            totalCount={overview?.totalDailyUsage}
+            graphData={overview?.dailyUsage}
+            filters={filters}
+            type={"daily"}
+          />
+        </Col>
+        <Col xs={12} xl={6} className="mb-4 d-none d-sm-block">
+          <WCBarGraph
+            title={"Activity"}
+            totalCount={overview?.totalCallActivity}
+            graphData={overview?.callActivity}
+            filters={filters}
+            type={"daily"}
           />
         </Col>
       </Row>

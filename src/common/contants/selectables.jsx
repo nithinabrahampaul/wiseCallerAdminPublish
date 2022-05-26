@@ -33,12 +33,16 @@ export const iconTypesOptions = [
 
 export const typeOptions = [
   {
-    label: "Organization",
-    value: "ORGANIZATION",
+    label: "Free",
+    value: "FREE",
   },
   {
-    label: "user",
+    label: "User",
     value: "USER",
+  },
+  {
+    label: "Organization",
+    value: "ORGANIZATION",
   },
 ];
 
@@ -77,5 +81,20 @@ export const staticPageOptions = [
   {
     label: "Protection Policy",
     value: "protection_policy",
+  },
+];
+
+export const notificationTypeOptions = [
+  {
+    label: "Custom Text",
+    value: "CUSTOM_TEXT",
+  },
+  {
+    label: "Click Action Image",
+    value: "CLICK_ACTION_IMAGE",
+  },
+  {
+    label: "Click Action Url",
+    value: "CLICK_ACTION_URL",
   },
 ];

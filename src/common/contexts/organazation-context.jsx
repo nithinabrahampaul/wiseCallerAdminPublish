@@ -82,7 +82,7 @@ export const OrganizationProvider = ({ children }) => {
   const onUpdateOrganization = useCallback(
     async (values) => {
       setLoading(true);
-      if (values.profile) {
+      if (values.profile?.length) {
         values.profile = await convertToBase64(values.profile[0]);
       }
       let result = await executePostApi(UPDATE_ORGANIZATION_PROFILE, values);
@@ -163,6 +163,7 @@ export const OrganizationProvider = ({ children }) => {
     employees,
     overview,
     allOrganizations,
+    setOrganization,
     getOrganizationDetails: useCallback(() => {
       getOrganizationDetails();
     }, [getOrganizationDetails]),

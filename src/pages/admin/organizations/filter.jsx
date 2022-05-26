@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { WCFormDate } from "../../../common/components/wc-formdate";
+import { WCFormDateRange } from "../../../common/components/wc-formdaterange";
 
 export const AdminOrganizationFilter = ({
   visible,
@@ -37,16 +37,9 @@ export const AdminOrganizationFilter = ({
             <Form onSubmit={handleSubmit(onHandleFilters)}>
               <Row>
                 <Col md={6} sm={12} className="mb-3">
-                  <WCFormDate
-                    name="register_start_date"
-                    label="Select Registered Start Date"
-                    control={control}
-                  />
-                </Col>
-                <Col md={6} sm={12} className="mb-3">
-                  <WCFormDate
-                    name="register_end_date"
-                    label="Select Registered End Date"
+                  <WCFormDateRange
+                    name="filtered_date"
+                    label="Select Date"
                     control={control}
                   />
                 </Col>

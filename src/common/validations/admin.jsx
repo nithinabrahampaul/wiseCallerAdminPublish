@@ -30,3 +30,17 @@ export const couponFormValidation = yup.object().shape({
   discount_price: yup.string().required("Discount is required"),
   subscription: yup.string().required("Please select subscription"),
 });
+
+export const planFormValidation = yup.object().shape({
+  name: yup.string().required("Name is required"),
+  subscription: yup.string().required("Please select subscription"),
+  amount: yup.string().required("Price is required"),
+  discount: yup.string().required("Discount is required"),
+  minSlab: yup.string().required("Minimum slab is required"),
+  maxSlab: yup.string().required("Maximum slab is required"),
+});
+
+export const featureFormValidation = yup.object().shape({
+  feature: yup.string().required("Feature is required"),
+  text: yup.string().required("Description is required"),
+});

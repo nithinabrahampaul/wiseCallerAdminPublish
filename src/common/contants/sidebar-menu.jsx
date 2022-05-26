@@ -6,6 +6,7 @@ import {
   faChartBar,
   faGlobe,
   faRocket,
+  faTasks,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { componentRoutes } from "./";
@@ -53,6 +54,11 @@ export const adminMenu = [
     title: "Subscriptions",
     link: componentRoutes.adminSubscriptions,
     icon: faRocket,
+  },
+  {
+    title: "Plans",
+    link: componentRoutes.adminPlans,
+    icon: faTasks,
   },
   {
     title: "Coupon",

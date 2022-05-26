@@ -63,4 +63,12 @@ export const filtersData = [
     label: "Active",
     value: "status",
   },
+  {
+    label: "Custom Status",
+    value: "custom_status",
+  },
+  {
+    label: "Select Date",
+    value: "filtered_date",
+  },
 ];

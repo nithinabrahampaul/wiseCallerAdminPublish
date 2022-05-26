@@ -2,7 +2,7 @@ import moment from "moment";
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { WCFormDate } from "../../../../common/components/wc-formdate";
+import { WCFormDateRange } from "../../../../common/components/wc-formdaterange";
 import { WCFormSelect } from "../../../../common/components/wc-formselect";
 
 export const CouponFilter = ({
@@ -49,7 +49,7 @@ export const CouponFilter = ({
                   />
                 </Col>
                 <Col md={6} sm={12} className="mb-3">
-                  <WCFormDate
+                  <WCFormDateRange
                     name="generated_date"
                     label="Select Date"
                     control={control}

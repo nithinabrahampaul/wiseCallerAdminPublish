@@ -20,6 +20,7 @@ import OrganizationAccountProfile from "../../pages/organization/accout/profile"
 import OrganizationAccountSubscription from "../../pages/organization/accout/subscription";
 import AdminStaticPages from "../../pages/admin/static-pages";
 import { AdminGlobalTypes } from "../../pages/admin/global-types";
+import AdminPlans from "../../pages/admin/plan";
 
 export const rootRoutes = [
   {
@@ -96,6 +97,11 @@ export const adminRoutes = [
   {
     path: componentRoutes.adminGlobalTypes,
     component: AdminGlobalTypes,
+    layout: MainLayout,
+  },
+  {
+    path: componentRoutes.adminPlans,
+    component: AdminPlans,
     layout: MainLayout,
   },
 ];

@@ -22,7 +22,7 @@ export const WCHeader = () => {
   };
 
   useEffect(() => {
-    getOrganizationDetails();
+    // getOrganizationDetails();
   }, [getOrganizationDetails]);
 
   return loading ? (
@@ -37,7 +37,7 @@ export const WCHeader = () => {
               <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
                 <div className="media d-flex align-items-center">
                   <Image
-                    src={Profile4}
+                    src={organization?.profile || Profile4}
                     className="user-avatar md-avatar rounded-circle"
                   />
                   <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">

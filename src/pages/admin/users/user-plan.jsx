@@ -3,8 +3,16 @@ import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { WCFormSelect } from "../../../common/components/wc-formselect";
 
-const UserChangePlan = ({ visible, onClose, plans, onChangePlan }) => {
-  const { control, handleSubmit } = useForm({});
+const UserChangePlan = ({
+  visible,
+  onClose,
+  plans,
+  onChangePlan,
+  selectedSubscription,
+}) => {
+  const { control, handleSubmit } = useForm({
+    defaultValues: { subscription: selectedSubscription.subscription },
+  });
   return (
     <Modal as={Modal.Dialog} show={visible} onHide={onClose}>
       <Card border="light" className="bg-white shadow-sm">

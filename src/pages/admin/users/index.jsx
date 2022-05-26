@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
 import { AdminUserFilter } from "./filter";
 import { toast } from "react-toastify";
 import { WCSendNotification } from "../../../common/components/wc-send-notification";
+import { ViewDetails } from "./view-details";
 
 const AdminUsers = () => {
   const [page, setPage] = useState(1);
@@ -28,8 +29,12 @@ const AdminUsers = () => {
   const [isNotification, setNotification] = useState(false);
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [isPlanVisible, setPlanVisible] = useState(false);
+  const [isViewable, setViewable] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedSubscription, setSelectedSubscription] = useState(null);
   const { loading } = useLoader();
   const {
+    isRefetched,
     employees,
     getAllEmployees,
     onExportEmployeeCSV,
@@ -87,7 +92,7 @@ const AdminUsers = () => {
   }, []);
 
   const onHandlePlanChange = useCallback((values) => {
-    setSelectedEmployees([values]);
+    setSelectedSubscription(values);
     setPlanVisible(true);
   }, []);
 
@@ -106,8 +111,18 @@ const AdminUsers = () => {
   };
 
   const onChangePlan = async (values) => {
-    await onPlanChange({ ...values, user_id: selectedEmployees[0]._id });
+    await onPlanChange({
+      ...values,
+      user_id: selectedUser._id,
+      active_subscription: selectedSubscription,
+    });
     setPlanVisible(false);
+    setViewable(false);
+  };
+
+  const onHandleViewDetails = async (values) => {
+    setSelectedUser(values);
+    setViewable(true);
   };
 
   const columns = useMemo(
@@ -116,7 +131,8 @@ const AdminUsers = () => {
         onHandleDeactivateUser,
         onHandlePlanChange,
         onHandleSendNotification,
-        onGenerateInvoice
+        onGenerateInvoice,
+        onHandleViewDetails
       ),
     [
       onHandleDeactivateUser,
@@ -143,8 +159,34 @@ const AdminUsers = () => {
   }, [getAllEmployees, page, limit, filters, isDeactivated, location]);
 
   useEffect(() => {
+    if (isRefetched) {
+      let options = {
+        page,
+        limit,
+        ...filters,
+      };
+      if (location.search) {
+        let search = location.search.slice(1).split("=");
+        options = {
+          ...options,
+          [search[0]]: search[1],
+        };
+      }
+      getAllEmployees(options);
+    }
+  }, [
+    isRefetched,
+    getAllEmployees,
+    page,
+    limit,
+    filters,
+    isDeactivated,
+    location,
+  ]);
+
+  useEffect(() => {
     let getFetchData = async () => {
-      await getAllSubscriptions();
+      await getAllSubscriptions({ type: "USER" });
       await getAllCoupons();
       await getAllOrganizations();
     };
@@ -211,6 +253,7 @@ const AdminUsers = () => {
           onClose={setPlanVisible.bind(this, false)}
           plans={allPlans}
           onChangePlan={onChangePlan}
+          selectedSubscription={selectedSubscription}
         />
       )}
       {isFilterVisible && (
@@ -229,6 +272,17 @@ const AdminUsers = () => {
           visible={isNotification}
           onClose={setNotification.bind(this, false)}
           onSubmitForm={onSubmitNotification}
+        />
+      )}
+
+      {isViewable && (
+        <ViewDetails
+          visible={isViewable}
+          onClose={setViewable.bind(this, false)}
+          user={selectedUser}
+          subscriptions={subscriptions}
+          onPlanChange={onHandlePlanChange}
+          onDownload={onGenerateInvoice}
         />
       )}
     </React.Fragment>

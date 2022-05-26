@@ -19,6 +19,7 @@ import { WCPieGraph } from "../../../common/components/wc-pie-graph";
 import { DashboardFilter } from "./filter";
 import moment from "moment";
 import { WCAppliedFilter } from "../../../common/components/wc-applied-filter";
+import { WCBarGraph } from "../../../common/components/wc-bar-graph";
 
 const overviews = [
   {
@@ -132,12 +133,41 @@ const OrganizationDashboard = () => {
 
       <WCAppliedFilter filters={filters} onUpdateFilter={setFilters} />
       <Row className="justify-content-md-center">
-        <Col sm={12} md={12} xs={12} className="mb-4 d-none d-sm-block">
+        <Col sm={12} md={6} xs={12} className="mb-4 d-none d-sm-block">
           <WCGraph
             title={"Employees"}
-            totalCount={overview?.totalEmployees}
+            totalCount={overview?.reportEmployees}
             graphData={overview?.monthlyUsers}
             filters={filters}
+          />
+        </Col>
+        <Col sm={12} md={6} xs={12} className="mb-4 d-none d-sm-block">
+          <WCGraph
+            title={"Usage"}
+            totalCount={overview?.totalDailyUsage}
+            graphData={overview?.dailyUsage}
+            filters={filters}
+            type={"daily"}
+          />
+        </Col>
+      </Row>
+      <Row className="justify-content-md-center">
+        <Col sm={12} md={12} xs={12} className="mb-4 d-none d-sm-block">
+          <WCGraph
+            title={"Activity"}
+            totalCount={overview?.totalCallActivity}
+            graphData={overview?.callActivity}
+            filters={filters}
+            type={"daily"}
+          />
+        </Col>
+        <Col xs={12} xl={6} className="mb-4 d-none d-sm-block">
+          <WCBarGraph
+            title={"Activity"}
+            totalCount={overview?.totalCallActivity}
+            graphData={overview?.callActivity}
+            filters={filters}
+            type={"daily"}
           />
         </Col>
       </Row>
@@ -169,6 +199,7 @@ const OrganizationDashboard = () => {
           visible={isFilterVisible}
           onClose={setFilterVisible.bind(this, false)}
           onHandleFilters={onHandleFilters}
+          filters={filters}
         />
       )}
     </React.Fragment>

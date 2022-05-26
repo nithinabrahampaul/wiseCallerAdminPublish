@@ -13,13 +13,32 @@ export const WCPieGraph = ({ title, totalCount = [], graphData = [] }) => {
       color: "tertiary",
       icon: faMobileAlt,
     },
-    { id: 2, label: "IOS", count: 0, color: "secondary", icon: faMobileAlt },
+    {
+      id: 2,
+      label: "IOS",
+      count: 0,
+      color: "secondary",
+      icon: faMobileAlt,
+    },
+    {
+      id: 3,
+      label: "OTHERS",
+      count: 0,
+      color: "primary",
+      icon: faMobileAlt,
+    },
   ];
 
-  prepare_data.forEach((item) => {
-    if (graphData.length) {
-      let value = graphData.find((graph) => graph._id === item.label);
-      item.count = value ? value.count : 0;
+  let total_devices = 0;
+  graphData.map((item) => (total_devices += item.count));
+
+  graphData.map((graph) => {
+    if (graph._id === "ANDROID") {
+      return (prepare_data[0].count = graph.count);
+    } else if (graph._id === "IOS") {
+      return (prepare_data[1].count = graph.count);
+    } else {
+      return (prepare_data[2].count += graph.count);
     }
   });
 
@@ -71,7 +90,11 @@ export const WCPieGraph = ({ title, totalCount = [], graphData = [] }) => {
                   className={`icon icon-xs text-${d.color} w-20 me-1`}
                 />
                 {` ${d.label} `}
-                {`${d.count}%`}
+                {`${
+                  total_devices
+                    ? Number(((d.count * 100) / total_devices).toFixed(2))
+                    : 0
+                }%(${d.count})`}
               </h6>
             ))}
           </Col>
