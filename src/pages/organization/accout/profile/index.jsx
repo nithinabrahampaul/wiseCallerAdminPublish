@@ -31,8 +31,10 @@ const OrganizationAccountProfile = () => {
   } = useForm({ defaultValues: organization });
 
   useEffect(() => {
-    getOrganizationDetails();
-  }, [getOrganizationDetails]);
+    if (!organization) {
+      getOrganizationDetails();
+    }
+  }, [getOrganizationDetails, organization]);
 
   useEffect(() => {
     let payload = {

@@ -26,6 +26,7 @@ const adminRoutes = {
   adminPages: "/admin/pages",
   adminGlobalTypes: "/admin/global-types",
   adminPlans: "/admin/plans",
+  adminTemplates: "/admin/templates",
 };
 
 export const componentRoutes = {

@@ -7,41 +7,15 @@ import { Nav, Badge, Image, Button, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import ReactHero from "../../assets/images/img/technologies/react-hero-logo.svg";
 import { organizationMenu, adminMenu } from "../contants/sidebar-menu";
-import { cookies } from "../apis/base-api";
-// import { useCookies } from "react-cookie";
+import { useAppCookies } from "../hooks";
 
 export const WCSidebar = () => {
   const [collapse, setCollapse] = useState(false);
   const location = useLocation();
+  const { appCookies } = useAppCookies();
   const { pathname } = location;
-  const role = cookies.get("role");
-  // const [cookies] = useCookies();
+  const role = appCookies?.role;
 
-  // const CollapsableNavItem = (props) => {
-  //   const { eventKey, title, icon, children = null } = props;
-  //   const defaultKey = pathname.indexOf(eventKey) !== -1 ? eventKey : "";
-
-  //   return (
-  //     <Accordion as={Nav.Item} defaultActiveKey={defaultKey}>
-  //       <Accordion.Item eventKey={eventKey}>
-  //         <Accordion.Button
-  //           as={Nav.Link}
-  //           className="d-flex justify-content-between align-items-center"
-  //         >
-  //           <span>
-  //             <span className="sidebar-icon">
-  //               <FontAwesomeIcon icon={icon} />{" "}
-  //             </span>
-  //             <span className="sidebar-text">{title}</span>
-  //           </span>
-  //         </Accordion.Button>
-  //         <Accordion.Body className="multi-level">
-  //           <Nav className="flex-column">{children}</Nav>
-  //         </Accordion.Body>
-  //       </Accordion.Item>
-  //     </Accordion>
-  //   );
-  // };
   const NavItem = (props) => {
     const {
       title,

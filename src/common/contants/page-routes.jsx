@@ -21,6 +21,7 @@ import OrganizationAccountSubscription from "../../pages/organization/accout/sub
 import AdminStaticPages from "../../pages/admin/static-pages";
 import { AdminGlobalTypes } from "../../pages/admin/global-types";
 import AdminPlans from "../../pages/admin/plan";
+import AdminTemplates from "../../pages/admin/templates";
 
 export const rootRoutes = [
   {
@@ -78,31 +79,43 @@ export const adminRoutes = [
     path: componentRoutes.adminNotes,
     component: AdminNotes,
     layout: MainLayout,
+    auth: true,
   },
   {
     path: componentRoutes.adminStatus,
     component: AdminStatus,
     layout: MainLayout,
+    auth: true,
   },
   {
     path: componentRoutes.adminCoupon,
     component: AdminCoupon,
     layout: MainLayout,
+    auth: true,
   },
   {
     path: componentRoutes.adminPages,
     component: AdminStaticPages,
     layout: MainLayout,
+    auth: true,
   },
   {
     path: componentRoutes.adminGlobalTypes,
     component: AdminGlobalTypes,
     layout: MainLayout,
+    auth: true,
   },
   {
     path: componentRoutes.adminPlans,
     component: AdminPlans,
     layout: MainLayout,
+    auth: true,
+  },
+  {
+    path: componentRoutes.adminTemplates,
+    component: AdminTemplates,
+    layout: MainLayout,
+    auth: true,
   },
 ];
 

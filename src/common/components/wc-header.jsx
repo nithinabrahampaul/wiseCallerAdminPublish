@@ -3,18 +3,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import Profile4 from "../../assets/images/img/team/profile-picture-4.jpg";
-import { removeUserCookies, cookies } from "../apis/base-api";
+import { removeUserCookies } from "../apis/base-api";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../contants";
-import { useLoader, useOrganization } from "../hooks";
+import { useLoader, useOrganization, useAppCookies } from "../hooks";
 import { useEffect } from "react";
 import { WCPreLoader } from "./wc-preloader";
-// import { Cookies } from "react-cookie";
 
 export const WCHeader = () => {
-  // const cookies = new Cookies();
   const navigate = useNavigate();
   const { organization, getOrganizationDetails } = useOrganization();
+  const { appCookies } = useAppCookies();
   const { loading } = useLoader();
   const onLogout = async () => {
     await removeUserCookies();
@@ -22,8 +21,10 @@ export const WCHeader = () => {
   };
 
   useEffect(() => {
-    // getOrganizationDetails();
-  }, [getOrganizationDetails]);
+    if (!appCookies) {
+      getOrganizationDetails();
+    }
+  }, [getOrganizationDetails, appCookies]);
 
   return loading ? (
     <WCPreLoader />
@@ -59,7 +60,7 @@ export const WCHeader = () => {
                   Profile
                 </Dropdown.Item>
 
-                {cookies.get("role") !== "ADMIN" && (
+                {appCookies?.role !== "ADMIN" && (
                   <Dropdown.Item
                     className="fw-bold"
                     onClick={navigate.bind(

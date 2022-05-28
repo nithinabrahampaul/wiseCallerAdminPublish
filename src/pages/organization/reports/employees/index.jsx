@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useEffect, useMemo } from "react";
-// import { useCookies } from "react-cookie";
 import { useLocation } from "react-router-dom";
 import swal from "sweetalert";
 import { WCDataTable } from "../../../../common/components/wc-datatable";
@@ -36,7 +35,6 @@ const OrganizationEmployees = () => {
   const { onRevokePlan } = usePlans();
   const { loading } = useLoader();
   const { onSendCustomNotification } = useNotificaton();
-  // const [cookies] = useCookies();
   const location = useLocation();
 
   useEffect(() => {

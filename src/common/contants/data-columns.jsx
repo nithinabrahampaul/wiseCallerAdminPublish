@@ -791,3 +791,43 @@ export const adminPlanColumns = (onHandleOperations) => {
     },
   ];
 };
+
+export const adminTemplateColumns = (onHandleOperations) => {
+  return [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Organization",
+      accessor: "subscription.title",
+    },
+    {
+      Header: "Template",
+      accessor: "amount",
+    },
+    {
+      Header: "Action",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faPencilAlt}
+                className="me-2"
+                onClick={onHandleOperations.bind(this, "update", row)}
+              />
+            </span>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="me-2 text-danger"
+                onClick={onHandleOperations.bind(this, "delete", row)}
+              />
+            </span>
+          </React.Fragment>
+        );
+      },
+    },
+  ];
+};

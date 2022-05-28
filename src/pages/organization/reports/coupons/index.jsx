@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { useMemo } from "react";
 import { useState } from "react";
-// import { useCookies } from "react-cookie";
 import swal from "sweetalert";
 import { WCDataTable } from "../../../../common/components/wc-datatable";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
@@ -18,7 +17,6 @@ const OrganizationCoupons = () => {
   const { coupons, getAllCoupons, onDeactivateCoupon, onExportCouponCSV } =
     useCoupon();
   const { loading } = useLoader();
-  // const [cookies] = useCookies();
 
   useEffect(() => {
     getAllCoupons({ page, limit, ...filters });

@@ -1,5 +1,9 @@
 import { faPhoenixSquadron } from "@fortawesome/free-brands-svg-icons";
-import { faFileCode, faStickyNote } from "@fortawesome/free-regular-svg-icons";
+import {
+  faFile,
+  faFileCode,
+  faStickyNote,
+} from "@fortawesome/free-regular-svg-icons";
 import {
   faBarcode,
   faBuilding,
@@ -84,5 +88,10 @@ export const adminMenu = [
     title: "Pages",
     link: componentRoutes.adminPages,
     icon: faFileCode,
+  },
+  {
+    title: "Templates",
+    link: componentRoutes.adminTemplates,
+    icon: faFile,
   },
 ];

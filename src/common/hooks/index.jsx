@@ -12,3 +12,5 @@ export { usePages } from "./pages-hook";
 export { useGlobalTypes } from "./global-types-hook";
 export { useNotificaton } from "./notification-hook";
 export { useDownload } from "./download-hook";
+export { useAppCookies } from "./app-cookies-hook";
+export { useTemplate } from "./template-hook";

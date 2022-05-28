@@ -19,6 +19,7 @@ import { useCallback } from "react";
 import { toast } from "react-toastify";
 import { useDownload } from "../hooks";
 import { convertToBase64 } from "../utils/convert-base64";
+import { AppCookiesContext } from "./app-cookies";
 
 export const OrganizationContext = createContext({});
 export const OrganizationProvider = ({ children }) => {
@@ -28,6 +29,7 @@ export const OrganizationProvider = ({ children }) => {
   const [employees, setEmployees] = useState([]);
   const [overview, setOverview] = useState(null);
   const { setLoading } = useContext(LoaderContext);
+  const { onUpdateCookies } = useContext(AppCookiesContext);
   const [downloadCSV] = useDownload();
 
   const getOrganizationDetails = useCallback(async () => {
@@ -35,6 +37,7 @@ export const OrganizationProvider = ({ children }) => {
       setLoading(true);
       let result = await executeGetApi(ORGANIZATION_PROFILE_API);
       if (result?.data?.success) {
+        onUpdateCookies(result.data.data);
         setOrganizationCookies(result.data.data);
         setOrganization(result.data.data);
       }
@@ -42,7 +45,7 @@ export const OrganizationProvider = ({ children }) => {
       if (result) {
       }
     } catch (error) {}
-  }, [setLoading]);
+  }, [setLoading, onUpdateCookies]);
 
   const getOrganizationEmployees = useCallback(
     async (params) => {

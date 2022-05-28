@@ -9,14 +9,17 @@ import "react-toastify/dist/ReactToastify.css";
 import "react-datetime/css/react-datetime.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "react-datepicker/dist/react-datepicker.css";
+import { CookiesProvider } from "react-cookie";
 
 const App = () => {
   return (
     <React.Fragment>
-      <AppWrapper>
-        <AppRoutes />
-        <ToastContainer position="top-center" autoClose="3000" />
-      </AppWrapper>
+      <CookiesProvider>
+        <AppWrapper>
+          <AppRoutes />
+          <ToastContainer position="top-center" autoClose="3000" />
+        </AppWrapper>
+      </CookiesProvider>
     </React.Fragment>
   );
 };

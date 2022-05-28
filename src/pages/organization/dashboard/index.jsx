@@ -12,7 +12,6 @@ import { faPhoenixSquadron } from "@fortawesome/free-brands-svg-icons";
 import { useLoader, useOrganization } from "../../../common/hooks";
 import { WCPreLoader } from "../../../common/components/wc-preloader";
 import { WCGraph } from "../../../common/components/wc-graph";
-// import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../../../common/contants";
 import { WCPieGraph } from "../../../common/components/wc-pie-graph";
@@ -78,7 +77,6 @@ const OrganizationDashboard = () => {
     end_date: moment().utc(true).toDate(),
   });
   const [isFilterVisible, setFilterVisible] = useState(false);
-  // const [cookies] = useCookies();
   const { getOrganizationOverview, overview } = useOrganization();
   const { loading } = useLoader();
   const navigate = useNavigate();

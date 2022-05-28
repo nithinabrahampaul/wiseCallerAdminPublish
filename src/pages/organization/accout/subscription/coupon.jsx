@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Button, Card, Col, ListGroup, Row } from "react-bootstrap";
-// import { useCookies } from "react-cookie";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
 import { useCoupon, useLoader } from "../../../../common/hooks";
 
@@ -12,7 +11,6 @@ export const Coupons = ({
 }) => {
   const { coupons, getAllCoupons } = useCoupon();
   const { loading } = useLoader();
-  // const [cookies] = useCookies();
 
   useEffect(() => {
     getAllCoupons();

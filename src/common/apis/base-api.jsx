@@ -58,13 +58,11 @@ const getHeaders = async () => {
 };
 
 const getToken = async () => {
-  // let cookies = new Cookies();
   const token = cookies.get("token");
   return token;
 };
 
 export const setUserCookies = async (values) => {
-  // let cookies = new Cookies();
   cookies.set("token", values.token, {
     expires: moment().endOf("day").toDate(),
   });
@@ -75,7 +73,6 @@ export const setUserCookies = async (values) => {
 };
 
 export const removeUserCookies = async () => {
-  // let cookies = new Cookies();
   cookies.remove("token", "");
   cookies.remove("email", "");
   cookies.remove("role", "");

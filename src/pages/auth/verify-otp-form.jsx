@@ -6,11 +6,9 @@ import { WCFormInput } from "../../common/components/wc-forminput";
 import OtpInput from "react-otp-input";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { otpFormValidation } from "../../common/validations/auth";
-import { useAuth } from "../../common/hooks";
-// import { useCookies } from "react-cookie";
+import { useAppCookies, useAuth } from "../../common/hooks";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../../common/contants";
-import { cookies } from "../../common/apis/base-api";
 
 export const OTPForm = ({ initialValues }) => {
   const {
@@ -23,7 +21,7 @@ export const OTPForm = ({ initialValues }) => {
     resolver: yupResolver(otpFormValidation),
   });
   const { onHandleVerifyOTP, onRenendOTP } = useAuth();
-  // const [cookies] = useCookies();
+  const { appCookies } = useAppCookies();
   const navigate = useNavigate();
 
   const handleVerifyOTP = async (values) => {
@@ -37,11 +35,11 @@ export const OTPForm = ({ initialValues }) => {
   };
 
   useEffect(() => {
-    const token = cookies.get("token");
+    const token = appCookies?.token;
     if (token) {
       navigate(componentRoutes.root);
     }
-  }, [navigate]);
+  }, [navigate, appCookies]);
 
   return (
     <React.Fragment>
