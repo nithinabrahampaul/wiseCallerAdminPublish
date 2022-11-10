@@ -28,22 +28,27 @@ const img = {
 };
 
 export const WCDropzone = React.forwardRef(
-  ({ onChange, multiple = false }, ref) => {
-    const [files, setFiles] = useState([]);
+  ({ onChange, multiple = false, imageFiles }, ref) => {
+    const [files, setFiles] = useState(imageFiles ? [imageFiles] : []);
 
     const onDrop = useCallback((acceptedFiles) => {
-      setFiles(
-        acceptedFiles.map((file) =>
+      setFiles([
+        ...acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
-        )
-      );
+        ),
+      ]);
     }, []);
 
     const onRemoveImage = (index) => {
-      let temp = files.length > 1 ? files.splice(index, 1) : [];
-      setFiles(temp);
+      let imageFiles = [...files];
+      if (files.length > 1) {
+        imageFiles = imageFiles.splice(index, 1);
+      } else {
+        imageFiles = [];
+      }
+      setFiles(imageFiles);
     };
 
     useEffect(() => {
@@ -55,7 +60,7 @@ export const WCDropzone = React.forwardRef(
         <div style={thumb} key={file.name}>
           <div className="text-center">
             <img
-              src={file.preview}
+              src={file instanceof Object ? file.preview : file}
               style={img}
               alt="preview-img"
               className="mb-2"
@@ -64,7 +69,7 @@ export const WCDropzone = React.forwardRef(
               role={"button"}
               icon={faTrashAlt}
               className="text-danger"
-              onClick={onRemoveImage.bind(this, index)}
+              onClick={onRemoveImage.bind(this)}
             />
           </div>
         </div>

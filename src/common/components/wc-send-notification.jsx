@@ -1,6 +1,7 @@
 import { faHeading, faComment } from "@fortawesome/free-solid-svg-icons";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { Card, Col, Form, Modal, Row, Button } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
 import { notificationTypeOptions } from "../contants/selectables";
@@ -16,11 +17,14 @@ export const WCSendNotification = ({ visible, onClose, onSubmitForm }) => {
     register,
     control,
     formState: { errors },
+    watch,
   } = useForm({ resolver: yupResolver(notificationFormValidation) });
 
-  const onNotificationTypeChange = (e) => {
-    setNotificationType(e.target.value);
-  };
+  const fields = watch("type");
+
+  useEffect(() => {
+    setNotificationType(fields);
+  }, [fields]);
 
   return (
     <React.Fragment>
@@ -35,7 +39,6 @@ export const WCSendNotification = ({ visible, onClose, onSubmitForm }) => {
                     control={control}
                     label={"Select Type"}
                     options={notificationTypeOptions}
-                    onChange={onNotificationTypeChange.bind(this)}
                   />
                 </Col>
                 <Col md={12} sm={12}>
@@ -50,9 +53,9 @@ export const WCSendNotification = ({ visible, onClose, onSubmitForm }) => {
                 <Col md={12} sm={12}>
                   {notificationType === "CLICK_ACTION_IMAGE" ? (
                     <React.Fragment>
-                      <Form.Label>{"Content"}</Form.Label>
+                      <Form.Label>{"Image"}</Form.Label>
                       <Controller
-                        name="action_image"
+                        name="image"
                         control={control}
                         render={({ field: { onChange } }) => (
                           <WCDropzone onChange={onChange} />
@@ -61,8 +64,16 @@ export const WCSendNotification = ({ visible, onClose, onSubmitForm }) => {
                     </React.Fragment>
                   ) : (
                     <WCFormInput
-                      label="Content"
-                      placeholder="Message Content"
+                      label={
+                        notificationType === "CLICK_ACTION_URL"
+                          ? "URL"
+                          : "Content"
+                      }
+                      placeholder={
+                        notificationType === "CLICK_ACTION_URL"
+                          ? "URL"
+                          : "Content"
+                      }
                       icon={faComment}
                       {...register("text")}
                       error={errors?.text}

@@ -3,7 +3,7 @@ export { loginFormValidation } from "./auth";
 
 export const notificationFormValidation = yup.object().shape({
   title: yup.string().required("Title is required"),
-  text: yup.string().required("Content is required"),
+  // text: yup.string().required("Content is required"),
 });
 
 export const rangeFilterFormValidation = yup.object().shape({

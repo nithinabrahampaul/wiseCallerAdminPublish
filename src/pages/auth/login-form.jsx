@@ -7,8 +7,8 @@ import { loginFormValidation } from "../../common/validations";
 import { useAuth } from "../../common/hooks";
 import { Link, useNavigate } from "react-router-dom";
 import { componentRoutes } from "../../common/contants";
-import React, { useContext, useEffect } from "react";
-import { AppCookiesContext } from "../../common/contexts";
+import React, { useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 export const LoginForm = ({ setInitialValues }) => {
   const {
@@ -17,15 +17,15 @@ export const LoginForm = ({ setInitialValues }) => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(loginFormValidation) });
   const { onHandleLogin } = useAuth();
-  const { appCookies } = useContext(AppCookiesContext);
+  const [cookies] = useCookies();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = appCookies?.token;
+    const token = cookies?.token;
     if (token) {
       navigate(componentRoutes.root);
     }
-  }, [navigate, appCookies]);
+  }, [navigate, cookies]);
 
   const handleLogin = async (values) => {
     try {

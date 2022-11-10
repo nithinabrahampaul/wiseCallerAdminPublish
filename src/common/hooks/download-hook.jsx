@@ -9,5 +9,23 @@ export const useDownload = () => {
     anchor.download = `${filename}.${extention}`;
     anchor.click();
   };
-  return [downloadCSV];
+
+  const downloadImage = async (url) => {
+    let extention = url.split(".")[url.split(".").length - 1];
+    let anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `download.${extention}`;
+    anchor.click();
+  };
+
+  const downloadPDF = async (data) => {
+    let blob = new Blob([data]);
+
+    let url = await convertToBase64(blob);
+    let anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `invoice.pdf`;
+    anchor.click();
+  };
+  return { downloadCSV, downloadImage, downloadPDF };
 };

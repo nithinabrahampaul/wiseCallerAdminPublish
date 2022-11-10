@@ -1,12 +1,14 @@
 import {
   faBan,
+  faDownload,
   faEye,
   faPencilAlt,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { Button } from "react-bootstrap";
+import { Button, Image } from "react-bootstrap";
+import { staticPageOptions } from "./selectables";
 // import { faEdit, faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -187,12 +189,8 @@ export const organizationCouponColumns = (onDeactivateCoupon) => {
       accessor: "createdAt",
     },
     {
-      Header: "Original Price",
-      accessor: "subscription.original_price",
-    },
-    {
-      Header: "Paid Price",
-      accessor: "subscription.current_price",
+      Header: "Price",
+      accessor: "subscription.price",
     },
     {
       Header: "GST",
@@ -234,7 +232,8 @@ export const adminUsersColumns = (
   onHandlePlanChange,
   onHandleSendNotification,
   onGenerateInvoice,
-  onHandleViewDetails
+  onHandleViewDetails,
+  filters
 ) => {
   return [
     {
@@ -306,13 +305,6 @@ export const adminUsersColumns = (
       },
     },
     {
-      Header: "Custom Status",
-      accessor: (row) =>
-        row?.user_status?.status?.status_notes?.is_custom
-          ? row?.user_status?.status?.status_notes?.text
-          : "__",
-    },
-    {
       Header: "Status",
       accessor: (row) => {
         return (
@@ -345,20 +337,6 @@ export const adminUsersColumns = (
             >
               {"Deactivate"}
             </Button>
-            {/* <Button
-              size="sm"
-              variant="primary"
-              onClick={onHandlePlanChange.bind(this, row)}
-              disabled={
-                row.user_subscription &&
-                Object.keys(row.user_subscription).length > 2
-                  ? false
-                  : true
-              }
-              style={{ marginRight: 5 }}
-            >
-              {"Change Plan"}
-            </Button> */}
             <Button
               size="sm"
               onClick={onHandleSendNotification.bind(this, row)}
@@ -366,17 +344,6 @@ export const adminUsersColumns = (
             >
               {"Send Notification"}
             </Button>
-            {/* <Button
-              size="sm"
-              disabled={
-                (row?.organization_subscription ||
-                  row?.organization_subscription === null) &&
-                !row?.user_subscription
-              }
-              onClick={onGenerateInvoice.bind(this, { user_id: row._id })}
-            >
-              {"Download Invoice"}
-            </Button> */}
           </React.Fragment>
         );
       },
@@ -391,7 +358,7 @@ export const adminOrganizationColumns = (onHandleOperations) => {
       accessor: "name",
     },
     {
-      Header: "Contant Name",
+      Header: "Contact Name",
       accessor: (row) => row?.contact_information?.name || "__",
     },
     {
@@ -411,17 +378,33 @@ export const adminOrganizationColumns = (onHandleOperations) => {
       accessor: (row) => row?.pan || "__",
     },
     {
+      Header: "Created On",
+      accessor: (row) => row?.createdAt || "__",
+    },
+    {
+      Header: "Payment",
+      accessor: (row) => (
+        <Button
+          size="sm"
+          style={{ marginRight: 5 }}
+          onClick={onHandleOperations.bind(this, "regenerate", row)}
+        >
+          Regenerate
+        </Button>
+      ),
+    },
+    {
       Header: "Action",
       accessor: (row) => {
         return (
           <React.Fragment>
-            {/* <span className="p-2" role={"button"}>
+            <span className="p-2" role={"button"}>
               <FontAwesomeIcon
                 icon={faPencilAlt}
                 className="me-2"
-                onClick={onHandleOperations.bind(this, "update", row)}
+                onClick={onHandleOperations.bind(this, "edit", row)}
               />
-            </span> */}
+            </span>
             <span className="p-2" role={"button"}>
               <FontAwesomeIcon
                 icon={faTrash}
@@ -448,7 +431,11 @@ export const adminSubscriptionColumns = (onHandleOperations) => {
     },
     {
       Header: "Price",
-      accessor: (row) => `₹${row.original_price ? row.original_price : 0}`,
+      accessor: (row) => `₹${row.price ? row.price : 0}`,
+    },
+    {
+      Header: "Discount",
+      accessor: (row) => `${row.discount ? row.discount : 0}%`,
     },
     {
       Header: "Type",
@@ -493,10 +480,6 @@ export const adminStatusColumns = (onHandleOperations) => {
     {
       Header: "Status",
       accessor: "status",
-    },
-    {
-      Header: "Order",
-      accessor: "order",
     },
     {
       Header: "Icon Style",
@@ -565,9 +548,13 @@ export const adminCouponColumns = (onDeactivateCoupon, onPlanChange) => {
     {
       Header: "Organization",
       accessor: (row) => {
-        return row?.subscription?.organization
-          ? row?.subscription?.organization?.name
-          : "__";
+        return row?.organization ? row?.organization?.name : "__";
+      },
+    },
+    {
+      Header: "Subscription",
+      accessor: (row) => {
+        return row?.subscription ? row?.subscription?.title : "__";
       },
     },
     {
@@ -575,13 +562,16 @@ export const adminCouponColumns = (onDeactivateCoupon, onPlanChange) => {
       accessor: (row) => {
         return (
           <React.Fragment>
+            <Button size="sm" variant="primary" style={{ marginRight: 5 }}>
+              {"Download"}
+            </Button>
             <Button
               size="sm"
               variant="primary"
-              onClick={onDeactivateCoupon.bind(this, row._id)}
+              onClick={onDeactivateCoupon.bind(this, row._id, row?.is_active)}
               style={{ marginRight: 5 }}
             >
-              {"Deactivate"}
+              {row?.is_active ? "Deactivate" : "Activate"}
             </Button>
             <Button
               size="sm"
@@ -609,28 +599,28 @@ export const adminNotesColumns = (onHandleOperations) => {
       Header: "Type",
       accessor: "type",
     },
-    {
-      Header: "Custom Status",
-      accessor: (row) => {
-        return (
-          <span
-            className={`fw-normal text-${row.is_custom ? "success" : "danger"}`}
-          >
-            {row.is_custom ? "Active" : "Inactive"}
-          </span>
-        );
-      },
-    },
-    {
-      Header: "Auto SMS",
-      accessor: (row) => (
-        <span
-          className={`fw-normal text-${row.auto_sms ? "success" : "danger"}`}
-        >
-          {row?.auto_sms ? "Active" : "Inactive"}
-        </span>
-      ),
-    },
+    // {
+    //   Header: "Custom Status",
+    //   accessor: (row) => {
+    //     return (
+    //       <span
+    //         className={`fw-normal text-${row.is_custom ? "success" : "danger"}`}
+    //       >
+    //         {row.is_custom ? "Active" : "Inactive"}
+    //       </span>
+    //     );
+    //   },
+    // },
+    // {
+    //   Header: "Auto SMS",
+    //   accessor: (row) => (
+    //     <span
+    //       className={`fw-normal text-${row.auto_sms ? "success" : "danger"}`}
+    //     >
+    //       {row?.auto_sms ? "Active" : "Inactive"}
+    //     </span>
+    //   ),
+    // },
     {
       Header: "Action",
       accessor: (row) => {
@@ -661,7 +651,9 @@ export const adminPagesColumns = (onHandleOperations) => {
   return [
     {
       Header: "Name",
-      accessor: "name",
+      accessor: (row) => {
+        return staticPageOptions.find((item) => item.value === row.name).label;
+      },
     },
     {
       Header: "Status",
@@ -799,12 +791,100 @@ export const adminTemplateColumns = (onHandleOperations) => {
       accessor: "name",
     },
     {
-      Header: "Organization",
-      accessor: "subscription.title",
+      Header: "Section",
+      accessor: "section",
     },
     {
       Header: "Template",
-      accessor: "amount",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            <Image src={row.template} style={{ height: "70px" }} />
+          </React.Fragment>
+        );
+      },
+    },
+    {
+      Header: "Action",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faPencilAlt}
+                className="me-2"
+                onClick={onHandleOperations.bind(this, "update", row)}
+              />
+            </span>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="me-2 text-danger"
+                onClick={onHandleOperations.bind(this, "delete", row)}
+              />
+            </span>
+          </React.Fragment>
+        );
+      },
+    },
+  ];
+};
+
+export const organizationTemplateColumns = (onHandleOperations) => {
+  return [
+    {
+      Header: "Name",
+      accessor: "name",
+    },
+    {
+      Header: "Section",
+      accessor: "section",
+    },
+    {
+      Header: "Template",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            <Image src={row.template} style={{ height: "70px" }} />
+          </React.Fragment>
+        );
+      },
+    },
+    {
+      Header: "Action",
+      accessor: (row) => {
+        return (
+          <React.Fragment>
+            <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faDownload}
+                className="me-2"
+                onClick={onHandleOperations.bind(this, "download", row)}
+              />
+            </span>
+            {/* <span className="p-2" role={"button"}>
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="me-2 text-danger"
+                onClick={onHandleOperations.bind(this, "delete", row)}
+              />
+            </span> */}
+          </React.Fragment>
+        );
+      },
+    },
+  ];
+};
+
+export const adminSubStatusColumns = (onHandleOperations) => {
+  return [
+    {
+      Header: "Name",
+      accessor: "status",
+    },
+    {
+      Header: "Icon Style",
+      accessor: "icon_style",
     },
     {
       Header: "Action",

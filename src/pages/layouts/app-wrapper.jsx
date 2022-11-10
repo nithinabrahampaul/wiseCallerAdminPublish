@@ -14,6 +14,7 @@ import {
   NotificationProvider,
   AppCookiesProvider,
   TemplateProvider,
+  PaymentProvider,
 } from "../../common/contexts";
 
 export const AppWrapper = ({ children }) => {
@@ -21,29 +22,31 @@ export const AppWrapper = ({ children }) => {
     <React.Fragment>
       <AppCookiesProvider>
         <LoaderProvider>
-          <TemplateProvider>
-            <OrganizationProvider>
-              <EmployeeProvider>
-                <CouponProvider>
-                  <SubscrptionProvider>
-                    <PlanProvider>
-                      <NoteProvider>
-                        <PageProvider>
-                          <NotificationProvider>
-                            <GlablTypesProvider>
-                              <UserStatusProvider>
-                                <AuthProvider>{children}</AuthProvider>
-                              </UserStatusProvider>
-                            </GlablTypesProvider>
-                          </NotificationProvider>
-                        </PageProvider>
-                      </NoteProvider>
-                    </PlanProvider>
-                  </SubscrptionProvider>
-                </CouponProvider>
-              </EmployeeProvider>
-            </OrganizationProvider>
-          </TemplateProvider>
+          <PaymentProvider>
+            <TemplateProvider>
+              <OrganizationProvider>
+                <EmployeeProvider>
+                  <CouponProvider>
+                    <SubscrptionProvider>
+                      <PlanProvider>
+                        <NoteProvider>
+                          <PageProvider>
+                            <NotificationProvider>
+                              <GlablTypesProvider>
+                                <UserStatusProvider>
+                                  <AuthProvider>{children}</AuthProvider>
+                                </UserStatusProvider>
+                              </GlablTypesProvider>
+                            </NotificationProvider>
+                          </PageProvider>
+                        </NoteProvider>
+                      </PlanProvider>
+                    </SubscrptionProvider>
+                  </CouponProvider>
+                </EmployeeProvider>
+              </OrganizationProvider>
+            </TemplateProvider>
+          </PaymentProvider>
         </LoaderProvider>
       </AppCookiesProvider>
     </React.Fragment>

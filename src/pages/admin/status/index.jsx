@@ -16,14 +16,15 @@ const AdminStatus = () => {
   const [initialValues, setInitialValues] = useState({});
   const [isVisible, setVisible] = useState(false);
   const [types, setTypes] = useState([]);
+  const [filters, setFilters] = useState({});
   const { loading } = useLoader();
   const { userStatues, getAllUserStatus, onUpdateUserStatus, isUpdated } =
     useUserStatus();
   const { globalTypes, getGlobalTypes } = useGlobalTypes();
 
   useEffect(() => {
-    getAllUserStatus({ page, limit });
-  }, [getAllUserStatus, page, limit, isUpdated]);
+    getAllUserStatus({ page, limit, ...filters });
+  }, [getAllUserStatus, page, limit, isUpdated, filters]);
 
   const onSubmitForm = async (values) => {
     if (values.applicable_types) {
@@ -65,6 +66,7 @@ const AdminStatus = () => {
           row.applicable_types = types.filter((item) =>
             row.applicable_types.includes(item.value)
           );
+          console.log(row);
           setInitialValues(row);
         }
         setVisible(true);
@@ -106,6 +108,12 @@ const AdminStatus = () => {
     [onHandleOperations]
   );
 
+  useEffect(() => {
+    if (!isVisible) {
+      setInitialValues({});
+    }
+  }, [isVisible]);
+
   return loading ? (
     <WCPreLoader />
   ) : (
@@ -123,6 +131,8 @@ const AdminStatus = () => {
         title={"Status"}
         limit={limit}
         onHandleCreate={onHandleOperations.bind(this, "create", "")}
+        filters={filters}
+        onHandleSearch={setFilters}
       />
       {isVisible && (
         <StatusForm

@@ -153,8 +153,8 @@ const OrganizationAccountProfile = () => {
                     <Controller
                       name="profile"
                       control={control}
-                      render={({ field: { onChange } }) => (
-                        <WCDropzone onChange={onChange} />
+                      render={({ field: { onChange, value } }) => (
+                        <WCDropzone onChange={onChange} imageFiles={value} />
                       )}
                     />
                   </Col>

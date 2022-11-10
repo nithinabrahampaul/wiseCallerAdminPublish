@@ -5,7 +5,11 @@ import swal from "sweetalert";
 import { WCDataTable } from "../../../../common/components/wc-datatable";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
 import { organizationCouponColumns } from "../../../../common/contants";
-import { useCoupon, useLoader } from "../../../../common/hooks";
+import {
+  useCoupon,
+  useLoader,
+  useSubscription,
+} from "../../../../common/hooks";
 import { CouponFilter } from "./filter";
 
 const OrganizationCoupons = () => {
@@ -13,14 +17,33 @@ const OrganizationCoupons = () => {
   const [limit] = useState(10);
   const [isFilterVisible, setFilterVisible] = useState(false);
   const [filters, setFilters] = useState({});
+  const [allSubscriptions, setAllSubscriptions] = useState([]);
 
   const { coupons, getAllCoupons, onDeactivateCoupon, onExportCouponCSV } =
     useCoupon();
+  const { subscriptions, getAllSubscriptions } = useSubscription();
   const { loading } = useLoader();
 
   useEffect(() => {
     getAllCoupons({ page, limit, ...filters });
   }, [page, limit, getAllCoupons, filters]);
+
+  useEffect(() => {
+    getAllSubscriptions({ type: "ORGANIZATION" });
+  }, [getAllSubscriptions]);
+
+  useEffect(() => {
+    if (subscriptions.length) {
+      setAllSubscriptions(
+        subscriptions.map((item) => {
+          return {
+            label: item.title,
+            value: item._id,
+          };
+        })
+      );
+    }
+  }, [subscriptions]);
 
   const onCouponDeactivate = useCallback(
     async (id) => {
@@ -75,7 +98,7 @@ const OrganizationCoupons = () => {
           onClose={setFilterVisible.bind(this, false)}
           onSaveFilters={setFilters}
           filters={filters}
-          plans={[]}
+          plans={allSubscriptions}
           coupons={[]}
         />
       )}

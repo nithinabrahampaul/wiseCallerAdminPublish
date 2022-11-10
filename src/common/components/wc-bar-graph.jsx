@@ -19,7 +19,7 @@ export const WCBarGraph = ({
 
   unique_status.map((item) => {
     let payload = {
-      status: item,
+      name: item,
       data: [],
     };
     return statuses.push(payload);
@@ -27,40 +27,65 @@ export const WCBarGraph = ({
 
   let diff =
     type === "daily"
-      ? moment(filters?.end_date).diff(
-          moment().startOf("month").utc(true).toDate(),
-          "days"
-        )
+      ? moment().diff(moment().subtract(15, "days").utc(true), "days")
       : moment(filters?.end_date).diff(filters?.start_date, "months");
 
-  for (let i = 0; i < diff + 1; i++) {
+  for (let i = 0; i <= diff + 1; i++) {
     if (type === "daily") {
-      let month = moment().startOf("month").add(i, "day").format("DD-MMM");
+      let month = moment().subtract(15, "days").add(i, "day").format("DD-MMM");
       months.push({ name: month, index: i + 1, count: 0 });
     } else {
       let month = moment(filters?.start_date)
         .add(i, "month")
         .format("MMMM-YYYY");
-      months.push({ name: month, index: i + 1, count: 0 });
+      months.push({ name: month, index: i + 1, count: 0, x: month, y: 0 });
     }
   }
 
-  const options = {
-    seriesBarDistance: 12,
-    axisX: {
-      offset: 60,
-    },
-    axisY: {
-      offset: 80,
-      labelInterpolationFnc: (value) => `${value / 1}`,
-      scaleMinSpace: 30,
-    },
-  };
+  // const options = {
+  //   seriesBarDistance: 12,
+  //   axisX: {
+  //     offset: 60,
+  //   },
+  //   axisY: {
+  //     offset: 80,
+  //     labelInterpolationFnc: (value) => {
+  //       return `${value / 1}`;
+  //     },
+  //     scaleMinSpace: 30,
+  //   },
+  // };
+
+  // statuses.map((status) => {
+  //   let data = months.map((month) => {
+  //     let value = graphData.find((graph) => {
+  //       if (graph._id.status === status.name) {
+  //         if (graph._id.called_on.toString().length > 1) {
+  //           if (
+  //             moment(month.name, "DD-MMM").format("DD") ===
+  //             `${graph._id.called_on.toString()}`
+  //           ) {
+  //             return graph;
+  //           }
+  //         } else {
+  //           if (
+  //             moment(month.name, "DD-MMM").format("D") ===
+  //             `${graph._id.called_on.toString()}`
+  //           ) {
+  //             return graph;
+  //           }
+  //         }
+  //       }
+  //     });
+  //     return (month.count = value ? value.count : month.count);
+  //   });
+  //   return (status.data = data);
+  // });
 
   statuses.map((status) => {
     let data = months.map((month) => {
       let value = graphData.find((graph) => {
-        if (graph._id.status === status.status) {
+        if (graph._id.status === status.name) {
           if (graph._id.called_on.toString().length > 1) {
             if (
               moment(month.name, "DD-MMM").format("DD") ===
@@ -78,7 +103,11 @@ export const WCBarGraph = ({
           }
         }
       });
-      return (month.count = value ? value.count : month.count);
+      // return (month.count = value ? value.count : month.count);
+      return {
+        x: month.name,
+        y: (month.count = value ? value.count : month.count),
+      };
     });
     return (status.data = data);
   });
@@ -87,7 +116,7 @@ export const WCBarGraph = ({
     type === "daily"
       ? {
           labels: months.map((item) => item.name),
-          series: statuses.map((item) => item.data),
+          series: statuses,
         }
       : {
           labels: months.map((item) => item.name),
@@ -116,8 +145,18 @@ export const WCBarGraph = ({
       <Card.Body className="p-2">
         <Chartist
           data={data}
-          options={{ ...options, plugins }}
-          type="Bar"
+          options={{
+            ...plugins,
+            ...{
+              axisX: {
+                divisor: 5,
+                labelInterpolationFnc: function (value) {
+                  return value;
+                },
+              },
+            },
+          }}
+          type="Line"
           className="ct-series-g ct-double-octave"
         />
       </Card.Body>

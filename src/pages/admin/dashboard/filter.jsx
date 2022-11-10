@@ -1,9 +1,7 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { WCFormSelect } from "../../../common/components/wc-formselect";
-import { rangeFilterFormValidation } from "../../../common/validations";
 import { WCFormDateRange } from "../../../common/components/wc-formdaterange";
 
 export const DashboardFilter = ({
@@ -13,16 +11,25 @@ export const DashboardFilter = ({
   filters,
   organizations,
 }) => {
-  const { handleSubmit, control, formState } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: filters,
   });
+
+  const onSubmitFilters = (values) => {
+    for (const [key, value] of Object.entries(values)) {
+      if (!value) {
+        delete values[key];
+      }
+    }
+    onHandleFilters(values);
+  };
 
   return (
     <React.Fragment>
       <Modal size="lg" as={Modal.Dialog} show={visible} onHide={onClose}>
         <Card border="light" className="bg-white shadow-sm">
           <Card.Body>
-            <Form onSubmit={handleSubmit(onHandleFilters)}>
+            <Form onSubmit={handleSubmit(onSubmitFilters)}>
               <Row>
                 <Col md={6} sm={12} className="mb-3">
                   <WCFormDateRange

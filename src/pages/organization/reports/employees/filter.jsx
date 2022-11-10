@@ -26,7 +26,7 @@ export const EmployeeFilter = ({
 
       if (key === "registered_date" || key === "subscribed_date") {
         if (value) {
-          Object.assign(values, { [key]: moment(value).toISOString() });
+          Object.assign(values, { [key]: moment(value).toDate() });
         }
       }
     }
@@ -96,6 +96,14 @@ export const EmployeeFilter = ({
                     name="work_life_balance"
                     control={control}
                     label={"Select Worklife Balance"}
+                    options={statusOptions}
+                  />
+                </Col>
+                <Col md={6} sm={12} className="mb-3">
+                  <WCFormSelect
+                    name="is_active"
+                    control={control}
+                    label={"Select Status"}
                     options={statusOptions}
                   />
                 </Col>

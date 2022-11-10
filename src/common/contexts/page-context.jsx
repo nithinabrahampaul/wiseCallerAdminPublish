@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { executeGetApi, executePostApi } from "../apis";
 import {
   GET_ALL_ADMIN_STATIC_PAGES,
+  GET_PAGE_BY_NAME,
   UPDATE_ADMIN_STATIC_PAGES,
 } from "../apis/api-urls";
 import { LoaderContext } from "./loader-context";
@@ -22,10 +23,10 @@ export const PageProvider = ({ children }) => {
         setPageUpdated(false);
         setLoading(true);
         let API_URL = params
-          ? `${GET_ALL_ADMIN_STATIC_PAGES}?page=${params.page}&&limit=${params.limit}`
+          ? `${GET_ALL_ADMIN_STATIC_PAGES}`
           : GET_ALL_ADMIN_STATIC_PAGES;
-        let result = await executeGetApi(API_URL);
 
+        let result = await executePostApi(API_URL, params);
         if (result?.data?.success) {
           setPages(result.data.data);
         } else {
@@ -52,7 +53,22 @@ export const PageProvider = ({ children }) => {
         setPageCreated(true);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
+  const getPageByName = useCallback(
+    async (name) => {
+      try {
+        setLoading(true);
+        let result = await executeGetApi(`${GET_PAGE_BY_NAME}${name}`);
+        if (result?.data?.success) {
+          setLoading(false);
+          return result.data.data;
+        }
+      } catch (error) {
         setLoading(false);
       }
     },
@@ -73,6 +89,12 @@ export const PageProvider = ({ children }) => {
         onUpdateStaticPage(values);
       },
       [onUpdateStaticPage]
+    ),
+    getPageByName: useCallback(
+      async (name) => {
+        return await getPageByName(name);
+      },
+      [getPageByName]
     ),
   };
   return <PageContext.Provider value={values}>{children}</PageContext.Provider>;

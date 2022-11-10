@@ -14,3 +14,5 @@ export { useNotificaton } from "./notification-hook";
 export { useDownload } from "./download-hook";
 export { useAppCookies } from "./app-cookies-hook";
 export { useTemplate } from "./template-hook";
+export { useUploadImage } from "./upload-image-hook";
+export { usePayment } from "./payment-hook";

@@ -10,6 +10,7 @@ import {
 import { OrganizationForm } from "./organization-form";
 import swal from "sweetalert";
 import { AdminOrganizationFilter } from "./filter";
+import { WCCopyClipboard } from "../../../common/components/wc-copy-clipboard";
 
 const AdminOrganization = () => {
   const [page, setPage] = useState(1);
@@ -19,6 +20,8 @@ const AdminOrganization = () => {
   const [isVisible, setVisible] = useState(false);
   const [types, setTypes] = useState([]);
   const [isFilterVisible, setFilterVisible] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState(null);
+  const [clipboardVisible, setClipboardVisible] = useState(false);
   const { loading } = useLoader();
 
   const {
@@ -28,6 +31,8 @@ const AdminOrganization = () => {
     isUpdated,
     onDeleteOrganization,
     onExportOrganizationCSV,
+    onCreateOrganization,
+    onRegenaratePayment,
   } = useOrganization();
   const { globalTypes, getGlobalTypes } = useGlobalTypes();
 
@@ -80,23 +85,47 @@ const AdminOrganization = () => {
   );
 
   const onSubmitForm = async (values) => {
-    await onUpdateOrganization(values);
+    if (Object.keys(initialValues).length) {
+      await onUpdateOrganization(values);
+    } else {
+      let organization = await onCreateOrganization(values);
+      if (organization.success && organization?.paymentUrl) {
+        setClipboardVisible(true);
+        setPaymentUrl(organization?.paymentUrl);
+      }
+    }
     setVisible(false);
     setInitialValues({});
   };
 
   const onHandleOperations = useCallback(
-    (value, row) => {
+    async (value, row) => {
       if (value === "delete") {
         onDeleteOrganizations(row);
+      } else if (value === "regenerate") {
+        let paymentUrl = await onRegenaratePayment(row);
+        if (paymentUrl) {
+          setPaymentUrl(paymentUrl);
+          setClipboardVisible(true);
+        }
       } else {
         if (row) {
-          setInitialValues(row);
+          let payload = {
+            ...row,
+            address: row.address_details.address,
+            city: row.address_details.city,
+            state: row.address_details.state,
+            country: row.address_details.country,
+            contact_name: row.contact_information.name,
+            contact_email: row.contact_information.email,
+            contact_phone: row.contact_information.phone_no,
+          };
+          setInitialValues(payload);
         }
         setVisible(true);
       }
     },
-    [onDeleteOrganizations]
+    [onDeleteOrganizations, onRegenaratePayment]
   );
 
   const columns = useMemo(
@@ -142,6 +171,14 @@ const AdminOrganization = () => {
           onClose={setFilterVisible.bind(this, false)}
           filters={filters}
           onSaveFilters={setFilters}
+        />
+      )}
+
+      {clipboardVisible && (
+        <WCCopyClipboard
+          visible={clipboardVisible}
+          onClose={setClipboardVisible.bind(this, false)}
+          paymentUrl={paymentUrl}
         />
       )}
     </React.Fragment>

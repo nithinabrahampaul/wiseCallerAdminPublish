@@ -8,6 +8,8 @@ import {
   useSubscription,
 } from "../../../../common/hooks";
 import { WCPreLoader } from "../../../../common/components/wc-preloader";
+import { useState } from "react";
+import moment from "moment";
 
 export const Subscription = ({
   activeStep,
@@ -15,6 +17,7 @@ export const Subscription = ({
   onFormChange,
   subscriptionForm,
 }) => {
+  const [subscribed, setSubscribed] = useState([]);
   const { getOrganizationSubscriptions, subscriptions } = useSubscription();
   const { getAllCoupons, coupons } = useCoupon();
   const { loading } = useLoader();
@@ -31,6 +34,12 @@ export const Subscription = ({
     onFormChange({ ...subscriptionForm, subscription: subscription });
     onStepChange(activeStep + 1);
   };
+
+  useEffect(() => {
+    if (coupons.length) {
+      setSubscribed(coupons.map((item) => item.subscription));
+    }
+  }, [coupons]);
 
   return loading ? (
     <WCPreLoader />
@@ -63,35 +72,36 @@ export const Subscription = ({
             </div>
             <div className="d-flex align-items-center mb-3">
               <FontAwesomeIcon icon={faCheck} className="me-2" />
-              <span>{subscription.cess_percentage}% GST</span>
+              <span>{subscription.cess_percentage}% CESS</span>
             </div>
           </Card.Body>
           <Card.Footer className="border-gray-100 d-grid px-4 pb-4">
-            {/* {coupons.map((item) => item.subscription === item._id) && (
-              <Button
-                className="w-100 btn btn-gray-800 mt-2"
-                onClick={onRenewSubscriptions.bind(this, subscription)}
-              >
-                Renew
-              </Button>
-            )} */}
-            {coupons?.length &&
-              coupons[coupons.length - 1].subscription === subscription._id && (
-                <Button
-                  className="w-100 btn mt-2"
-                  onClick={onRenewSubscriptions.bind(this, subscription)}
-                >
-                  Subscribed
-                  <div>
-                    Expired on ({coupons[coupons.length - 1].expires_at})
-                  </div>
-                </Button>
-              )}
+            {coupons?.length
+              ? coupons.map((coupon, index) =>
+                  coupon.subscription === subscription._id ? (
+                    <Button
+                      key={index}
+                      className="w-100 btn mt-2"
+                      onClick={onRenewSubscriptions.bind(this, subscription)}
+                    >
+                      Subscribed
+                      <div>
+                        Expires On :{" "}
+                        {moment(coupon.expires_at).format("DD/MM/YYYY")}
+                      </div>
+                      <div>
+                        Validate till :{" "}
+                        {moment(coupon.expires_at).format("DD/MM/YYYY")}
+                      </div>
+                    </Button>
+                  ) : null
+                )
+              : null}
             <Button
               className="w-100 btn btn-gray-800 mt-2"
               onClick={onRenewSubscriptions.bind(this, subscription)}
             >
-              {coupons.length ? "Renew" : "Subscription"}
+              {subscribed.includes(subscription._id) ? "Renew" : "Subscribe"}
             </Button>
           </Card.Footer>
         </Card>

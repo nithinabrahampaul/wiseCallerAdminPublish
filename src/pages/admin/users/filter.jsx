@@ -1,4 +1,3 @@
-import moment from "moment";
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -23,12 +22,6 @@ export const AdminUserFilter = ({
     for (const [key, value] of Object.entries(values)) {
       if (!value) {
         delete values[key];
-      }
-
-      if (key === "registered_date" || key === "subscribed_date") {
-        if (value) {
-          Object.assign(values, { [key]: moment(value).toISOString() });
-        }
       }
     }
     onSaveFilters(values);
@@ -92,6 +85,8 @@ export const AdminUserFilter = ({
                     options={statusOptions}
                   />
                 </Col>
+              </Row>
+              <Row>
                 <Col md={6} sm={12} className="mb-3">
                   <WCFormSelect
                     name="work_life_balance"
@@ -106,6 +101,16 @@ export const AdminUserFilter = ({
                     control={control}
                     label={"Select Organization"}
                     options={organizations}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6} sm={12} className="mb-3">
+                  <WCFormSelect
+                    name="is_active"
+                    control={control}
+                    label={"Select Status"}
+                    options={statusOptions}
                   />
                 </Col>
               </Row>

@@ -5,7 +5,6 @@ import { MainLayout } from "../../pages/layouts/main-layout";
 import { BlankLayout } from "../../pages/layouts/blank-layout";
 import Register from "../../pages/auth/register";
 import OrganizationDashboard from "../../pages/organization/dashboard";
-import OrganizationList from "../../pages/organization/list/list";
 import OrganizationPricing from "../../pages/organization/pricing";
 import OrganizationEmployees from "../../pages/organization/reports/employees";
 import OrganizationCoupons from "../../pages/organization/reports/coupons";
@@ -22,6 +21,12 @@ import AdminStaticPages from "../../pages/admin/static-pages";
 import { AdminGlobalTypes } from "../../pages/admin/global-types";
 import AdminPlans from "../../pages/admin/plan";
 import AdminTemplates from "../../pages/admin/templates";
+import OrganizationPayment from "../../pages/admin/organization-payment";
+import TokenExpired from "../../pages/token-expired";
+import AdminAccountProfile from "../../pages/admin/accout/profile";
+import DynamicPage from "../../pages/dynamic-page";
+import OrganizationTemplates from "../../pages/organization/reports/templates";
+import AdminSubStatus from "../../pages/admin/sub-status"
 
 export const rootRoutes = [
   {
@@ -45,6 +50,24 @@ export const rootRoutes = [
   {
     path: componentRoutes.pricing,
     component: OrganizationPricing,
+    layout: BlankLayout,
+    auth: false,
+  },
+  {
+    path: componentRoutes.organizationPayment,
+    component: OrganizationPayment,
+    layout: BlankLayout,
+    auth: false,
+  },
+  {
+    path: componentRoutes.tokenExpired,
+    component: TokenExpired,
+    layout: BlankLayout,
+    auth: false,
+  },
+  {
+    path: componentRoutes.dynamicPage,
+    component: DynamicPage,
     layout: BlankLayout,
     auth: false,
   },
@@ -117,18 +140,24 @@ export const adminRoutes = [
     layout: MainLayout,
     auth: true,
   },
+  {
+    path: componentRoutes.adminAccountProfile,
+    component: AdminAccountProfile,
+    layout: MainLayout,
+    auth: true,
+  },
+  {
+    path: componentRoutes.adminSubStatus,
+    component: AdminSubStatus,
+    layout: MainLayout,
+    auth: true,
+  },
 ];
 
 export const organizationRoutes = [
   {
     path: componentRoutes.organizationDashboard,
     component: OrganizationDashboard,
-    layout: MainLayout,
-    auth: true,
-  },
-  {
-    path: componentRoutes.organizationList,
-    component: OrganizationList,
     layout: MainLayout,
     auth: true,
   },
@@ -153,6 +182,12 @@ export const organizationRoutes = [
   {
     path: componentRoutes.organizationAccountSubscription,
     component: OrganizationAccountSubscription,
+    layout: MainLayout,
+    auth: true,
+  },
+  {
+    path: componentRoutes.organizationTemplates,
+    component: OrganizationTemplates,
     layout: MainLayout,
     auth: true,
   },

@@ -3,28 +3,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRocket, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
 import Profile4 from "../../assets/images/img/team/profile-picture-4.jpg";
-import { removeUserCookies } from "../apis/base-api";
 import { useNavigate } from "react-router-dom";
 import { componentRoutes } from "../contants";
-import { useLoader, useOrganization, useAppCookies } from "../hooks";
+import { useLoader, useOrganization } from "../hooks";
 import { useEffect } from "react";
 import { WCPreLoader } from "./wc-preloader";
+import { useCookies } from "react-cookie";
 
 export const WCHeader = () => {
   const navigate = useNavigate();
   const { organization, getOrganizationDetails } = useOrganization();
-  const { appCookies } = useAppCookies();
+  const [cookies, , removeCookie] = useCookies();
   const { loading } = useLoader();
   const onLogout = async () => {
-    await removeUserCookies();
+    removeCookie("email");
+    removeCookie("role");
+    removeCookie("token");
     navigate(componentRoutes.login);
   };
 
   useEffect(() => {
-    if (!appCookies) {
+    if (cookies?.token && !organization) {
       getOrganizationDetails();
     }
-  }, [getOrganizationDetails, appCookies]);
+  }, [getOrganizationDetails, cookies, organization]);
 
   return loading ? (
     <WCPreLoader />
@@ -53,14 +55,16 @@ export const WCHeader = () => {
                   className="fw-bold"
                   onClick={navigate.bind(
                     this,
-                    componentRoutes.organizationAccountProfile
+                    cookies?.role === "ADMIN"
+                      ? componentRoutes.adminAccountProfile
+                      : componentRoutes.organizationAccountProfile
                   )}
                 >
                   <FontAwesomeIcon icon={faUserCircle} className="me-2" /> My
                   Profile
                 </Dropdown.Item>
 
-                {appCookies?.role !== "ADMIN" && (
+                {cookies?.role !== "ADMIN" && (
                   <Dropdown.Item
                     className="fw-bold"
                     onClick={navigate.bind(

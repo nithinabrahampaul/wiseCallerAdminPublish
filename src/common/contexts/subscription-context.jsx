@@ -2,7 +2,7 @@ import moment from "moment";
 import React, { useState, createContext, useCallback } from "react";
 import useRazorPay from "react-razorpay";
 import { toast } from "react-toastify";
-import { executeGetApi, executePostApi } from "../apis";
+import { executePostApi } from "../apis";
 import {
   GET_ALL_SUBSCRIPTIONS,
   GET_SUBSCRIPTIONS_API,
@@ -30,9 +30,9 @@ export const SubscrptionProvider = ({ children }) => {
   const getOrganizationSubscriptions = useCallback(async () => {
     try {
       setLoading(true);
-      let result = await executeGetApi(
-        `${GET_SUBSCRIPTIONS_API}?type=ORGANIZATION`
-      );
+      let result = await executePostApi(`${GET_SUBSCRIPTIONS_API}`, {
+        type: "ORGANIZATION",
+      });
       if (result?.data?.success) {
         setSubscriptions(result.data.data);
       }
@@ -55,7 +55,7 @@ export const SubscrptionProvider = ({ children }) => {
           quantity: companyForm.quantity,
           coupon_expiry_date: moment()
             .add(companyForm.subscription.duration, "months")
-            .toISOString(),
+            .toDate(),
           coupon_code: generateVoucher,
         };
 
@@ -204,7 +204,7 @@ export const SubscrptionProvider = ({ children }) => {
                   quantity: values.quantity,
                   coupon_expiry_date: moment()
                     .add(values.subscription.duration, "months")
-                    .toISOString(),
+                    .toDate(),
                   coupon_code: generateVoucher,
                   amount:
                     amount_payload.amount +

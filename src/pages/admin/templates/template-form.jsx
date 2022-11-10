@@ -1,5 +1,7 @@
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import { WCDropzone } from "../../../common/components/wc-dropzone";
+import { WCFormInput } from "../../../common/components/wc-forminput";
 
 export const TemplateForm = ({
   visible,
@@ -7,9 +9,15 @@ export const TemplateForm = ({
   onSubmitForm,
   initialValues,
 }) => {
-  const { handleSubmit } = useForm({
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    control,
+  } = useForm({
     defaultValues: initialValues,
   });
+
   return (
     <Modal show={visible} onHide={onClose} size={"xl"}>
       <Form onSubmit={handleSubmit(onSubmitForm)}>
@@ -18,24 +26,34 @@ export const TemplateForm = ({
             <Modal.Header closeButton>Templates</Modal.Header>
             <Modal.Body>
               <Row>
-                <Col md={12} className="mb-3">
-                  {/* <WCFormSelect
-                    name="name"
-                    control={control}
-                    label={"Select HTML Page"}
-                    options={staticPageOptions}
-                  /> */}
+                <Col md={6}>
+                  <WCFormInput
+                    label="Name"
+                    placeholder="Template name"
+                    error={errors?.name}
+                    {...register("name")}
+                  />
                 </Col>
-                {/* <Col md={12} className="mb-3">
-                  <Form.Group className="mb-4">
-                    <Form.Label>{"Content"}</Form.Label>
-                    <Controller
-                      name="content"
-                      control={control}
-                      render={({ field }) => <WCEditor {...field} />}
-                    />
-                  </Form.Group>
-                </Col> */}
+                <Col md={6}>
+                  <WCFormInput
+                    label="Section"
+                    placeholder="Template section"
+                    error={errors?.section}
+                    {...register("section")}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={12}>
+                  <Form.Label>{"Image"}</Form.Label>
+                  <Controller
+                    name="template"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <WCDropzone onChange={onChange} imageFiles={value} />
+                    )}
+                  />
+                </Col>
               </Row>
             </Modal.Body>
           </Card.Body>

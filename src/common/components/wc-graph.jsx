@@ -13,18 +13,15 @@ export const WCGraph = ({
   let months = [];
   let diff =
     type === "daily"
-      ? moment(filters?.filtered_date[1]).diff(
-          moment().startOf("month").utc(true).toDate(),
-          "days"
-        )
-      : moment(filters?.end_date).diff(filters?.filtered_date[0], "months");
+      ? moment().diff(moment().subtract(15, "days").utc(true).toDate(), "days")
+      : moment(filters?.end_date).diff(filters?.filtered_date?.[0], "months");
 
-  for (let i = 0; i < diff + 1; i++) {
+  for (let i = 0; i <= diff + 1; i++) {
     if (type === "daily") {
-      let month = moment().startOf("month").add(i, "day").format("DD-MMM");
+      let month = moment().subtract(15, "days").add(i, "day").format("DD-MMM");
       months.push({ name: month, index: i + 1, count: 0 });
     } else {
-      let month = moment(filters?.filtered_date[0])
+      let month = moment(filters?.filtered_date?.[0])
         .add(i, "month")
         .format("MMMM-YYYY");
       months.push({ name: month, index: i + 1, count: 0 });

@@ -10,6 +10,6 @@ export const WCSelection = React.forwardRef(
       checkRef.current.indeterminate = indeterminate;
     }, [checkRef, indeterminate]);
 
-    return <Form.Check type={"checkbox"} ref={checkRef} {...rest} />;
+    return <Form.Check type="checkbox" ref={checkRef} {...rest} />;
   }
 );

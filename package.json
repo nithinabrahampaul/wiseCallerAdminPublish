@@ -27,6 +27,7 @@
     "moment": "^2.29.1",
     "node-sass": "^7.0.1",
     "react": "^17.0.2",
+    "react-aws-s3": "^1.5.0",
     "react-bootstrap": "^2.1.1",
     "react-chartist": "^0.14.4",
     "react-cookie": "^4.1.1",

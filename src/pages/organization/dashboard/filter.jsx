@@ -1,9 +1,7 @@
-import { yupResolver } from "@hookform/resolvers/yup";
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { WCFormDate } from "../../../common/components/wc-formdate";
-import { rangeFilterFormValidation } from "../../../common/validations";
+import { WCFormDateRange } from "../../../common/components/wc-formdaterange";
 
 export const DashboardFilter = ({
   visible,
@@ -11,35 +9,32 @@ export const DashboardFilter = ({
   onHandleFilters,
   filters,
 }) => {
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: filters,
-    resolver: yupResolver(rangeFilterFormValidation),
   });
+
+  const onSubmitFilters = (values) => {
+    console.log(values);
+    for (const [key, value] of Object.entries(values)) {
+      if (!value) {
+        delete values[key];
+      }
+    }
+    console.log(values);
+    onHandleFilters(values);
+  };
   return (
     <React.Fragment>
       <Modal size="lg" as={Modal.Dialog} show={visible} onHide={onClose}>
         <Card border="light" className="bg-white shadow-sm">
           <Card.Body>
-            <Form onSubmit={handleSubmit(onHandleFilters)}>
+            <Form onSubmit={handleSubmit(onSubmitFilters)}>
               <Row>
                 <Col md={6} sm={12} className="mb-3">
-                  <WCFormDate
-                    name="start_date"
-                    label="Start Date"
+                  <WCFormDateRange
                     control={control}
-                    error={errors?.start_date}
-                  />
-                </Col>
-                <Col md={6} sm={12} className="mb-3">
-                  <WCFormDate
-                    name="end_date"
-                    label="End Date"
-                    control={control}
-                    error={errors?.end_date}
+                    label="Select Date"
+                    name="filtered_date"
                   />
                 </Col>
               </Row>

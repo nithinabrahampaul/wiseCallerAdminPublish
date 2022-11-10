@@ -37,6 +37,7 @@ const AdminCoupon = () => {
   } = useCoupon();
   const { subscriptions, getAllSubscriptions } = useSubscription();
   const { getAllOrganizations, allOrganizations } = useOrganization();
+  const { onCouponChange } = useCoupon();
 
   useEffect(() => {
     getAllSubscriptions({});
@@ -48,7 +49,7 @@ const AdminCoupon = () => {
   }, [getAllCoupons, page, limit, filters, isRefetch]);
 
   const onCouponDeactivate = useCallback(
-    async (id) => {
+    async (id, status) => {
       swal({
         title: "Are you sure?",
         text: "You want to deactivate the coupon!",
@@ -60,7 +61,7 @@ const AdminCoupon = () => {
         },
       }).then(async (value) => {
         if (value) {
-          await onDeactivateCoupon(id);
+          await onDeactivateCoupon(id, { is_active: !status });
         }
       });
     },
@@ -73,8 +74,9 @@ const AdminCoupon = () => {
   }, []);
 
   const onCouponPlanChange = async (values) => {
+    await onCouponChange({ ...values });
     // await onPlanChange({ ...values, user_id: selectedEmployees[0]._id });
-    // setPlanVisible(false);
+    setPlanChangeVisible(false);
   };
 
   useEffect(() => {

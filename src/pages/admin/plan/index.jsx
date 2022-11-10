@@ -104,6 +104,12 @@ const AdminPlans = () => {
     [onHandleOperations]
   );
 
+  useEffect(() => {
+    if (!isVisible) {
+      setInitialValues({});
+    }
+  }, [isVisible]);
+
   return loading ? (
     <WCPreLoader />
   ) : (

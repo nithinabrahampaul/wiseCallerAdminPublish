@@ -46,9 +46,9 @@ export const SubscriptionForm = ({
 
   useEffect(() => {
     if (Object.keys(initialValues).length) {
-      setFeatures([...features, ...initialValues.features]);
+      setFeatures([{ feature: "", text: "" }, ...initialValues.features]);
     }
-  }, [initialValues, features]);
+  }, [initialValues]);
 
   const onSubmitFeature = (values) => {
     let temp_features = [...features];
@@ -175,11 +175,21 @@ export const SubscriptionForm = ({
                 <Col md={6}>
                   <WCFormInput
                     type="number"
-                    label="Original Price"
+                    label="Price"
                     placeholder="0.00"
                     icon={faRupeeSign}
-                    {...register("original_price")}
-                    error={errors?.original_price}
+                    {...register("price")}
+                    error={errors?.price}
+                  />
+                </Col>
+                <Col md={6}>
+                  <WCFormInput
+                    type="number"
+                    label="Discount"
+                    placeholder="0.00"
+                    icon={faBolt}
+                    {...register("discount")}
+                    error={errors?.discount}
                   />
                 </Col>
                 <Col md={6}>

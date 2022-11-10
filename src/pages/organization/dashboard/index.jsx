@@ -73,8 +73,10 @@ const overviews = [
 const OrganizationDashboard = () => {
   const [summary, setSummary] = useState([]);
   const [filters, setFilters] = useState({
-    start_date: moment().startOf("year").startOf("day").utc(true).toDate(),
-    end_date: moment().utc(true).toDate(),
+    filtered_date: [
+      moment().startOf("year").startOf("day").utc(true).toDate(),
+      moment().utc(true).toDate(),
+    ],
   });
   const [isFilterVisible, setFilterVisible] = useState(false);
   const { getOrganizationOverview, overview } = useOrganization();
@@ -131,30 +133,21 @@ const OrganizationDashboard = () => {
 
       <WCAppliedFilter filters={filters} onUpdateFilter={setFilters} />
       <Row className="justify-content-md-center">
-        <Col sm={12} md={6} xs={12} className="mb-4 d-none d-sm-block">
+        <Col sm={12} md={12} xs={12} className="mb-4 d-none d-sm-block">
           <WCGraph
-            title={"Employees"}
-            totalCount={overview?.reportEmployees}
+            title={"Users"}
+            totalCount={overview?.totalEmployees}
             graphData={overview?.monthlyUsers}
             filters={filters}
           />
         </Col>
+      </Row>
+      <Row className="justify-content-md-center">
         <Col sm={12} md={6} xs={12} className="mb-4 d-none d-sm-block">
           <WCGraph
             title={"Usage"}
             totalCount={overview?.totalDailyUsage}
             graphData={overview?.dailyUsage}
-            filters={filters}
-            type={"daily"}
-          />
-        </Col>
-      </Row>
-      <Row className="justify-content-md-center">
-        <Col sm={12} md={12} xs={12} className="mb-4 d-none d-sm-block">
-          <WCGraph
-            title={"Activity"}
-            totalCount={overview?.totalCallActivity}
-            graphData={overview?.callActivity}
             filters={filters}
             type={"daily"}
           />

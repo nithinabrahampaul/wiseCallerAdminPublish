@@ -86,15 +86,15 @@ export const staticPageOptions = [
 
 export const notificationTypeOptions = [
   {
-    label: "Custom Text",
+    label: "Custom text",
     value: "CUSTOM_TEXT",
   },
   {
-    label: "Click Action Image",
+    label: "Click action image",
     value: "CLICK_ACTION_IMAGE",
   },
   {
-    label: "Click Action Url",
+    label: "Click action url",
     value: "CLICK_ACTION_URL",
   },
 ];

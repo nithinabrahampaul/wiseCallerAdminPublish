@@ -45,7 +45,8 @@ const AdminUsers = () => {
   } = useEmployee();
   const { coupons, getAllCoupons } = useCoupon();
   const { subscriptions, getAllSubscriptions } = useSubscription();
-  const { allOrganizations, getAllOrganizations } = useOrganization();
+  const { allOrganizations, getAllOrganizations, uploadImageOnAws } =
+    useOrganization();
   const { onSendCustomNotification } = useNotificaton();
   const location = useLocation();
 
@@ -95,19 +96,35 @@ const AdminUsers = () => {
     setSelectedSubscription(values);
     setPlanVisible(true);
   }, []);
-
   const onSubmitNotification = async (values) => {
-    let temp = selectedEmployees.map((item) =>
-      item?.original ? item.original._id : item._id
-    );
+    try {
+      let temp = selectedEmployees.map((item) =>
+        item?.original ? item.original._id : item._id
+      );
 
-    let payload = {
-      ...values,
-      selected_users: temp,
-      send_all: false,
-    };
+      let payload = {
+        ...values,
+        selected_users: temp,
+        send_all: false,
+        filters: filters,
+      };
 
-    await onSendCustomNotification(payload);
+      if (values.image) {
+        let url = await uploadImageOnAws({
+          image: values.image[0],
+          type: "notifications",
+        });
+
+        if (url) {
+          Object.assign(payload, { text: url });
+        }
+      }
+
+      await onSendCustomNotification(payload);
+      setNotification(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onChangePlan = async (values) => {
@@ -125,6 +142,10 @@ const AdminUsers = () => {
     setViewable(true);
   };
 
+  const onSelectUsers = useCallback(async (values) => {
+    setSelectedEmployees([...values.map((item) => item.original)]);
+  }, []);
+
   const columns = useMemo(
     () =>
       adminUsersColumns(
@@ -132,13 +153,15 @@ const AdminUsers = () => {
         onHandlePlanChange,
         onHandleSendNotification,
         onGenerateInvoice,
-        onHandleViewDetails
+        onHandleViewDetails,
+        filters
       ),
     [
       onHandleDeactivateUser,
       onHandlePlanChange,
       onHandleSendNotification,
       onGenerateInvoice,
+      filters,
     ]
   );
 
@@ -149,14 +172,38 @@ const AdminUsers = () => {
       ...filters,
     };
     if (location.search) {
-      let search = location.search.slice(1).split("=");
-      options = {
-        ...options,
-        [search[0]]: search[1],
-      };
+      if (location.search.includes("&&")) {
+        for (const item of location.search.slice(1).split("&&")) {
+          let filter = item.split("=");
+          options = {
+            ...options,
+            [filter[0]]: filter[1],
+          };
+        }
+      } else {
+        let search = location.search.slice(1).split("=");
+        options = {
+          ...options,
+          [search[0]]: search[1],
+        };
+      }
     }
     getAllEmployees(options);
   }, [getAllEmployees, page, limit, filters, isDeactivated, location]);
+
+  useEffect(() => {
+    if (location.search) {
+      if (location.search.includes("&&")) {
+        for (const item of location.search.slice(1).split("&&")) {
+          let filter = item.split("=");
+          setFilters({ [filter[0]]: filter[1] });
+        }
+      } else {
+        let search = location.search.slice(1).split("=");
+        setFilters({ [search[0]]: search[1] });
+      }
+    }
+  }, [location]);
 
   useEffect(() => {
     if (isRefetched) {
@@ -165,28 +212,13 @@ const AdminUsers = () => {
         limit,
         ...filters,
       };
-      if (location.search) {
-        let search = location.search.slice(1).split("=");
-        options = {
-          ...options,
-          [search[0]]: search[1],
-        };
-      }
       getAllEmployees(options);
     }
-  }, [
-    isRefetched,
-    getAllEmployees,
-    page,
-    limit,
-    filters,
-    isDeactivated,
-    location,
-  ]);
+  }, [isRefetched, getAllEmployees, page, limit, filters]);
 
   useEffect(() => {
     let getFetchData = async () => {
-      await getAllSubscriptions({ type: "USER" });
+      await getAllSubscriptions({});
       await getAllCoupons();
       await getAllOrganizations();
     };
@@ -246,6 +278,7 @@ const AdminUsers = () => {
         onHandleFilter={setFilterVisible.bind(this, true)}
         onExportCSV={onExportEmployeeCSV.bind(this, filters)}
         onHandleSendNotification={setNotification.bind(true)}
+        onHandleSelected={onSelectUsers}
       />
       {isPlanVisible && (
         <UserChangePlan

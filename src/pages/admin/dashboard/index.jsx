@@ -18,56 +18,7 @@ import { DashboardFilter } from "./filter";
 import moment from "moment";
 import { WCAppliedFilter } from "../../../common/components/wc-applied-filter";
 import { WCBarGraph } from "../../../common/components/wc-bar-graph";
-
-const overviews = [
-  {
-    title: "Total Employees",
-    count: 0,
-    icon: faUsers,
-    key: "totalEmployees",
-    url: "/admin/users",
-  },
-  {
-    title: "Total Coupons",
-    count: 0,
-    icon: faBarcode,
-    key: "totalCoupons",
-    url: "/admin/coupon",
-  },
-  // {
-  //   title: "Available Slots",
-  //   count: 55,
-  //   icon: faCheckCircle,
-  // },
-  {
-    title: "Work Life Balance",
-    count: 0,
-    icon: faStopwatch,
-    key: "totalWorkLifeBalance",
-    url: "/admin/users?work_life_balance=true",
-  },
-  {
-    title: "Road Safety",
-    count: 0,
-    icon: faBiking,
-    key: "totalRoadSafety",
-    url: "/admin/users?road_safety=true",
-  },
-  {
-    title: "Calendar Sync",
-    count: 0,
-    icon: faCalendarAlt,
-    key: "totalCalendarSync",
-    url: "/admin/users?calender_sync=true",
-  },
-  {
-    title: "Custom Status",
-    count: 0,
-    icon: faPhoenixSquadron,
-    key: "totalCustomStatus",
-    url: "/admin/users?custom_status=true",
-  },
-];
+import { useMemo } from "react";
 
 const AdminDashboard = () => {
   const [summary, setSummary] = useState([]);
@@ -87,6 +38,64 @@ const AdminDashboard = () => {
     allOrganizations,
   } = useOrganization();
   const { loading } = useLoader();
+  const overviews = useMemo(
+    () => [
+      {
+        title: "Total Users",
+        count: 0,
+        icon: faUsers,
+        key: "totalEmployees",
+        url: filters?.organization
+          ? `/admin/users?organization=${filters?.organization}`
+          : "/admin/users",
+      },
+      {
+        title: "Total Coupons",
+        count: 0,
+        icon: faBarcode,
+        key: "totalCoupons",
+        url: filters?.organization
+          ? `/admin/coupon?organization=${filters?.organization}`
+          : "/admin/coupon",
+      },
+      // {
+      //   title: "Available Slots",
+      //   count: 55,
+      //   icon: faCheckCircle,
+      // },
+      {
+        title: "Work Life Balance",
+        count: 0,
+        icon: faStopwatch,
+        key: "totalWorkLifeBalance",
+        url: filters?.organization
+          ? `/admin/users?work_life_balance=true&&organization=${filters?.organization}`
+          : "/admin/users?work_life_balance=true",
+      },
+      {
+        title: "Road Safety",
+        count: 0,
+        icon: faBiking,
+        key: "totalRoadSafety",
+        url: "/admin/users?road_safety=true",
+      },
+      {
+        title: "Calendar Sync",
+        count: 0,
+        icon: faCalendarAlt,
+        key: "totalCalendarSync",
+        url: "/admin/users?calender_sync=true",
+      },
+      {
+        title: "Custom Status",
+        count: 0,
+        icon: faPhoenixSquadron,
+        key: "totalCustomStatus",
+        // url: "/admin/users?custom_status=true",
+      },
+    ],
+    [filters]
+  );
 
   useEffect(() => {
     getOrganizationOverview(filters);
@@ -127,7 +136,7 @@ const AdminDashboard = () => {
         })
       );
     }
-  }, [overview]);
+  }, [overview, overviews]);
 
   return loading ? (
     <WCPreLoader />
@@ -155,7 +164,7 @@ const AdminDashboard = () => {
       <Row className="justify-content-md-center">
         <Col xs={12} xl={6} className="mb-4 d-none d-sm-block">
           <WCGraph
-            title={"Employees"}
+            title={"Users"}
             totalCount={overview?.totalEmployees}
             graphData={overview?.monthlyUsers}
             filters={filters}

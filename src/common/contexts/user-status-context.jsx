@@ -1,7 +1,7 @@
 import React, { useState, createContext, useCallback } from "react";
 import { toast } from "react-toastify";
 import { executePostApi } from "../apis";
-import { GET_ALL_USER_STATUS, UPDATE_USER_STATUS } from "../apis/api-urls";
+import { GET_ALL_USER_STATUS, UPDATE_USER_STATUS, UPDATE_USER_SUB_STATUS, GET_USER_SUB_STATUS} from "../apis/api-urls";
 import { useLoader } from "../hooks";
 
 export const UserStatusContext = createContext();
@@ -47,6 +47,41 @@ export const UserStatusProvider = ({ children }) => {
     [setLoading]
   );
 
+  const onUpdateUserSubStatus = useCallback(
+    async (values) => {
+      try {
+        setLoading(true);
+        let result = await executePostApi(UPDATE_USER_SUB_STATUS, values);
+        if (result?.data?.success) {
+          setUpdated(true);
+          toast.success("User sub-status updated successfully!");
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
+
+  const getUserSubStatus = useCallback(
+    async (params) => {
+      try {
+        setUpdated(false);
+        setLoading(true);
+        let result = await executePostApi(GET_USER_SUB_STATUS, params);
+        if (result?.data?.success) {
+          setUserStatus(result.data.data);
+        } else {
+          toast.error(result.data.message);
+        }
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    },
+    [setLoading]
+  );
   let value = {
     userStatues,
     isUpdated,
@@ -61,6 +96,18 @@ export const UserStatusProvider = ({ children }) => {
         onUpdateUserStatus(values);
       },
       [onUpdateUserStatus]
+    ),
+    onUpdateUserSubStatus: useCallback(
+      (values) => {
+        onUpdateUserSubStatus(values);
+      },
+      [onUpdateUserSubStatus]
+    ),
+    getUserSubStatus: useCallback(
+      (params) => {
+        getUserSubStatus(params);
+      },
+      [getUserSubStatus]
     ),
   };
   return (

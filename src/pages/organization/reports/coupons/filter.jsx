@@ -1,4 +1,3 @@
-import moment from "moment";
 import React from "react";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -21,12 +20,6 @@ export const CouponFilter = ({
     for (const [key, value] of Object.entries(values)) {
       if (!value) {
         delete values[key];
-      }
-
-      if (key === "generated_date") {
-        if (value) {
-          Object.assign(values, { [key]: moment(value).toISOString() });
-        }
       }
     }
     onSaveFilters(values);
@@ -52,6 +45,15 @@ export const CouponFilter = ({
                   <WCFormDateRange
                     name="generated_date"
                     label="Select Date"
+                    control={control}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6} sm={12} className="mb-3">
+                  <WCFormDateRange
+                    name="expiry_date"
+                    label="Select Expiry Date"
                     control={control}
                   />
                 </Col>

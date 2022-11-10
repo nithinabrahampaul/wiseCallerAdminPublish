@@ -1,13 +1,17 @@
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Badge } from "react-bootstrap";
+import { useSearchParams } from "react-router-dom";
 import { filtersData } from "../contants";
 
 export const WCAppliedFilter = ({ filters, onUpdateFilter }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const onRemoveFilter = (value) => {
     let temp = filters;
     delete temp[value];
     onUpdateFilter({ ...filters, ...temp });
+    setSearchParams("");
   };
 
   return Object.keys(filters).length ? (

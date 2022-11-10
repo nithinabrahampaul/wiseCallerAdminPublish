@@ -36,6 +36,11 @@ export const organizationMenu = [
     link: componentRoutes.organizationCoupons,
     icon: faBarcode,
   },
+  {
+    title: "Templates",
+    link: componentRoutes.organizationTemplates,
+    icon: faFile,
+  },
 ];
 
 export const adminMenu = [
@@ -77,6 +82,11 @@ export const adminMenu = [
   {
     title: "Status",
     link: componentRoutes.adminStatus,
+    icon: faPhoenixSquadron,
+  },
+  {
+    title: "SubStatus",
+    link: componentRoutes.adminSubStatus,
     icon: faPhoenixSquadron,
   },
   {

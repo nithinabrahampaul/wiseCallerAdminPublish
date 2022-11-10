@@ -3,6 +3,9 @@ const rootRoutes = {
   login: "/auth/login",
   register: "/auth/register",
   pricing: "/subscription/pricing",
+  organizationPayment: "/organization/payment",
+  tokenExpired: "/token-expired",
+  dynamicPage: "/:page",
 };
 
 const organizationRoutes = {
@@ -13,6 +16,7 @@ const organizationRoutes = {
   organizationCoupons: "/organization/coupons",
   organizationAccountProfile: "/organization/account/profile",
   organizationAccountSubscription: "/organization/account/subscription",
+  organizationTemplates: "/organization/templates",
 };
 
 const adminRoutes = {
@@ -27,6 +31,8 @@ const adminRoutes = {
   adminGlobalTypes: "/admin/global-types",
   adminPlans: "/admin/plans",
   adminTemplates: "/admin/templates",
+  adminAccountProfile: "/admin/account/profile",
+  adminSubStatus: "/admin/sub-status"
 };
 
 export const componentRoutes = {

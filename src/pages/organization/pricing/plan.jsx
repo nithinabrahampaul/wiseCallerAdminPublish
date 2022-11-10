@@ -135,7 +135,7 @@ export const Plan = ({
               </div>
               <div className="d-flex align-items-center mb-3">
                 <FontAwesomeIcon icon={faCheck} className="me-2" />
-                <span>{pricingForm.subscription.cess_percentage}% GST</span>
+                <span>{pricingForm.subscription.cess_percentage}% CESS</span>
               </div>
             </Card.Body>
             <Card.Footer className="border-gray-100 d-grid px-4 pb-4">

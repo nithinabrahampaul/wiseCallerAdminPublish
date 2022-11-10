@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useCallback, useState, createContext } from "react";
 import { toast } from "react-toastify";
 import { LoaderContext } from ".";
-import { executeGetApi, executePostApi } from "../apis";
+import { executePostApi } from "../apis";
 import {
   GET_ALL_PLANS,
   GET_PLANS_API,
@@ -22,9 +22,9 @@ export const PlanProvider = ({ children }) => {
     async (subscription) => {
       try {
         setLoading(true);
-        let result = await executeGetApi(
-          `${GET_PLANS_API}?subscription=${subscription}`
-        );
+        let result = await executePostApi(`${GET_PLANS_API}`, {
+          subscription: subscription,
+        });
         if (result?.data?.success) {
           setPlans(result.data.data);
         }

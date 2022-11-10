@@ -20,7 +20,7 @@ export const EmployeeProvider = ({ children }) => {
   const [isDeactivated, setDeactivated] = useState(false);
   const [isRefetched, setRefetched] = useState(false);
   const { setLoading } = useContext(LoaderContext);
-  const [downloadCSV] = useDownload();
+  const { downloadCSV, downloadPDF } = useDownload();
 
   const getAllEmployees = useCallback(
     async (params) => {
@@ -104,14 +104,16 @@ export const EmployeeProvider = ({ children }) => {
         setLoading(true);
         let result = await executePostApi(GENERATE_USER_INVOICE, values);
         if (result?.data?.success) {
+          await downloadPDF(result.data.data);
           toast.success("Invoice generated");
         }
         setLoading(false);
       } catch (error) {
+        console.log(error);
         setLoading(false);
       }
     },
-    [setLoading]
+    [setLoading, downloadPDF]
   );
 
   const value = {

@@ -97,6 +97,7 @@ export const ViewDetails = ({
                       variant="primary"
                       onClick={onPlanChange.bind(this, item)}
                       style={{ marginRight: 5 }}
+                      disabled={item.organization}
                     >
                       {"Change"}
                     </Button>
@@ -106,9 +107,10 @@ export const ViewDetails = ({
                       size="sm"
                       variant="primary"
                       onClick={onDownload.bind(this, {
-                        ...item,
+                        active_subscription: item,
                         user_id: user._id,
                       })}
+                      disabled={item.organization}
                       style={{ marginRight: 5 }}
                     >
                       {"Download"}

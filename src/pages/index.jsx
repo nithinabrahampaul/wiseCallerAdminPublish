@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
+import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { cookies } from "../common/apis/base-api";
 import { WCPreLoader } from "../common/components/wc-preloader";
 import { componentRoutes } from "../common/contants";
 import { useLoader } from "../common/hooks";
@@ -8,9 +8,10 @@ import { useLoader } from "../common/hooks";
 const Pages = () => {
   const navigate = useNavigate();
   const { loading } = useLoader();
+  const [cookies] = useCookies();
 
   const handleNavigation = useCallback(() => {
-    let role = cookies.get("role");
+    let role = cookies?.role;
     if (role === "ORGANIZATION") {
       navigate(componentRoutes.organizationDashboard);
     } else if (role === "ADMIN") {
@@ -18,7 +19,7 @@ const Pages = () => {
     } else {
       navigate(componentRoutes.login);
     }
-  }, [navigate]);
+  }, [navigate, cookies]);
 
   useEffect(() => {
     handleNavigation();

@@ -4,17 +4,32 @@ import { CSSTransition } from "react-transition-group";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { Nav, Badge, Image, Button, Navbar } from "react-bootstrap";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import ReactHero from "../../assets/images/img/technologies/react-hero-logo.svg";
 import { organizationMenu, adminMenu } from "../contants/sidebar-menu";
-import { useAppCookies } from "../hooks";
+import { useCookies } from "react-cookie";
+import { useEffect } from "react";
+import { isExpired } from "react-jwt";
+import { componentRoutes } from "../contants";
 
 export const WCSidebar = () => {
   const [collapse, setCollapse] = useState(false);
   const location = useLocation();
-  const { appCookies } = useAppCookies();
   const { pathname } = location;
-  const role = appCookies?.role;
+  const [cookies] = useCookies();
+  const role = cookies?.role;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (cookies.token) {
+      let tokenExpired = isExpired(cookies.token);
+      if (tokenExpired) {
+        navigate(componentRoutes.login);
+      }
+    } else {
+      navigate(componentRoutes.login);
+    }
+  }, [cookies, navigate]);
 
   const NavItem = (props) => {
     const {

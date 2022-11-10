@@ -6,7 +6,7 @@ export const WCFormInput = React.forwardRef(
   ({ label, placeholder, type = "text", icon, error, ...rest }, ref) => {
     return (
       <Form.Group className="mb-4">
-        <Form.Label>{label}</Form.Label>
+        {label && <Form.Label>{label}</Form.Label>}
         <InputGroup>
           {icon && (
             <InputGroup.Text>

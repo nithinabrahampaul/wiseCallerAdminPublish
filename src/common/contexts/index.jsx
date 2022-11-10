@@ -21,3 +21,4 @@ export {
 } from "./notification-context";
 export { AppCookiesContext, AppCookiesProvider } from "./app-cookies";
 export { TemplateContext, TemplateProvider } from "./template-context";
+export { PaymentContext, PaymentProvider } from "./payment-context";

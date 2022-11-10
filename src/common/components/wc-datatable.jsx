@@ -98,7 +98,7 @@ export const WCDataTable = ({
     } else {
       columnsOptions = [selectableColumnOptions];
     }
-  }, [expandable]);
+  }, [expandable, selectableColumnOptions]);
 
   const {
     getTableProps,
@@ -122,7 +122,7 @@ export const WCDataTable = ({
   }, [search, filters, onHandleSearch]);
 
   useEffect(() => {
-    if (onHandleSelected) {
+    if (onHandleSelected && selectedFlatRows.length >= 0) {
       onHandleSelected(selectedFlatRows);
     }
   }, [onHandleSelected, selectedFlatRows]);
@@ -135,16 +135,20 @@ export const WCDataTable = ({
         </div>
         <div className="btn-toolbar mb-2 mb-md-0">
           <ButtonGroup>
-            <Button
-              variant="outline-primary"
-              size="sm"
-              onClick={onHandleFilter}
-            >
-              Filter
-            </Button>
-            <Button variant="outline-primary" size="sm" onClick={onExportCSV}>
-              Export
-            </Button>
+            {onHandleFilter && (
+              <Button
+                variant="outline-primary"
+                size="sm"
+                onClick={onHandleFilter}
+              >
+                Filter
+              </Button>
+            )}
+            {onExportCSV && (
+              <Button variant="outline-primary" size="sm" onClick={onExportCSV}>
+                Export
+              </Button>
+            )}
           </ButtonGroup>
         </div>
       </div>
@@ -185,30 +189,6 @@ export const WCDataTable = ({
                   </Button>
                 </ButtonGroup>
               )}
-              {/* <Dropdown as={ButtonGroup}>
-                <Dropdown.Toggle
-                  split
-                  as={Button}
-                  variant="link"
-                  className="text-dark m-0 p-0"
-                >
-                  <span className="icon icon-sm icon-gray">
-                    <FontAwesomeIcon icon={faCog} />
-                  </span>
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="dropdown-menu-xs dropdown-menu-right">
-                  {pageLimits.map((item, index) => (
-                    <Dropdown.Item className="d-flex fw-bold" key={index}>
-                      {item}
-                      {item === limit && (
-                        <span className="icon icon-small ms-auto">
-                          <FontAwesomeIcon icon={faCheck} />
-                        </span>
-                      )}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown> */}
             </React.Fragment>
           </Col>
         </Row>

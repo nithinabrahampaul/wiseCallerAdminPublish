@@ -12,13 +12,14 @@ const AdminNotes = () => {
   const [initialValues, setInitialValues] = useState({});
   const [isVisible, setVisible] = useState(false);
   const [types, setTypes] = useState([]);
+  const [filters, setFilters] = useState([]);
   const { loading } = useLoader();
   const { notes, getAllNotes, onUpdateNotes, isUpdated } = useNote();
   const { globalTypes, getGlobalTypes } = useGlobalTypes();
 
   useEffect(() => {
-    getAllNotes({ page, limit });
-  }, [getAllNotes, page, limit, isUpdated]);
+    getAllNotes({ page, limit, ...filters });
+  }, [getAllNotes, page, limit, isUpdated, filters]);
   useEffect(() => {
     getGlobalTypes();
   }, [getGlobalTypes]);
@@ -81,6 +82,12 @@ const AdminNotes = () => {
     [onHandleOperations]
   );
 
+  useEffect(() => {
+    if (!isVisible) {
+      setInitialValues({});
+    }
+  }, [isVisible]);
+
   return loading ? (
     <WCPreLoader />
   ) : (
@@ -96,9 +103,10 @@ const AdminNotes = () => {
         page={notes.page}
         onPageChange={setPage}
         title={"Notes"}
-        filters={{}}
+        filters={filters}
         limit={limit}
         onHandleCreate={onHandleOperations.bind(this, "create", "")}
+        onHandleSearch={setFilters}
       />
       {isVisible && (
         <NotesForm

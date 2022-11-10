@@ -42,6 +42,15 @@ export const CreateCoupons = ({
                   />
                 </Col>
                 <Col md={6} sm={12}>
+                  <WCFormSelect
+                    name="subscription"
+                    control={control}
+                    error={errors?.subscription}
+                    label={"Select Subscription"}
+                    options={subscriptions}
+                  />
+                </Col>
+                {/* <Col md={6} sm={12}>
                   <WCFormInput
                     type="number"
                     label="Total Slots"
@@ -49,7 +58,7 @@ export const CreateCoupons = ({
                     error={errors?.total_subscription}
                     {...register("total_subscription")}
                   />
-                </Col>
+                </Col> */}
               </Row>
               <Row>
                 <Col md={6} sm={12}>
@@ -71,7 +80,7 @@ export const CreateCoupons = ({
                   />
                 </Col>
               </Row>
-              <Row>
+              {/* <Row>
                 <Col md={6} sm={12}>
                   <WCFormSelect
                     name="subscription"
@@ -81,7 +90,7 @@ export const CreateCoupons = ({
                     options={subscriptions}
                   />
                 </Col>
-              </Row>
+              </Row> */}
               <div className="mt-3 text-right">
                 <Button
                   variant="primary"

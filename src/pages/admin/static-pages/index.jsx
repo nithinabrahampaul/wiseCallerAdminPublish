@@ -36,14 +36,14 @@ const AdminStaticPages = () => {
   );
 
   useEffect(() => {
-    getAllStaticPages({ page, limit });
-  }, [getAllStaticPages, page, limit]);
+    getAllStaticPages({ page, limit, ...filters });
+  }, [getAllStaticPages, page, limit, filters]);
 
   useEffect(() => {
     if (isPageCreated || isPageUpdated) {
-      getAllStaticPages({ page, limit });
+      getAllStaticPages({ page, limit, ...filters });
     }
-  }, [isPageCreated, isPageUpdated, page, limit, getAllStaticPages]);
+  }, [isPageCreated, isPageUpdated, page, limit, getAllStaticPages, filters]);
 
   const onDeletePage = useCallback(
     (row) => {

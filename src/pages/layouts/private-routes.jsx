@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import { isExpired } from "react-jwt";
 import { Navigate } from "react-router-dom";
-import { removeUserCookies, cookies } from "../../common/apis/base-api";
 import { componentRoutes } from "../../common/contants";
 
 export const PrivateRoutes = ({ route }) => {
-  const [expired, setExpired] = useState(false);
+  const [expired, setExpired] = useState(null);
+  const [cookies, , removeCookie] = useCookies();
 
   const RenderComponent = ({ route }) => {
     return (
@@ -16,19 +17,23 @@ export const PrivateRoutes = ({ route }) => {
   };
 
   useEffect(() => {
-    let token = cookies.get("token");
-    let tokenExpired = isExpired(token);
-    if (tokenExpired) {
-      removeUserCookies();
-      setExpired(isExpired(token));
+    let token = cookies?.token;
+    if (token) {
+      let tokenExpired = isExpired(token);
+      if (tokenExpired) {
+        removeCookie("email");
+        removeCookie("role");
+        removeCookie("token");
+        setExpired(true);
+      }
     }
-  }, []);
+  }, [cookies, removeCookie]);
 
   return !route?.auth ? (
     <RenderComponent route={route} />
   ) : route.auth && !expired ? (
     <RenderComponent route={route} />
   ) : (
-    <Navigate to={componentRoutes.login} />
+    <Navigate to={`${componentRoutes.login}`} />
   );
 };

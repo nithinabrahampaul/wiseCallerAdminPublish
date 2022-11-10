@@ -1,4 +1,4 @@
-import { faStickyNote, faStopwatch20 } from "@fortawesome/free-solid-svg-icons";
+import { faStickyNote } from "@fortawesome/free-solid-svg-icons";
 import { Button, Card, Col, Form, Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { WCFormInput } from "../../../common/components/wc-forminput";
@@ -6,7 +6,7 @@ import { WCFormSelect } from "../../../common/components/wc-formselect";
 import { iconTypesOptions } from "../../../common/contants/selectables";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { statusFormValidation } from "../../../common/validations/admin";
-import { WCFormMultiSelect } from "../../../common/components/wc-formmultiselect";
+// import { WCFormMultiSelect } from "../../../common/components/wc-formmultiselect";
 
 export const StatusForm = ({
   visible,
@@ -36,36 +36,13 @@ export const StatusForm = ({
                 <Col md={6} className="mb-3">
                   <WCFormInput
                     label="Status"
-                    placeholder="Status..."
+                    placeholder="Name"
                     icon={faStickyNote}
                     {...register("status")}
                     error={errors?.status}
                   />
                 </Col>
                 <Col md={6} className="mb-3">
-                  <WCFormMultiSelect
-                    name="applicable_types"
-                    control={control}
-                    label={"Select Types"}
-                    options={types}
-                    isMulti={true}
-                    value={initialValues.applicable_types}
-                    error={errors?.applicable_types}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col md={6}>
-                  <WCFormInput
-                    type="number"
-                    label="Order"
-                    placeholder="0,1,2...."
-                    icon={faStopwatch20}
-                    {...register("order")}
-                    error={errors?.order}
-                  />
-                </Col>
-                <Col md={6}>
                   <WCFormSelect
                     name="icon_style"
                     control={control}
@@ -73,6 +50,26 @@ export const StatusForm = ({
                     options={iconTypesOptions}
                     error={errors?.icon_style}
                   />
+                  {/* <WCFormMultiSelect
+                    name="applicable_types"
+                    control={control}
+                    label={"Select Types"}
+                    options={types}
+                    isMulti={true}
+                    value={initialValues.applicable_types}
+                    error={errors?.applicable_types}
+                  /> */}
+                </Col>
+              </Row>
+              <Row>
+                <Col md={12}>
+                  {/* <WCFormSelect
+                    name="icon_style"
+                    control={control}
+                    label={"Select Icon Style"}
+                    options={iconTypesOptions}
+                    error={errors?.icon_style}
+                  /> */}
                 </Col>
               </Row>
             </Modal.Body>

@@ -9,7 +9,7 @@ export const WCCounter = ({ count, title, icon, url }) => {
       border="light"
       className="shadow-sm"
       style={{ cursor: "pointer" }}
-      onClick={navigate.bind(this, url)}
+      onClick={url ? navigate.bind(this, url) : () => {}}
     >
       <Card.Body>
         <Row className="d-block d-xl-flex align-items-center">

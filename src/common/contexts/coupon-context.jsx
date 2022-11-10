@@ -1,9 +1,10 @@
 import React, { createContext, useState, useCallback, useContext } from "react";
 import { toast } from "react-toastify";
 import { LoaderContext } from ".";
-import { executeGetApi, executePostApi } from "../apis";
+import { executePostApi, executePutApi } from "../apis";
 import {
-  DEACTIVATE_COUPON,
+  CHANGE_ORGANIZATION_SUBSCRIPTION,
+  UPDATE_COUPON_STATUS,
   EXPORT_COUPON_CSV,
   GET_ALL_COUPONS,
   UPDATE_ADMIN_COUPON,
@@ -16,7 +17,7 @@ export const CouponProvider = ({ children }) => {
   const [coupons, setCoupons] = useState([]);
   const [isRefetch, setRefetch] = useState(false);
   const { setLoading } = useContext(LoaderContext);
-  const [downloadCSV] = useDownload();
+  const { downloadCSV } = useDownload();
 
   const getAllCoupons = useCallback(
     async (params) => {
@@ -38,9 +39,12 @@ export const CouponProvider = ({ children }) => {
   );
 
   const onDeactivateCoupon = useCallback(
-    async (id) => {
+    async (id, payload) => {
       setLoading(true);
-      let result = await executeGetApi(`${DEACTIVATE_COUPON}/${id}`);
+      let result = await executePostApi(
+        `${UPDATE_COUPON_STATUS}/${id}`,
+        payload
+      );
       if (result?.data?.success) {
         toast.success("Coupon deactivated!");
       } else {
@@ -92,13 +96,16 @@ export const CouponProvider = ({ children }) => {
   const onCouponChange = useCallback(
     async (values) => {
       try {
-        // setLoading(true);
-        // let result = await executePutApi("", values);
-        // if (result?.data?.success) {
-        //   toast.success("Coupon plan changed!");
-        //   setRefetch(true);
-        // }
-        // setLoading(false);
+        setLoading(true);
+        let result = await executePutApi(
+          CHANGE_ORGANIZATION_SUBSCRIPTION,
+          values
+        );
+        if (result?.data?.success) {
+          toast.success("Coupon plan changed!");
+          setRefetch(true);
+        }
+        setLoading(false);
       } catch (error) {
         setLoading(false);
       }
@@ -116,8 +123,8 @@ export const CouponProvider = ({ children }) => {
       [getAllCoupons]
     ),
     onDeactivateCoupon: useCallback(
-      (id) => {
-        onDeactivateCoupon(id);
+      (id, payload) => {
+        onDeactivateCoupon(id, payload);
       },
       [onDeactivateCoupon]
     ),

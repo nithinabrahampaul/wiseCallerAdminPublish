@@ -7,10 +7,10 @@ import {
   ORGANIZATON_RESEND_OTP_API,
   ORGANIZATON_VERIFY_API,
 } from "../apis/api-urls";
-import { executePostApi, setUserCookies } from "../apis/base-api";
+import { executePostApi } from "../apis/base-api";
 import { toast } from "react-toastify";
 import { OrganizationContext } from "./organazation-context";
-import { AppCookiesContext } from "./app-cookies";
+import { useCookies } from "react-cookie";
 export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [redirectLogin, setRedirectLogin] = useState(false);
   const { setLoading } = useContext(LoaderContext);
   const { setOrganization } = useContext(OrganizationContext);
-  const { onUpdateCookies } = useContext(AppCookiesContext);
+  const [, setCookie] = useCookies();
 
   const onHandleLogin = async (values) => {
     try {
@@ -27,8 +27,10 @@ export const AuthProvider = ({ children }) => {
       let result = await executePostApi(ORGANIZATON_LOGIN_API, values);
       if (result?.data?.success) {
         setLoginForm(false);
-        setLoading(false);
+      } else {
+        toast.error(result.data.message);
       }
+      setLoading(false);
     } catch (error) {
       setLoading(false);
     }
@@ -55,13 +57,10 @@ export const AuthProvider = ({ children }) => {
       let result = await executePostApi(ORGANIZATON_VERIFY_API, values);
       if (result?.data?.success) {
         let decoded = decode(result.data.data.token);
-        onUpdateCookies({ ...decoded, token: result.data.data.token });
+        setCookie("email", decoded.email);
+        setCookie("token", result.data.data.token);
+        setCookie("role", decoded.role);
         setOrganization(decoded);
-        await setUserCookies({
-          ...result.data.data,
-          email: decoded.email,
-          role: decoded.role,
-        });
         setLoginForm(true);
       } else {
         setLoginForm(false);

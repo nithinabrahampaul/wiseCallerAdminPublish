@@ -17,6 +17,7 @@ export const AdminGlobalTypes = () => {
   const [statuses, setStatuses] = useState([]);
   const [types, setTypes] = useState([]);
   const [initialValues, setInitialValues] = useState({});
+  const [filters, setFilters] = useState({});
   const { loading } = useLoader();
   const {
     globalTypes,
@@ -29,12 +30,14 @@ export const AdminGlobalTypes = () => {
   const { getAllUserStatus, userStatues } = useUserStatus();
 
   useEffect(() => {
-    getGlobalTypes({ page, limit });
-  }, [getGlobalTypes, page, limit]);
+    getGlobalTypes({ page, limit, ...filters });
+  }, [getGlobalTypes, page, limit, filters]);
 
   useEffect(() => {
-    getGlobalTypes({ page, limit });
-  }, [isRefetched, getGlobalTypes, limit, page]);
+    if (isRefetched) {
+      getGlobalTypes({ page, limit, ...filters });
+    }
+  }, [isRefetched, getGlobalTypes, limit, page, filters]);
 
   useEffect(() => {
     getAllUserStatus();
@@ -131,6 +134,12 @@ export const AdminGlobalTypes = () => {
     [onHandleOperations]
   );
 
+  useEffect(() => {
+    if (!isVisible) {
+      setInitialValues({});
+    }
+  }, [isVisible]);
+
   return loading ? (
     <WCPreLoader />
   ) : (
@@ -148,16 +157,19 @@ export const AdminGlobalTypes = () => {
         title={"Global Types"}
         limit={limit}
         onHandleCreate={setVisible.bind(this, true)}
+        filters={filters}
+        onHandleSearch={setFilters}
         expandable={true}
       />
-
-      <GlobalTypesForm
-        visible={isVisible}
-        onClose={setVisible.bind(this, false)}
-        onSubmitForm={onSubmitForm}
-        initialValues={initialValues}
-        statuses={statuses}
-      />
+      {isVisible && (
+        <GlobalTypesForm
+          visible={isVisible}
+          onClose={setVisible.bind(this, false)}
+          onSubmitForm={onSubmitForm}
+          initialValues={initialValues}
+          statuses={statuses}
+        />
+      )}
     </React.Fragment>
   );
 };
